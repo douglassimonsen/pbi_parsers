@@ -3,7 +3,7 @@ from enum import Enum
 
 class TokenType(Enum):
     OPERATOR = 1
-    IDENTIFIER = 2
+    UNQUOTED_IDENTIFIER = 2
     SINGLE_QUOTED_IDENTIFIER = 3
     BRACKETED_IDENTIFIER = 4
     STRING_LITERAL = 5
