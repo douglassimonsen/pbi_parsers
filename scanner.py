@@ -1,6 +1,9 @@
 import string
+from typing import Callable
 
 from tokens import Token, TokenType
+
+WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
 
 
 class Scanner:
@@ -15,182 +18,154 @@ class Scanner:
         self.current_position = 0
         self.tokens = []
 
-    def match(self, char: str) -> Token:
-        pass
+    def match(self, matcher: Callable[[str], bool] | str, chunk: int = 1) -> bool:
+        if isinstance(matcher, str):
+            chunk = len(matcher)
 
-    def peek(self) -> str | None:
+        string_chunk = self.peek(chunk)
+        if string_chunk == "":
+            return False
+
+        if isinstance(matcher, str):
+            if string_chunk == matcher:
+                self.advance(chunk)
+                return True
+            return False
+
+        else:
+            if matcher(string_chunk):
+                self.advance(chunk)
+                return True
+            return False
+
+    def peek(self, chunk: int = 1) -> str:
         return (
-            self.source[self.current_position]
+            self.source[self.current_position : self.current_position + chunk]
             if self.current_position < len(self.source)
-            else None
+            else str()
         )
 
     def remaining(self) -> str:
         return self.source[self.current_position :]
 
-    def advance(self) -> None:
-        self.current_position += 1
+    def advance(self, chunk: int = 1) -> None:
+        if self.current_position > 10000:
+            raise ValueError("Current position exceeds 10000 characters.")
+        self.current_position += chunk
 
     def scan_helper(self) -> Token:
-        char = self.peek()
-        if char is None:
+        start_pos = self.current_position
+
+        if self.peek() == "":
             return Token(type=TokenType.EOF, text="")
 
-        chars: list[str] = []
-        if char in string.whitespace:
-            while char is not None and char in string.whitespace:
-                chars.append(char)
-                self.advance()
-                char = self.peek()
-            return Token(type=TokenType.WHITESPACE, text="".join(chars))
+        if self.match(lambda c: c in WHITESPACE):
+            while self.match(lambda c: c in WHITESPACE):
+                pass
+            return Token(
+                type=TokenType.WHITESPACE,
+                text=self.source[start_pos : self.current_position],
+            )
 
-        elif char in string.ascii_letters + "_":
-            while char is not None and (
-                char in string.ascii_letters + string.digits + "_"
-            ):
-                chars.append(char)
-                self.advance()
-                char = self.peek()
-            return Token(type=TokenType.IDENTIFIER, text="".join(chars))
+        elif self.match(lambda c: c in string.ascii_letters + string.digits + "_"):
+            while self.match(lambda c: c in string.ascii_letters + string.digits + "_"):
+                pass
+            return Token(
+                type=TokenType.IDENTIFIER,
+                text=self.source[start_pos : self.current_position],
+            )
 
-        elif char == "(":
-            self.advance()
+        elif self.match("("):
             return Token(type=TokenType.LEFT_PAREN, text="(")
 
-        elif char == ")":
-            self.advance()
+        elif self.match(")"):
             return Token(type=TokenType.RIGHT_PAREN, text=")")
 
-        elif char == ",":
-            self.advance()
+        elif self.match(","):
             return Token(type=TokenType.COMMA, text=",")
 
-        elif char == "=":
-            self.advance()
+        elif self.match("="):
             return Token(type=TokenType.EQUAL_SIGN, text="=")
 
-        elif char == "'":
-            chars.append("'")
-            self.advance()
-            char = self.peek()
-            while char is not None and char != "'":
-                chars.append(char)
-                self.advance()
-                char = self.peek()
-            if char == "'":
-                chars.append("'")
-                self.advance()
+        elif self.match("'"):
+            while self.match(lambda c: c != "'"):
+                pass
+            if self.match("'"):
                 return Token(
-                    type=TokenType.SINGLE_QUOTED_IDENTIFIER, text="".join(chars)
+                    type=TokenType.SINGLE_QUOTED_IDENTIFIER,
+                    text=self.source[start_pos : self.current_position],
                 )
             else:
                 raise ValueError("Unterminated string literal")
 
-        elif char == "[":
-            chars.append("[")
-            self.advance()
-            char = self.peek()
-            while char is not None and char != "]":
-                chars.append(char)
-                self.advance()
-                char = self.peek()
-            if char == "]":
-                chars.append("]")
-                self.advance()
-                return Token(type=TokenType.BRACKETED_IDENTIFIER, text="".join(chars))
+        elif self.match("["):
+            while self.match(lambda c: c != "]"):
+                pass
+            if self.match("]"):
+                return Token(
+                    type=TokenType.BRACKETED_IDENTIFIER,
+                    text=self.source[start_pos : self.current_position],
+                )
             else:
                 raise ValueError("Unterminated bracketed identifier")
 
-        elif char == '"':
-            chars.append('"')
-            self.advance()
-            char = self.peek()
-            while char is not None and char != '"':
-                chars.append(char)
-                self.advance()
-                char = self.peek()
-            if char == '"':
-                chars.append('"')
-                self.advance()
-                return Token(type=TokenType.STRING_LITERAL, text="".join(chars))
+        elif self.match('"'):
+            while self.match(lambda c: c != '"'):
+                pass
+            if self.match('"'):
+                return Token(
+                    type=TokenType.STRING_LITERAL,
+                    text=self.source[start_pos : self.current_position],
+                )
             else:
                 raise ValueError("Unterminated string literal")
-        elif char == "/":
-            # If / is being used as an operator, it will be handled in the next if block.
-            chars.append("/")
-            self.advance()
-            char = self.peek()
-            if char == "/":
-                chars.append("/")
-                self.advance()
-                char = self.peek()
-                while char is not None and char != "\n":
-                    chars.append(char)
-                    self.advance()
-                    char = self.peek()
-                return Token(type=TokenType.SINGLE_LINE_COMMENT, text="".join(chars))
-            elif char == "*":
-                chars.append("*")
-                self.advance()
-                char = self.peek()
-                while char is not None:
-                    if char == "*":
-                        chars.append("*")
-                        self.advance()
-                        char = self.peek()
-                        if char == "/":
-                            chars.append("/")
-                            self.advance()
-                            return Token(
-                                type=TokenType.MULTI_LINE_COMMENT, text="".join(chars)
-                            )
-                    else:
-                        chars.append(char)
-                        self.advance()
-                        char = self.peek()
-                raise ValueError("Unterminated multi-line comment")
+        elif self.match("//"):
+            while self.match(lambda c: c not in ("\n", "")):
+                pass
+            return Token(
+                type=TokenType.SINGLE_LINE_COMMENT,
+                text=self.source[start_pos : self.current_position],
+            )
+        elif self.match("/*"):
+            if self.match("*") and self.match("/"):
+                return Token(
+                    type=TokenType.MULTI_LINE_COMMENT,
+                    text=self.source[start_pos : self.current_position],
+                )
             else:
-                return Token(type=TokenType.OPERATOR, text="/")
-        elif char in "+-*%&":
-            # "/" is handled in the comment blocks above.
-            chars.append(char)
-            self.advance()
-            return Token(type=TokenType.OPERATOR, text="".join(chars))
-        elif char.isdigit():
-            while char is not None and (char.isdigit() or char == "."):
-                chars.append(char)
                 self.advance()
-                char = self.peek()
-            return Token(type=TokenType.NUMBER_LITERAL, text="".join(chars))
-        elif char == ".":
-            self.advance()
+            raise ValueError("Unterminated multi-line comment")
+        elif self.match(lambda c: c in "+-*%&/"):
+            return Token(
+                type=TokenType.OPERATOR,
+                text=self.source[start_pos : self.current_position],
+            )
+        elif self.match(lambda c: c.isdigit() or c == "."):
+            while self.match(lambda c: c.isdigit() or c == "."):
+                pass
+            return Token(
+                type=TokenType.NUMBER_LITERAL,
+                text=self.source[start_pos : self.current_position],
+            )
+        elif self.match("."):
             return Token(type=TokenType.PERIOD, text=".")
-        elif char == "{":
-            self.advance()
+        elif self.match("{"):
             return Token(type=TokenType.LEFT_CURLY_BRACE, text="{")
-        elif char == "}":
-            self.advance()
+        elif self.match("}"):
             return Token(type=TokenType.RIGHT_CURLY_BRACE, text="}")
-        elif char == "<":
-            self.advance()
-            if self.peek() == "=":
-                self.advance()
-                return Token(type=TokenType.OPERATOR, text="<=")
-            elif self.peek() == ">":
-                self.advance()
-                return Token(type=TokenType.OPERATOR, text="<>")
+        elif self.match("<="):
+            return Token(type=TokenType.OPERATOR, text="<=")
+        elif self.match("<>"):
+            return Token(type=TokenType.OPERATOR, text="<>")
+        elif self.match("<"):  # must be after <>, <=
             return Token(type=TokenType.OPERATOR, text="<")
-        elif char == ">":
-            self.advance()
-            if self.peek() == "=":
-                self.advance()
-                return Token(type=TokenType.OPERATOR, text=">=")
+        elif self.match(">="):
+            return Token(type=TokenType.OPERATOR, text=">=")
+        elif self.match(">"):
             return Token(type=TokenType.OPERATOR, text=">")
-        elif char == "|":
-            self.advance()
-            if self.peek() == "|":
-                self.advance()
-                return Token(type=TokenType.OPERATOR, text="||")
+        elif self.match("||"):
+            return Token(type=TokenType.OPERATOR, text="||")
+        elif self.match("|"):
             return Token(type=TokenType.OPERATOR, text="|")
         print(self.remaining())
         breakpoint()
