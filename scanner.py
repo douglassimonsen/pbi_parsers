@@ -66,6 +66,11 @@ class Scanner:
                 type=TokenType.WHITESPACE,
                 text=self.source[start_pos : self.current_position],
             )
+        elif self.match("var"):
+            return Token(
+                type=TokenType.VARIABLE,
+                text="var",
+            )
 
         elif self.match(lambda c: c in string.ascii_letters + string.digits + "_"):
             while self.match(lambda c: c in string.ascii_letters + string.digits + "_"):
@@ -159,10 +164,15 @@ class Scanner:
             if self.match(char):
                 return Token(type=token_type, text=char)
 
-    def scan(self) -> None:
+        breakpoint()
+        raise ValueError(
+            f"Unexpected character: {self.peek()} at position {self.current_position}"
+        )
+
+    def scan(self) -> list[Token]:
         while not self.at_end():
             self.tokens.append(self.scan_helper())
-            print(self.tokens[-1])
+        return self.tokens
 
     def at_end(self) -> bool:
         return self.current_position >= len(self.source)
