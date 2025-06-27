@@ -1,7 +1,7 @@
 import string
 from typing import Callable
 
-from tokens import Token, TokenType
+from parser.tokens import Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
 
