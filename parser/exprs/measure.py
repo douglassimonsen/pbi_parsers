@@ -1,7 +1,9 @@
 import textwrap
 from typing import TYPE_CHECKING
+
 from ..tokens import Token, TokenType
 from ._base import Expression
+
 if TYPE_CHECKING:
     from ..parser import Parser
 
@@ -19,5 +21,5 @@ class MeasureExpression(Expression):
     @classmethod
     def match(cls, parser: "Parser") -> "MeasureExpression | None":
         if cls.match_tokens(parser, [TokenType.BRACKETED_IDENTIFIER]):
-            name = parser.pop()
+            name = parser.consume()
             return MeasureExpression(name=name)

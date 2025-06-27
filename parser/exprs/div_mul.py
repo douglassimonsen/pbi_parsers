@@ -1,6 +1,7 @@
 import textwrap
 from functools import partial
 from typing import TYPE_CHECKING
+
 from ..tokens import Token, TokenType
 from ._base import Expression
 from ._utils import or_match
@@ -9,6 +10,7 @@ from .function import FunctionExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .measure import MeasureExpression
+
 if TYPE_CHECKING:
     from ..parser import Parser
 div_mul_match = partial(
@@ -46,7 +48,7 @@ class DivMulExpression(Expression):
             return None
         if parser.peek().text not in ("*", "/"):
             return None
-        operator = parser.pop()
+        operator = parser.consume()
         right_term = div_mul_match(parser=parser)
         if right_term is None:
             raise ValueError(

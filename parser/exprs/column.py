@@ -4,6 +4,7 @@ from git import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
 from ._base import Expression
+
 if TYPE_CHECKING:
     from ..parser import Parser
 
@@ -29,5 +30,5 @@ Column (
         if cls.match_tokens(
             parser, [TokenType.SINGLE_QUOTED_IDENTIFIER, TokenType.BRACKETED_IDENTIFIER]
         ):
-            table, column = parser.pop(), parser.pop()
+            table, column = parser.consume(), parser.consume()
             return ColumnExpression(table=table, column=column)

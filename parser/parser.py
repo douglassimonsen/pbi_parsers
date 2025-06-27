@@ -28,7 +28,7 @@ class Parser:
         """
         return AddSubExpression.match(self)
 
-    def pop(self) -> Token:
+    def consume(self) -> Token:
         """Doesn't actually pop, just returns the next token and advances the index."""
         ret = self.__tokens[self.index]
         self.index += 1

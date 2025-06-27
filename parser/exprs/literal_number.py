@@ -21,5 +21,5 @@ class LiteralNumberExpression(Expression):
     @classmethod
     def match(cls, parser: "Parser") -> "LiteralNumberExpression | None":
         if cls.match_tokens(parser, [TokenType.NUMBER_LITERAL]):
-            value = parser.pop()
+            value = parser.consume()
             return LiteralNumberExpression(value=value)
