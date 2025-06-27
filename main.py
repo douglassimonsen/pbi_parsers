@@ -14,4 +14,3 @@ for statement in statements:
         print(token)
     print(to_ast(tokens).pprint())
     print("----")
-    exit()

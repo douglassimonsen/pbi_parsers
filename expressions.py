@@ -48,17 +48,69 @@ Column (
             return ColumnExpression(table=table, column=column)
 
 
+class LiteralStringExpression(Expression):
+    value: Token
+
+    def __init__(self, value: Token):
+        self.value = value
+
+    def pprint(self, depth: int = 0) -> str:
+        base = f"LiteralString ({self.value.text})"
+        return textwrap.indent(base, " " * (depth * 4))
+
+    @classmethod
+    def match(cls, tokens: list[Token]) -> "LiteralStringExpression | None":
+        if cls.match_tokens(tokens, [TokenType.STRING_LITERAL]):
+            value = tokens.pop(0)
+            return LiteralStringExpression(value=value)
+
+
+class LiteralNumberExpression(Expression):
+    value: Token
+
+    def __init__(self, value: Token):
+        self.value = value
+
+    def pprint(self, depth: int = 0) -> str:
+        base = f"LiteralNumber ({self.value.text})"
+        return textwrap.indent(base, " " * (depth * 4))
+
+    @classmethod
+    def match(cls, tokens: list[Token]) -> "LiteralNumberExpression | None":
+        if cls.match_tokens(tokens, [TokenType.NUMBER_LITERAL]):
+            value = tokens.pop(0)
+            return LiteralNumberExpression(value=value)
+
+
+class MeasureExpression(Expression):
+    name: Token
+
+    def __init__(self, name: Token):
+        self.name = name
+
+    def pprint(self, depth: int = 0) -> str:
+        base = f"Measure ({self.name.text})"
+        return textwrap.indent(base, " " * (depth * 4))
+
+    @classmethod
+    def match(cls, tokens: list[Token]) -> "MeasureExpression | None":
+        if cls.match_tokens(tokens, [TokenType.BRACKETED_IDENTIFIER]):
+            name = tokens.pop(0)
+            return MeasureExpression(name=name)
+
+
 class FunctionExpression(Expression):
     def __init__(self, name: Token, args: list[Expression]):
         self.name = name
         self.args = args
 
     def pprint(self, depth: int = 0) -> str:
+        args = ",\n".join(arg.pprint() for arg in self.args)
+        args = textwrap.indent(args, " " * 10)[10:]
         base = f"""
 Function (
     name: {self.name.text},
-    args: 
-    {", ".join(arg.pprint(depth + 1) for arg in self.args)}
+    args: {args}
 )        """.strip()
         return textwrap.indent(base, " " * (depth * 4))
 
@@ -74,10 +126,17 @@ Function (
             tokens.pop(0),
         )  # Skip the function name and left parenthesis
         while not cls.match_tokens(tokens, [TokenType.RIGHT_PAREN]):
-            if arg := ColumnExpression.match(tokens):
-                args.append(arg)
-            elif arg := FunctionExpression.match(tokens):
-                args.append(arg)
+            # We gotta handle operators next :(
+            for expr in (
+                ColumnExpression,
+                MeasureExpression,
+                FunctionExpression,
+                LiteralStringExpression,
+                LiteralNumberExpression,
+            ):
+                if arg := expr.match(tokens):
+                    args.append(arg)
+                    break
             else:
                 breakpoint()
                 raise ValueError(f"Unexpected token sequence: {tokens[:3]}")
@@ -107,6 +166,7 @@ def to_ast(tokens: list[Token]) -> Expression:
             return ret
         if ret := FunctionExpression.match(tokens):
             return ret
-
+        if ret := MeasureExpression.match(tokens):
+            return ret
         else:
             raise ValueError(f"Unexpected token sequence: {tokens[:3]}")
