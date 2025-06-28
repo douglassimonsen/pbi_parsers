@@ -6,8 +6,8 @@ from scanner import Scanner
 
 statements = json.load(open("dax.json"))
 
-for statement in statements:
-    print(statement)
+for j, statement in enumerate(statements):
+    print(j, statement)
     tokens = Scanner(statement).scan()
     tokens = list(filter(lambda x: x.type != TokenType.WHITESPACE, tokens))
     for i, token in enumerate(tokens):

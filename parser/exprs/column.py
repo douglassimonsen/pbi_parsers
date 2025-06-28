@@ -1,11 +1,9 @@
 import textwrap
-
-from git import TYPE_CHECKING
-
-from ._utils import scanner_reset
+from typing import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
 from ._base import Expression
+from ._utils import scanner_reset
 
 if TYPE_CHECKING:
     from ..parser import Parser
