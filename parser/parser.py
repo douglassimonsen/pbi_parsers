@@ -1,7 +1,7 @@
 from typing import Final, Iterable
 
-from .exprs import AddSubExpression, Expression
-from .tokens import Token
+from .exprs import AddSubExpression, Expression, FunctionExpression
+from .tokens import Token, TokenType
 
 
 class Parser:
@@ -19,17 +19,18 @@ class Parser:
         :return: The token at the current index + forward.
         """
         if self.index + forward >= len(self.__tokens):
-            raise IndexError("Peek out of bounds")
+            return Token(type=TokenType.EOF, text="")
         return self.__tokens[self.index + forward]
 
     def to_ast(self) -> Expression | None:
         """
         Parse the tokens and return the root expression.
         """
+        return FunctionExpression.match(self)
         return AddSubExpression.match(self)
 
     def consume(self) -> Token:
-        """Doesn't actually pop, just returns the next token and advances the index."""
+        """Returns the next token and advances the index."""
         ret = self.__tokens[self.index]
         self.index += 1
         return ret

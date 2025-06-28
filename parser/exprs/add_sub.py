@@ -1,9 +1,10 @@
+import textwrap
 from functools import partial
 from typing import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
 from ._base import Expression
-from ._utils import or_match
+from ._utils import or_match, scanner_reset
 from .column import ColumnExpression
 from .div_mul import DivMulExpression
 from .function import FunctionExpression
@@ -42,6 +43,7 @@ class AddSubExpression(Expression):
         self.right = right
 
     @classmethod
+    @scanner_reset
     def match(cls, parser: "Parser") -> "AddSubExpression | None":
         left_term = add_sub_match(parser=parser)
         if not left_term:
@@ -50,7 +52,7 @@ class AddSubExpression(Expression):
             return None
         if parser.peek().text not in ("+", "-"):
             return None
-        operator = parser.pop()
+        operator = parser.consume()
         right_term = add_sub_match(parser=parser)
         if right_term is None:
             raise ValueError(
@@ -58,16 +60,16 @@ class AddSubExpression(Expression):
             )
         return AddSubExpression(operator=operator, left=left_term, right=right_term)
 
-    def __repr__(self, depth: int = 0) -> str:
+    def pprint(self, depth: int = 0) -> str:
         if self.operator.text == "+":
             op_str = "Add"
         else:
             op_str = "Sub"
-        left_str = self.left.pprint(depth + 1)
-        right_str = self.right.pprint(depth + 1)
+        left_str = textwrap.indent(self.left.pprint(), " " * 10)[10:]
+        right_str = textwrap.indent(self.right.pprint(), " " * 10)[10:]
         return f"""
 {op_str} (
     operator: {self.operator.text},
     left: {left_str},
     right: {right_str}
-)"""
+)""".strip()

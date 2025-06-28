@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
 from ._base import Expression
+from ._utils import scanner_reset
 
 if TYPE_CHECKING:
     from ..parser import Parser
@@ -19,6 +20,7 @@ class LiteralNumberExpression(Expression):
         return textwrap.indent(base, " " * (depth * 4))
 
     @classmethod
+    @scanner_reset
     def match(cls, parser: "Parser") -> "LiteralNumberExpression | None":
         if cls.match_tokens(parser, [TokenType.NUMBER_LITERAL]):
             value = parser.consume()
