@@ -1,30 +1,12 @@
 import textwrap
-from functools import partial
 from typing import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
 from ._base import Expression
-from ._utils import or_match, scanner_reset
-from .column import ColumnExpression
-from .function import FunctionExpression
-from .literal_number import LiteralNumberExpression
-from .literal_string import LiteralStringExpression
-from .measure import MeasureExpression
-from .parens import ParenthesesExpression
+from ._utils import scanner_reset
 
 if TYPE_CHECKING:
     from ..parser import Parser
-div_mul_match = partial(
-    or_match,
-    exprs=(
-        ColumnExpression,
-        MeasureExpression,
-        FunctionExpression,
-        LiteralStringExpression,
-        LiteralNumberExpression,
-        ParenthesesExpression,
-    ),
-)
 
 
 class DivMulExpression(Expression):
@@ -44,7 +26,11 @@ class DivMulExpression(Expression):
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "DivMulExpression | None":
-        left_term = div_mul_match(parser=parser)
+        from . import EXPRESSION_HIERARCHY, any_expression_match
+
+        skip_index = EXPRESSION_HIERARCHY.index(DivMulExpression)
+
+        left_term = any_expression_match(parser=parser, skip_first=skip_index + 1)
         operator = parser.consume()
 
         if not left_term:
@@ -52,7 +38,7 @@ class DivMulExpression(Expression):
         if operator.type != TokenType.OPERATOR or operator.text not in ("*", "/"):
             return None
 
-        right_term = div_mul_match(parser=parser)
+        right_term = any_expression_match(parser=parser, skip_first=skip_index)
         if right_term is None:
             raise ValueError(
                 f"Expected a right term after operator {operator.text}, found: {parser.peek()}"

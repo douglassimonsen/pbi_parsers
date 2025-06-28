@@ -128,7 +128,7 @@ class Scanner:
                 )
             else:
                 raise ValueError("Unterminated string literal")
-        elif self.match("//"):
+        elif self.match("//") or self.match("--"):
             while self.match(lambda c: c not in ("\n", "")):
                 pass
             return Token(
@@ -149,6 +149,7 @@ class Scanner:
             "(": TokenType.LEFT_PAREN,
             ")": TokenType.RIGHT_PAREN,
             ",": TokenType.COMMA,
+            "==": TokenType.EQUAL_SIGN,
             "=": TokenType.EQUAL_SIGN,
             ".": TokenType.PERIOD,
             "{": TokenType.LEFT_CURLY_BRACE,
@@ -159,11 +160,11 @@ class Scanner:
             ">=": TokenType.OPERATOR,
             ">": TokenType.OPERATOR,
             "||": TokenType.OPERATOR,
-            "|": TokenType.OPERATOR,
             "&&": TokenType.OPERATOR,
             "&": TokenType.OPERATOR,
             "+": TokenType.OPERATOR,
             "-": TokenType.OPERATOR,
+            "^": TokenType.OPERATOR,
             "*": TokenType.OPERATOR,
             "%": TokenType.OPERATOR,
             "/": TokenType.OPERATOR,
@@ -173,7 +174,6 @@ class Scanner:
             if self.match(char):
                 return Token(type=token_type, text=char)
 
-        breakpoint()
         raise ValueError(
             f"Unexpected character: {self.peek()} at position {self.current_position}"
         )
