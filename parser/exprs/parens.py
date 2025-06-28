@@ -24,7 +24,7 @@ Parentheses (
 
     @classmethod
     @scanner_reset
-    def match(cls, parser: "Parser") -> "LiteralNumberExpression | None":
+    def match(cls, parser: "Parser") -> "ParenthesesExpression | None":
         from . import any_expression_match
 
         if not cls.match_tokens(parser, [TokenType.LEFT_PAREN]):

@@ -1,7 +1,6 @@
 import string
-from typing import Callable
-
 from parser.tokens import Token, TokenType
+from typing import Callable
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
 
@@ -66,7 +65,9 @@ class Scanner:
                 type=TokenType.WHITESPACE,
                 text=self.source[start_pos : self.current_position],
             )
-        elif self.match("var"):
+        elif self.match(
+            lambda c: c.lower() == "var", chunk=3
+        ):  # need lambda for case-insensitivity
             return Token(
                 type=TokenType.VARIABLE,
                 text="var",

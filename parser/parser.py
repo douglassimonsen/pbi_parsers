@@ -1,6 +1,6 @@
 from typing import Final, Iterable
 
-from .exprs import AddSubExpression, Expression, FunctionExpression
+from .exprs import AddSubExpression, Expression, FunctionExpression, VariableExpression
 from .tokens import Token, TokenType
 
 
@@ -26,6 +26,7 @@ class Parser:
         """
         Parse the tokens and return the root expression.
         """
+        return VariableExpression.match(self)
         return FunctionExpression.match(self)
         return AddSubExpression.match(self)
 
