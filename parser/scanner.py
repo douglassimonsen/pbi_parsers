@@ -80,6 +80,13 @@ class Scanner:
                 text="return",
             )
 
+        elif self.match("."):
+            # must come before number literal to avoid conflict
+            return Token(
+                type=TokenType.PERIOD,
+                text=".",
+            )
+
         elif self.match(lambda c: c.isdigit() or c == "."):
             while self.match(lambda c: c.isdigit() or c == "."):
                 pass
@@ -119,7 +126,7 @@ class Scanner:
                 raise ValueError("Unterminated bracketed identifier")
 
         elif self.match('"'):
-            while self.match(lambda c: c != '"'):
+            while self.match(lambda c: c != '"') or self.match('""'):
                 pass
             if self.match('"'):
                 return Token(
@@ -151,7 +158,6 @@ class Scanner:
             ",": TokenType.COMMA,
             "==": TokenType.EQUAL_SIGN,
             "=": TokenType.EQUAL_SIGN,
-            ".": TokenType.PERIOD,
             "{": TokenType.LEFT_CURLY_BRACE,
             "}": TokenType.RIGHT_CURLY_BRACE,
             "<>": TokenType.EQUAL_SIGN,

@@ -9,6 +9,7 @@ from .concatenation import ConcatenationExpression
 from .div_mul import DivMulExpression
 from .exponent import ExponentExpression
 from .function import FunctionExpression
+from .hierarchy import HierarchyExpression
 from .identifier import IdentifierExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
@@ -45,13 +46,14 @@ EXPRESSION_HIERARCHY = (
     ExponentExpression,
     AddSubUnaryExpression,
     #
+    ReturnExpression,  # must come before VariableExpression
     VariableExpression,
     ParenthesesExpression,
-    ReturnExpression,
     #
     FunctionExpression,
     MeasureExpression,
     #
+    HierarchyExpression,
     ColumnExpression,
     IdentifierExpression,
     TableExpression,  #  Technically, it's partially ambiguous with IdentifierExpression
