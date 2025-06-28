@@ -1,4 +1,3 @@
-import textwrap
 from typing import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
@@ -15,9 +14,9 @@ class MeasureExpression(Expression):
     def __init__(self, name: Token):
         self.name = name
 
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
         base = f"Measure ({self.name.text})"
-        return textwrap.indent(base, " " * (depth * 4))
+        return base
 
     @classmethod
     @scanner_reset

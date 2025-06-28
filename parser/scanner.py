@@ -72,6 +72,13 @@ class Scanner:
                 type=TokenType.VARIABLE,
                 text="var",
             )
+        elif self.match(
+            lambda c: c.lower() == "return", chunk=6
+        ):  # need lambda for case-insensitivity
+            return Token(
+                type=TokenType.RETURN,
+                text="return",
+            )
 
         elif self.match(lambda c: c.isdigit() or c == "."):
             while self.match(lambda c: c.isdigit() or c == "."):

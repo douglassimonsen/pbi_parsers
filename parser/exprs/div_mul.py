@@ -46,10 +46,12 @@ class DivMulExpression(Expression):
     def match(cls, parser: "Parser") -> "DivMulExpression | None":
         left_term = div_mul_match(parser=parser)
         operator = parser.consume()
+
         if not left_term:
             return None
         if operator.type != TokenType.OPERATOR or operator.text not in ("*", "/"):
             return None
+
         right_term = div_mul_match(parser=parser)
         if right_term is None:
             raise ValueError(
@@ -57,7 +59,7 @@ class DivMulExpression(Expression):
             )
         return DivMulExpression(operator=operator, left=left_term, right=right_term)
 
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
         if self.operator.text == "*":
             op_str = "Mul"
         else:

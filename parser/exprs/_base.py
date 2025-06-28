@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class Expression:
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
         raise NotImplementedError("Subclasses should implement this method.")
 
     @classmethod
@@ -26,4 +26,4 @@ class Expression:
         return True
 
     def __repr__(self) -> str:
-        return self.pprint(depth=0)
+        return self.pprint()

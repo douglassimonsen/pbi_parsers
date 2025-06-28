@@ -17,7 +17,7 @@ class FunctionExpression(Expression):
         self.name = name
         self.args = args
 
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
         args = ",\n".join(arg.pprint() for arg in self.args)
         args = textwrap.indent(args, " " * 10)[10:]
         base = f"""
@@ -25,7 +25,7 @@ Function (
     name: {self.name.text},
     args: {args}
 )        """.strip()
-        return textwrap.indent(base, " " * (depth * 4))
+        return base
 
     @classmethod
     @scanner_reset

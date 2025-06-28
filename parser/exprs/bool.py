@@ -51,10 +51,12 @@ class BoolExpression(Expression):
     def match(cls, parser: "Parser") -> "BoolExpression | None":
         left_term = bool_match(parser=parser)
         operator = parser.consume()
+
         if not left_term:
             return None
         if operator.type != TokenType.EQUAL_SIGN:
             return None
+
         right_term = bool_match(parser=parser)
         if right_term is None:
             raise ValueError(
@@ -62,7 +64,7 @@ class BoolExpression(Expression):
             )
         return BoolExpression(operator=operator, left=left_term, right=right_term)
 
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
         left_str = textwrap.indent(self.left.pprint(), " " * 10)[10:]
         right_str = textwrap.indent(self.right.pprint(), " " * 10)[10:]
         return f"""
