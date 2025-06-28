@@ -1,7 +1,15 @@
 from typing import Final, Iterable
 
-from .exprs import AddSubExpression, Expression, FunctionExpression, VariableExpression
+from .exprs import (
+    AddSubExpression,
+    BoolExpression,
+    Expression,
+    FunctionExpression,
+    VariableExpression,
+)
 from .tokens import Token, TokenType
+
+EOF_TOKEN = Token(type=TokenType.EOF, text="")
 
 
 class Parser:
@@ -19,7 +27,7 @@ class Parser:
         :return: The token at the current index + forward.
         """
         if self.index + forward >= len(self.__tokens):
-            return Token(type=TokenType.EOF, text="")
+            return EOF_TOKEN
         return self.__tokens[self.index + forward]
 
     def to_ast(self) -> Expression | None:
@@ -27,11 +35,14 @@ class Parser:
         Parse the tokens and return the root expression.
         """
         return VariableExpression.match(self)
+        return BoolExpression.match(self)
         return FunctionExpression.match(self)
         return AddSubExpression.match(self)
 
     def consume(self) -> Token:
         """Returns the next token and advances the index."""
+        if self.index >= len(self.__tokens):
+            return EOF_TOKEN
         ret = self.__tokens[self.index]
         self.index += 1
         return ret
