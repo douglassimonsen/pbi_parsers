@@ -48,13 +48,13 @@ class AddSubExpression(Expression):
     @scanner_reset
     def match(cls, parser: "Parser") -> "AddSubExpression | None":
         left_term = add_sub_match(parser=parser)
+        operator = parser.consume()
         if not left_term:
             return None
         if not cls.match_tokens(parser, [TokenType.OPERATOR]):
             return None
-        if parser.peek().text not in ("+", "-"):
+        if operator.type != TokenType.OPERATOR or operator.text not in ("+", "-"):
             return None
-        operator = parser.consume()
         right_term = add_sub_match(parser=parser)
         if right_term is None:
             raise ValueError(
