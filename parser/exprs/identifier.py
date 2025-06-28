@@ -16,9 +16,7 @@ class IdentifierExpression(Expression):
 
     def pprint(self) -> str:
         base = f"""
-Identifier (
-    {self.name.text}
-)""".strip()
+Identifier ({self.name.text})""".strip()
         return base
 
     @classmethod
