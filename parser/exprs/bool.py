@@ -35,7 +35,7 @@ class BoolExpression(Expression):
 
         if not left_term:
             return None
-        if operator.type != TokenType.EQUAL_SIGN:
+        if operator.type not in (TokenType.EQUAL_SIGN, TokenType.COMPARISON_OPERATOR):
             return None
 
         right_term = any_expression_match(parser=parser, skip_first=skip_index)

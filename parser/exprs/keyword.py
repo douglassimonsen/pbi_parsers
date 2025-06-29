@@ -25,4 +25,11 @@ Keyword ({self.name.text})""".strip()
         name = parser.consume()
         if name.type != TokenType.KEYWORD:
             return None
+        if name.text.lower() in ("true", "false"):
+            p1 = parser.peek()
+            p2 = parser.peek(1)
+            if p1.type == TokenType.LEFT_PAREN and p2.type == TokenType.RIGHT_PAREN:
+                # This is a special case for boolean keywords with parentheses. IDK why microsoft made TRUE() a function too
+                parser.consume()
+                parser.consume()
         return KeywordExpression(name=name)
