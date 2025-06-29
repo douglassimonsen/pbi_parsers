@@ -4,17 +4,18 @@ from typing import TYPE_CHECKING
 from ..tokens import Token, TokenType
 from ._base import Expression
 from ._utils import scanner_reset
+from .none import NoneExpression
 
 if TYPE_CHECKING:
     from ..parser import Parser
 
 
 class FunctionExpression(Expression):
-    name: Token
+    name_parts: list[Token]  # necessary for function names with periods
     args: list[Expression]
 
-    def __init__(self, name: Token, args: list[Expression]):
-        self.name = name
+    def __init__(self, name_parts: list[Token], args: list[Expression]):
+        self.name_parts = name_parts
         self.args = args
 
     def pprint(self) -> str:
@@ -22,7 +23,7 @@ class FunctionExpression(Expression):
         args = textwrap.indent(args, " " * 10)[10:]
         base = f"""
 Function (
-    name: {self.name.text},
+    name: {"".join(x.text for x in self.name_parts)},
     args: {args}
 )        """.strip()
         return base
@@ -32,21 +33,29 @@ Function (
     def match(cls, parser: "Parser") -> "FunctionExpression | None":
         from . import any_expression_match
 
-        if not cls.match_tokens(
-            parser, [TokenType.UNQUOTED_IDENTIFIER, TokenType.LEFT_PAREN]
-        ):
+        args: list[Expression] = []
+
+        name_parts = [parser.consume()]
+        if name_parts[0].type != TokenType.UNQUOTED_IDENTIFIER:
             return None
 
-        args: list[Expression] = []
-        name, _paren = (
-            parser.consume(),
-            parser.consume(),
-        )  # Skip the function name and left parenthesis
+        while parser.peek().type != TokenType.LEFT_PAREN:
+            period, name = parser.consume(), parser.consume()
+            if name.type != TokenType.UNQUOTED_IDENTIFIER:
+                return None
+            if period.type != TokenType.PERIOD:
+                return None
+            name_parts.extend((period, name))
+
+        if parser.consume().type != TokenType.LEFT_PAREN:
+            return None
+
         while not cls.match_tokens(parser, [TokenType.RIGHT_PAREN]):
-            # We gotta handle operators next :(
             arg = any_expression_match(parser)
             if arg is not None:
                 args.append(arg)
+            elif parser.peek().type == TokenType.COMMA:
+                args.append(NoneExpression())
             else:
                 raise ValueError(
                     f"Unexpected token sequence: {parser.peek()}, {parser.index}"
@@ -55,5 +64,5 @@ Function (
             if not cls.match_tokens(parser, [TokenType.RIGHT_PAREN]):
                 assert parser.consume().type == TokenType.COMMA
         _right_paren = parser.consume()
-        ret = FunctionExpression(name=name, args=args)
+        ret = FunctionExpression(name_parts=name_parts, args=args)
         return ret
