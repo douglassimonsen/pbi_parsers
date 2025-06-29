@@ -3,6 +3,7 @@ from parser.tokens import Token, TokenType
 from typing import Callable
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
+KEYWORDS = ("TRUE", "FALSE")
 
 
 class Scanner:
@@ -57,6 +58,21 @@ class Scanner:
 
         if self.peek() == "":
             return Token(type=TokenType.EOF, text="")
+
+        if self.match(
+            lambda c: c.lower() == "in ", chunk=3
+        ):  # I have found no case where "in" is not followed by a space and this allows us to avoid matching with the "int" fubction
+            return Token(
+                type=TokenType.IN,
+                text="in",
+            )
+
+        for keyword in KEYWORDS:
+            if self.match(lambda c: c.lower() == keyword.lower(), chunk=len(keyword)):
+                return Token(
+                    type=TokenType.KEYWORD,
+                    text=keyword,
+                )
 
         if self.match(lambda c: c in WHITESPACE):
             while self.match(lambda c: c in WHITESPACE):

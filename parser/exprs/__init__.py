@@ -12,6 +12,8 @@ from .exponent import ExponentExpression
 from .function import FunctionExpression
 from .hierarchy import HierarchyExpression
 from .identifier import IdentifierExpression
+from .ins import InExpression
+from .keyword import KeywordExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .logical import LogicalExpression
@@ -28,18 +30,20 @@ if TYPE_CHECKING:
 # Column expression must be before table and identifier expressions to ensure correct precedence.
 # identifer must be before table to ensure correct precedence.
 
-# operator precedence (https://learn.microsoft.com/en-us/dax/dax-operator-reference):
-# ^ (note: the docs disagree, but I think this is correct)
+# operator precedence (https://learn.microsoft.com/en-us/dax/dax-operator-reference). This is from tightest to loosest:
 # unary +,-
+# ^
 # *,/
 # +,-
 # &
 # &&, || (note: this is not specified in the docs, so I'm guessing here)
 # =, ==, <>, <, <=, >, >=
+# IN (note: this is not specified in the docs, so I'm guessing here)
 # NOT
 
 EXPRESSION_HIERARCHY = (
     # Operators, must come first
+    InExpression,
     BoolExpression,
     LogicalExpression,
     ConcatenationExpression,
@@ -58,6 +62,7 @@ EXPRESSION_HIERARCHY = (
     #
     HierarchyExpression,
     ColumnExpression,
+    KeywordExpression,
     IdentifierExpression,
     TableExpression,  #  Technically, it's partially ambiguous with IdentifierExpression
     #
