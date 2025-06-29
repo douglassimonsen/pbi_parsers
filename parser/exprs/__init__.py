@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from ._base import Expression
 from .add_sub import AddSubExpression
 from .add_sub_unary import AddSubUnaryExpression
+from .array import ArrayExpression
 from .bool import BoolExpression
 from .column import ColumnExpression
 from .concatenation import ConcatenationExpression
@@ -38,6 +39,7 @@ if TYPE_CHECKING:
 # NOT
 
 EXPRESSION_HIERARCHY = (
+    # Operators, must come first
     BoolExpression,
     LogicalExpression,
     ConcatenationExpression,
@@ -45,10 +47,11 @@ EXPRESSION_HIERARCHY = (
     DivMulExpression,
     ExponentExpression,
     AddSubUnaryExpression,
-    #
+    # For performance, the ones with a defined prefix
     ReturnExpression,  # must come before VariableExpression
     VariableExpression,
     ParenthesesExpression,
+    ArrayExpression,
     #
     FunctionExpression,
     MeasureExpression,
