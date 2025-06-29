@@ -18,6 +18,7 @@ from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .logical import LogicalExpression
 from .measure import MeasureExpression
+from .none import NoneExpression
 from .parens import ParenthesesExpression
 from .returns import ReturnExpression
 from .table import TableExpression
@@ -85,13 +86,26 @@ def any_expression_match(parser: "Parser", skip_first: int = 0) -> Expression | 
 
 __all__ = [
     "AddSubExpression",
+    "AddSubUnaryExpression",
+    "ArrayExpression",
+    "BoolExpression",
     "ColumnExpression",
+    "ConcatenationExpression",
     "DivMulExpression",
+    "ExponentExpression",
     "Expression",
     "FunctionExpression",
+    "HierarchyExpression",
+    "IdentifierExpression",
+    "InExpression",
+    "KeywordExpression",
     "LiteralNumberExpression",
     "LiteralStringExpression",
+    "LogicalExpression",
     "MeasureExpression",
+    "NoneExpression",
+    "ParenthesesExpression",
     "ReturnExpression",
+    "TableExpression",
     "VariableExpression",
 ]
