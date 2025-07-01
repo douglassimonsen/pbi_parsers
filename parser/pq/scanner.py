@@ -4,7 +4,7 @@ from ..base import BaseScanner
 from .tokens import Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
-KEYWORDS = ("null", "true", "false", "type", "text", "")
+KEYWORDS = ("null", "true", "false")
 
 
 class Scanner(BaseScanner):
@@ -21,10 +21,21 @@ class Scanner(BaseScanner):
                     text=keyword,
                 )
 
+        if self.match("int64.type", case_insensitive=True):
+            return Token(
+                type=TokenType.TYPE_LITERAL,
+                text="int64.type",
+            )
+
+        if self.match("type", case_insensitive=True):
+            return Token(type=TokenType.TYPE, text="type")
+
         if self.match("let", case_insensitive=True):
             return Token(type=TokenType.LET, text="let")
 
-        if self.match("in", case_insensitive=True):
+        if self.match(
+            "in ", case_insensitive=True
+        ):  # must include space to avoid matching "int64"
             return Token(type=TokenType.IN, text="in")
 
         if self.match('#"'):

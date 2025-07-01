@@ -23,6 +23,9 @@ Identifier ({self.name.text})""".strip()
     @scanner_reset
     def match(cls, parser: "Parser") -> "IdentifierExpression | None":
         name = parser.consume()
-        if name.type != TokenType.UNQUOTED_IDENTIFIER:
+        if name.type not in (
+            TokenType.QUOTED_IDENTIFER,
+            TokenType.UNQUOTED_IDENTIFIER,
+        ):
             return None
         return IdentifierExpression(name=name)

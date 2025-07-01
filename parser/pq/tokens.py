@@ -28,6 +28,8 @@ class TokenType(BaseTokenType):
     SINGLE_QUOTED_IDENTIFIER = 24
     HASH_IDENTIFIER = 25
     IN = 26
+    TYPE = 27
+    TYPE_LITERAL = 28
 
 
 class Token(BaseToken):
