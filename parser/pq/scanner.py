@@ -27,16 +27,16 @@ class Scanner(BaseScanner):
                 text="int64.type",
             )
 
-        if self.match("type", case_insensitive=True):
-            return Token(type=TokenType.TYPE, text="type")
-
-        if self.match("let", case_insensitive=True):
-            return Token(type=TokenType.LET, text="let")
-
-        if self.match(
-            "in ", case_insensitive=True
-        ):  # must include space to avoid matching "int64"
-            return Token(type=TokenType.IN, text="in")
+        for name, token_type in (
+            ("type", TokenType.TYPE),
+            ("let", TokenType.LET),
+            ("in ", TokenType.IN),
+            ("if", TokenType.IF),
+            ("then", TokenType.THEN),
+            ("else", TokenType.ELSE),
+        ):
+            if self.match(name, case_insensitive=True):
+                return Token(type=token_type, text=name)
 
         if self.match('#"'):
             while self.match(lambda c: c != '"') or self.match('""'):
@@ -50,6 +50,17 @@ class Scanner(BaseScanner):
                 raise ValueError(
                     f"Unterminated string literal at positions: {start_pos} to {self.current_position}"
                 )
+
+        elif self.match("["):
+            while self.match(lambda c: c != "]"):
+                pass
+            if self.match("]"):
+                return Token(
+                    type=TokenType.BRACKETED_IDENTIFIER,
+                    text=self.source[start_pos : self.current_position],
+                )
+            else:
+                raise ValueError("Unterminated bracketed identifier")
 
         elif self.match('"'):
             while self.match(lambda c: c != '"') or self.match('""'):
@@ -118,6 +129,7 @@ class Scanner(BaseScanner):
 
         fixed_character_mapping = {
             "=>": TokenType.LAMBDA_ARROW,
+            ">=": TokenType.COMPARISON_OPERATOR,
             "=": TokenType.EQUAL_SIGN,
             "(": TokenType.LEFT_PAREN,
             ")": TokenType.RIGHT_PAREN,
@@ -131,6 +143,7 @@ class Scanner(BaseScanner):
             "-": TokenType.MINUS_SIGN,
             "*": TokenType.MULTIPLY_SIGN,
             "/": TokenType.DIVIDE_SIGN,
+            ">": TokenType.COMPARISON_OPERATOR,
         }
 
         for char, token_type in fixed_character_mapping.items():
