@@ -52,17 +52,6 @@ class Scanner(BaseScanner):
                     f"Unterminated string literal at positions: {start_pos} to {self.current_position}"
                 )
 
-        elif self.match("["):
-            while self.match(lambda c: c != "]"):
-                pass
-            if self.match("]"):
-                return Token(
-                    type=TokenType.BRACKETED_IDENTIFIER,
-                    text=self.source[start_pos : self.current_position],
-                )
-            else:
-                raise ValueError("Unterminated bracketed identifier")
-
         elif self.match('"'):
             while self.match(lambda c: c != '"') or self.match('""'):
                 pass
