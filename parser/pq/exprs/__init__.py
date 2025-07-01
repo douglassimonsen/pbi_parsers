@@ -5,6 +5,7 @@ from ._base import Expression
 from .array import ArrayExpression
 from .column import ColumnExpression
 from .comparison import ComparisonExpression
+from .each import EachExpression
 from .function import FunctionExpression
 from .identifier import IdentifierExpression
 from .if_expr import IfExpression
@@ -22,6 +23,7 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     ComparisonExpression,
     #
     ColumnExpression,
+    EachExpression,
     ArrayExpression,
     FunctionExpression,
     VariableExpression,  # must be before IdentifierExpression
