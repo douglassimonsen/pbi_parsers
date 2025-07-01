@@ -5,8 +5,8 @@ from .exprs import (
     AddSubExpression,
     AddSubUnaryExpression,
     ArrayExpression,
-    BoolExpression,
     ColumnExpression,
+    ComparisonExpression,
     ConcatenationExpression,
     DivMulExpression,
     ExponentExpression,
@@ -44,7 +44,7 @@ class Formatter:
                 return cls.format_add_sub_unary(expr)
             case ArrayExpression():
                 return cls.format_array(expr)
-            case BoolExpression():
+            case ComparisonExpression():
                 return cls.format_bool(expr)
             case ColumnExpression():
                 return cls.format_column(expr)
@@ -108,7 +108,7 @@ class Formatter:
 """
 
     @classmethod
-    def format_bool(cls, expr: BoolExpression) -> str:
+    def format_comparison(cls, expr: ComparisonExpression) -> str:
         left = cls.format_helper(expr.left)
         right = cls.format_helper(expr.right)
         return f"""{left} {expr.operator.text} {right}"""
