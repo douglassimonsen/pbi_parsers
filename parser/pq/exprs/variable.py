@@ -33,14 +33,15 @@ Variable (
     def match(cls, parser: "Parser") -> "VariableExpression | None":
         from . import any_expression_match
 
-        if not cls.match_tokens(
-            parser,
-            [TokenType.UNQUOTED_IDENTIFIER, TokenType.EQUAL_SIGN],
+        var_name = parser.consume()
+        _equal_sign = parser.consume()
+        if (
+            var_name.type
+            not in (TokenType.QUOTED_IDENTIFER, TokenType.UNQUOTED_IDENTIFIER)
+            or _equal_sign.type != TokenType.EQUAL_SIGN
         ):
             return None
 
-        var_name = parser.consume()
-        _equal_sign = parser.consume()
         statement = any_expression_match(parser)
         if statement is None:
             raise ValueError(

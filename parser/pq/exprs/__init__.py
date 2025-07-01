@@ -1,16 +1,22 @@
 from typing import TYPE_CHECKING
 
 from ._base import Expression
+from .array import ArrayExpression
 from .function import FunctionExpression
+from .identifier import IdentifierExpression
 from .keyword import KeywordExpression
 from .literal_string import LiteralStringExpression
+from .type_expr import TypingExpression
 from .variable import VariableExpression
 
 if TYPE_CHECKING:
     from ..parser import Parser
 EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
+    ArrayExpression,
     FunctionExpression,
+    IdentifierExpression,
     LiteralStringExpression,
+    TypingExpression,  # must be before KeywordExpression
     KeywordExpression,
     VariableExpression,
 )
