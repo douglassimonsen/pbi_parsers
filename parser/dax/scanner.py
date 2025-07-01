@@ -1,5 +1,3 @@
-import string
-
 from ..base import BaseScanner
 from .tokens import Token, TokenType
 
@@ -57,7 +55,9 @@ class Scanner(BaseScanner):
                 text=".",
             )
 
-        elif self.match(lambda c: c.isdigit() or c == "."):
+        elif self.match(
+            lambda c: c.isdigit() or c == "."
+        ):  # must come before unquoted identifier to avoid conflict
             while self.match(lambda c: c.isdigit() or c == "."):
                 pass
             return Token(
@@ -65,8 +65,8 @@ class Scanner(BaseScanner):
                 text=self.source[start_pos : self.current_position],
             )
 
-        elif self.match(lambda c: c in string.ascii_letters + string.digits + "_"):
-            while self.match(lambda c: c in string.ascii_letters + string.digits + "_"):
+        elif self.match(lambda c: c.isalnum() or c == "_"):
+            while self.match(lambda c: c.isalnum() or c == "_"):
                 pass
             return Token(
                 type=TokenType.UNQUOTED_IDENTIFIER,
@@ -122,7 +122,7 @@ class Scanner(BaseScanner):
                 self.advance()
             raise ValueError("Unterminated multi-line comment")
 
-        fix_character_mapping = {
+        fixed_character_mapping = {
             "(": TokenType.LEFT_PAREN,
             ")": TokenType.RIGHT_PAREN,
             ",": TokenType.COMMA,
@@ -146,7 +146,7 @@ class Scanner(BaseScanner):
             "/": TokenType.OPERATOR,
         }
 
-        for char, token_type in fix_character_mapping.items():
+        for char, token_type in fixed_character_mapping.items():
             if self.match(char):
                 return Token(type=token_type, text=char)
 

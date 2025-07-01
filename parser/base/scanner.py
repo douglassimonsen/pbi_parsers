@@ -67,8 +67,8 @@ class BaseScanner:
         return self.source[self.current_position :]
 
     def advance(self, chunk: int = 1) -> None:
-        if self.current_position > 10000:
-            raise ValueError("Current position exceeds 10000 characters.")
+        if self.current_position > 1_000_000:
+            raise ValueError("Current position exceeds 1,000,000 characters.")
         self.current_position += chunk
 
     def scan(self) -> list[BaseToken]:
