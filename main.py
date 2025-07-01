@@ -1,7 +1,5 @@
 import json
-from parser.parser import Parser
-from parser.scanner import Scanner
-from parser.tokens import TokenType
+from parser.dax import Parser, Scanner, TokenType
 
 statements = json.load(open("dax.json"))
 
