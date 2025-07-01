@@ -42,7 +42,7 @@ Table (
 
     @classmethod
     @scanner_reset
-    def match(cls, parser: "Parser") -> "FunctionExpression | None":
+    def match(cls, parser: "Parser") -> "RowExpression | None":
         from . import any_expression_match
 
         table = parser.consume()

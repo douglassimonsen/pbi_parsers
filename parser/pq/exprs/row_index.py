@@ -25,7 +25,7 @@ Indexer (
 
     @classmethod
     @scanner_reset
-    def match(cls, parser: "Parser") -> "FunctionExpression | None":
+    def match(cls, parser: "Parser") -> "RowIndexExpression | None":
         from . import any_expression_match
 
         if parser.consume().type != TokenType.LEFT_BRACKET:
