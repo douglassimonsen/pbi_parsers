@@ -1,67 +1,24 @@
 import string
-from typing import Callable
 
+from ..base import BaseScanner
 from .tokens import Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
 KEYWORDS = ("TRUE", "FALSE", "ASC", "DESC")
 
 
-class Scanner:
-    source: str
-    start_position: int
-    current_position: int
-    tokens: list[Token]
-
-    def __init__(self, source: str):
-        self.source = source
-        self.start_position = 0
-        self.current_position = 0
-        self.tokens = []
-
-    def match(self, matcher: Callable[[str], bool] | str, chunk: int = 1) -> bool:
-        if isinstance(matcher, str):
-            chunk = len(matcher)
-
-        string_chunk = self.peek(chunk)
-        if string_chunk == "":
-            return False
-
-        if isinstance(matcher, str):
-            if string_chunk == matcher:
-                self.advance(chunk)
-                return True
-            return False
-
-        else:
-            if matcher(string_chunk):
-                self.advance(chunk)
-                return True
-            return False
-
-    def peek(self, chunk: int = 1) -> str:
-        return (
-            self.source[self.current_position : self.current_position + chunk]
-            if self.current_position < len(self.source)
-            else str()
-        )
-
-    def remaining(self) -> str:
-        return self.source[self.current_position :]
-
-    def advance(self, chunk: int = 1) -> None:
-        if self.current_position > 10000:
-            raise ValueError("Current position exceeds 10000 characters.")
-        self.current_position += chunk
+class Scanner(BaseScanner):
+    def scan(self) -> list[Token]:  # type: ignore[override]
+        return super().scan()  # type: ignore[override]
 
     def scan_helper(self) -> Token:
-        start_pos = self.current_position
+        start_pos: int = self.current_position
 
         if self.peek() == "":
             return Token(type=TokenType.EOF, text="")
 
         if self.match(
-            lambda c: c.lower() == "in ", chunk=3
+            "in ", case_insensitive=True
         ):  # I have found no case where "in" is not followed by a space and this allows us to avoid matching with the "int" fubction
             return Token(
                 type=TokenType.IN,
@@ -69,7 +26,7 @@ class Scanner:
             )
 
         for keyword in KEYWORDS:
-            if self.match(lambda c: c.lower() == keyword.lower(), chunk=len(keyword)):
+            if self.match(keyword, case_insensitive=True):
                 return Token(
                     type=TokenType.KEYWORD,
                     text=keyword,
@@ -82,16 +39,12 @@ class Scanner:
                 type=TokenType.WHITESPACE,
                 text=self.source[start_pos : self.current_position],
             )
-        elif self.match(
-            lambda c: c.lower() == "var", chunk=3
-        ):  # need lambda for case-insensitivity
+        elif self.match("var", case_insensitive=True):
             return Token(
                 type=TokenType.VARIABLE,
                 text="var",
             )
-        elif self.match(
-            lambda c: c.lower() == "return", chunk=6
-        ):  # need lambda for case-insensitivity
+        elif self.match("return", case_insensitive=True):
             return Token(
                 type=TokenType.RETURN,
                 text="return",
@@ -200,11 +153,3 @@ class Scanner:
         raise ValueError(
             f"Unexpected character: {self.peek()} at position {self.current_position}"
         )
-
-    def scan(self) -> list[Token]:
-        while not self.at_end():
-            self.tokens.append(self.scan_helper())
-        return self.tokens
-
-    def at_end(self) -> bool:
-        return self.current_position >= len(self.source)
