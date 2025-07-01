@@ -1,4 +1,9 @@
+from typing import TYPE_CHECKING
+
 from ._base import Expression
+
+if TYPE_CHECKING:
+    from ..parser import Parser
 
 
 class NoneExpression(Expression):

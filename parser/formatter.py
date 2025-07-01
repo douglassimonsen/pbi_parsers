@@ -1,7 +1,6 @@
 import string
 import textwrap
 
-from .expressions import Expression
 from .exprs import (
     AddSubExpression,
     AddSubUnaryExpression,
@@ -11,6 +10,7 @@ from .exprs import (
     ConcatenationExpression,
     DivMulExpression,
     ExponentExpression,
+    Expression,
     FunctionExpression,
     HierarchyExpression,
     IdentifierExpression,
@@ -161,7 +161,7 @@ class Formatter:
         if table.startswith("'") and all(
             c in string.ascii_letters + string.digits + "_" for c in table[1:-1]
         ):
-            table = hierarchtabley_name[1:-1]
+            table = table[1:-1]
         return f"{table}{expr.column.text}.{expr.level.text}"
 
     @classmethod
