@@ -4,19 +4,20 @@ from typing import TYPE_CHECKING
 from ..tokens import Token, TokenType
 from ._base import Expression
 from ._utils import scanner_reset
+from .builtin import BuiltinExpression
 
 if TYPE_CHECKING:
     from ..parser import Parser
 
 
 class RecordExpression(Expression):
-    args: list[tuple[Token, Expression]]
+    args: list[tuple[Expression, Expression]]
 
-    def __init__(self, args: list[tuple[Token, Expression]]):
+    def __init__(self, args: list[tuple[Expression, Expression]]):
         self.args = args
 
     def pprint(self) -> str:
-        args = ",\n".join(f"{arg[0].text}: {arg[1].pprint()}" for arg in self.args)
+        args = ",\n".join(f"{arg[0].pprint()}: {arg[1].pprint()}" for arg in self.args)
         args = textwrap.indent(args, " " * 4)[4:]
         base = f"""
 Record (
@@ -34,8 +35,8 @@ Record (
             return None
 
         while parser.peek().type != TokenType.RIGHT_BRACKET:
-            name = parser.consume()
-            if name.type != TokenType.UNQUOTED_IDENTIFIER:
+            name = BuiltinExpression.match(parser)
+            if name is None:
                 return None
 
             if parser.consume().type != TokenType.EQUAL_SIGN:
