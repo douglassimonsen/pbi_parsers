@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class ParenthesesExpression(Expression):
-    inner_statement: Expression
+    inner_statement: Expression | None
 
     def __init__(self, inner_statement: Expression):
         self.inner_statement = inner_statement
@@ -30,11 +30,8 @@ Parentheses (
             return None
 
         parser.consume()
+        # when paired with an arrow expression, the value may not exist
         value = any_expression_match(parser)
-        if value is None:
-            raise ValueError(
-                "ParenthesesExpression.match called without valid inner expression"
-            )
         if parser.consume().type != TokenType.RIGHT_PAREN:
             return None
         return ParenthesesExpression(inner_statement=value)
