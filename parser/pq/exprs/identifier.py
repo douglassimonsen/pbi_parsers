@@ -62,8 +62,9 @@ Bracketed Identifier ({' '.join(part.text for part in self.name_parts)})""".stri
         if _left_bracket.type != TokenType.LEFT_BRACKET:
             return None
         name_parts = []
-        while (
-            parser.peek().type in NAME_PARTS
+        while parser.peek().type in (
+            *NAME_PARTS,
+            TokenType.PERIOD,
         ):  # there are cases where keywords can be used as identifiers
             name = parser.consume()
             name_parts.append(name)
