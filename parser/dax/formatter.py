@@ -45,7 +45,7 @@ class Formatter:
             case ArrayExpression():
                 return cls.format_array(expr)
             case ComparisonExpression():
-                return cls.format_bool(expr)
+                return cls.format_comparison(expr)
             case ColumnExpression():
                 return cls.format_column(expr)
             case ConcatenationExpression():

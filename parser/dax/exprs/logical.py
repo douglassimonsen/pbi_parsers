@@ -35,7 +35,10 @@ class LogicalExpression(Expression):
 
         if not left_term:
             return None
-        if operator.type != TokenType.OPERATOR or operator.text not in ("&&", "||"):
+        if operator.type not in (
+            TokenType.DOUBLE_PIPE_OPERATOR,
+            TokenType.DOUBLE_AMPERSAND_OPERATOR,
+        ):
             return None
 
         right_term: Expression | None = any_expression_match(

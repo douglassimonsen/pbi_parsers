@@ -35,7 +35,7 @@ class DivMulExpression(Expression):
 
         if not left_term:
             return None
-        if operator.type != TokenType.OPERATOR or operator.text not in ("*", "/"):
+        if operator.type not in (TokenType.MULTIPLY_SIGN, TokenType.DIVIDE_SIGN):
             return None
 
         right_term = any_expression_match(parser=parser, skip_first=skip_index)
@@ -46,10 +46,10 @@ class DivMulExpression(Expression):
         return DivMulExpression(operator=operator, left=left_term, right=right_term)
 
     def pprint(self) -> str:
-        if self.operator.text == "*":
-            op_str = "Mul"
-        else:
-            op_str = "Div"
+        op_str = {
+            TokenType.MULTIPLY_SIGN: "Mul",
+            TokenType.DIVIDE_SIGN: "Div",
+        }[self.operator.type]
         left_str = textwrap.indent(self.left.pprint(), " " * 10)[10:]
         right_str = textwrap.indent(self.right.pprint(), " " * 10)[10:]
         return f"""

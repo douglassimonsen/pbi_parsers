@@ -1,8 +1,7 @@
 from ..base import BaseScanner
-from .tokens import Token, TokenType
+from .tokens import KEYWORD_MAPPING, Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
-KEYWORDS = ("TRUE", "FALSE", "ASC", "DESC")
 
 
 class Scanner(BaseScanner):
@@ -23,10 +22,10 @@ class Scanner(BaseScanner):
                 text="in",
             )
 
-        for keyword in KEYWORDS:
+        for keyword, token_type in KEYWORD_MAPPING.items():
             if self.match(keyword, case_insensitive=True):
                 return Token(
-                    type=TokenType.KEYWORD,
+                    type=token_type,
                     text=keyword,
                 )
 
@@ -130,20 +129,20 @@ class Scanner(BaseScanner):
             "=": TokenType.EQUAL_SIGN,
             "{": TokenType.LEFT_CURLY_BRACE,
             "}": TokenType.RIGHT_CURLY_BRACE,
-            "<>": TokenType.EQUAL_SIGN,
+            "<>": TokenType.NOT_EQUAL_SIGN,
             "<=": TokenType.COMPARISON_OPERATOR,
             "<": TokenType.COMPARISON_OPERATOR,
             ">=": TokenType.COMPARISON_OPERATOR,
             ">": TokenType.COMPARISON_OPERATOR,
-            "||": TokenType.OPERATOR,
-            "&&": TokenType.OPERATOR,
-            "&": TokenType.OPERATOR,
-            "+": TokenType.OPERATOR,
-            "-": TokenType.OPERATOR,
-            "^": TokenType.OPERATOR,
-            "*": TokenType.OPERATOR,
-            "%": TokenType.OPERATOR,
-            "/": TokenType.OPERATOR,
+            "||": TokenType.DOUBLE_PIPE_OPERATOR,
+            "&&": TokenType.DOUBLE_AMPERSAND_OPERATOR,
+            "&": TokenType.AMPERSAND_OPERATOR,
+            "+": TokenType.PLUS_SIGN,
+            "-": TokenType.MINUS_SIGN,
+            "^": TokenType.EXPONENTIATION_SIGN,
+            "*": TokenType.MULTIPLY_SIGN,
+            "%": TokenType.MODULUS_SIGN,
+            "/": TokenType.DIVIDE_SIGN,
         }
 
         for char, token_type in fixed_character_mapping.items():
