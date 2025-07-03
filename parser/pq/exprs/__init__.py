@@ -4,7 +4,6 @@ from ._base import Expression
 from .add_sub import AddSubExpression
 from .add_sub_unary import AddSubUnaryExpression
 from .array import ArrayExpression
-from .builtin import BuiltinExpression
 from .column import ColumnExpression
 from .comparison import ComparisonExpression
 from .concatenation import ConcatenationExpression
@@ -26,8 +25,18 @@ from .variable import VariableExpression
 
 if TYPE_CHECKING:
     from ..parser import Parser
+
+"""
+operators > all
+
+operators:
+if, comparison, concatenation, add/sub, div/mul, meta, add/sub, unary
+
+variable > identifier
+row > identifier
+typing > keyword
+"""
 EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
-    # operators must come first
     IfExpression,
     ComparisonExpression,
     ConcatenationExpression,
@@ -42,16 +51,15 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     EachExpression,
     ArrayExpression,
     FunctionExpression,
-    VariableExpression,  # must be before IdentifierExpression
-    RowExpression,  # must be before IdentifierExpression
-    BuiltinExpression,
+    VariableExpression,
+    RowExpression,
+    TypingExpression,
+    KeywordExpression,
     IdentifierExpression,
     RecordExpression,
     BracketedIdentifierExpression,
     LiteralStringExpression,
     LiteralNumberExpression,
-    TypingExpression,  # must be before KeywordExpression
-    KeywordExpression,
 )
 
 

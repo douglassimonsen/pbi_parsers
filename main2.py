@@ -16,4 +16,3 @@ for j, statement in enumerate(statements):
         print(i, token)
     p = Parser(tokens)
     a = p.to_ast()
-    exit()
