@@ -5,6 +5,7 @@ from ..tokens import Token, TokenType
 from ._base import Expression
 from ._utils import scanner_reset
 from .builtin import BuiltinExpression
+from .identifier import IdentifierExpression
 
 if TYPE_CHECKING:
     from ..parser import Parser
@@ -37,7 +38,9 @@ Record (
         while parser.peek().type != TokenType.RIGHT_BRACKET:
             name = BuiltinExpression.match(parser)
             if name is None:
-                return None
+                name = IdentifierExpression.match(parser)
+                if name is None:
+                    return None
 
             if parser.consume().type != TokenType.EQUAL_SIGN:
                 return None
