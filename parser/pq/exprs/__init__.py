@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from ._base import Expression
 from .add_sub import AddSubExpression
 from .add_sub_unary import AddSubUnaryExpression
+from .and_or_expr import AndOrExpression
 from .array import ArrayExpression
 from .arrow import ArrowExpression
 from .column import ColumnExpression
@@ -18,10 +19,10 @@ from .keyword import KeywordExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .meta import MetaExpression
-from .and_or_expr import AndOrExpression
 from .parens import ParenthesesExpression
 from .record import RecordExpression
 from .row import RowExpression
+from .row_index import RowIndexExpression
 from .statement import StatementExpression
 from .try_expr import TryExpression
 from .type_expr import TypingExpression
@@ -38,6 +39,7 @@ if, comparison, concatenation, add/sub, div/mul, meta, add/sub, unary
 
 variable > identifier
 row > identifier
+function > identifier
 typing > keyword
 arrow > parentheses
 """
@@ -50,6 +52,7 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     DivMulExpression,
     MetaExpression,
     AddSubUnaryExpression,
+    RowIndexExpression,
     #
     ArrowExpression,
     TryExpression,
