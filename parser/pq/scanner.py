@@ -22,11 +22,12 @@ class Scanner(BaseScanner):
                 )
 
         # TODO: handle as a builtin?
-        if self.match("int64.type", case_insensitive=True):
-            return Token(
-                type=TokenType.TYPE_LITERAL,
-                text="int64.type",
-            )
+        for c in ("int64.type", "currency.type"):
+            if self.match(c, case_insensitive=True):
+                return Token(
+                    type=TokenType.TYPE_LITERAL,
+                    text=c,
+                )
 
         for name, token_type in (
             ("type", TokenType.TYPE),
@@ -144,6 +145,7 @@ class Scanner(BaseScanner):
             "*": TokenType.MULTIPLY_SIGN,
             "/": TokenType.DIVIDE_SIGN,
             ">": TokenType.COMPARISON_OPERATOR,
+            "&": TokenType.CONCATENATION_OPERATOR,
         }
 
         for char, token_type in fixed_character_mapping.items():

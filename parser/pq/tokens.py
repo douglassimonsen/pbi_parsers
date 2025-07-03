@@ -36,6 +36,7 @@ class TokenType(BaseTokenType):
     THEN = 33
     EACH = 34
     META = 35
+    CONCATENATION_OPERATOR = 36
 
 
 class Token(BaseToken):

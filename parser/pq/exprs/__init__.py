@@ -1,13 +1,17 @@
 from typing import TYPE_CHECKING
 
 from ._base import Expression
+from .add_sub import AddSubExpression
+from .add_sub_unary import AddSubUnaryExpression
 from .array import ArrayExpression
 from .builtin import BuiltinExpression
 from .column import ColumnExpression
 from .comparison import ComparisonExpression
+from .concatenation import ConcatenationExpression
+from .div_mul import DivMulExpression
 from .each import EachExpression
 from .function import FunctionExpression
-from .identifier import IdentifierExpression
+from .identifier import BracketedIdentifierExpression, IdentifierExpression
 from .if_expr import IfExpression
 from .keyword import KeywordExpression
 from .literal_number import LiteralNumberExpression
@@ -26,7 +30,11 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     # operators must come first
     IfExpression,
     ComparisonExpression,
+    ConcatenationExpression,
+    AddSubExpression,
+    DivMulExpression,
     MetaExpression,
+    AddSubUnaryExpression,
     #
     ParenthesesExpression,
     StatementExpression,
@@ -38,7 +46,8 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     RowExpression,  # must be before IdentifierExpression
     BuiltinExpression,
     IdentifierExpression,
-    RecordExpression,  # maybe needs to be after IdentifierExpression?
+    RecordExpression,
+    BracketedIdentifierExpression,
     LiteralStringExpression,
     LiteralNumberExpression,
     TypingExpression,  # must be before KeywordExpression
