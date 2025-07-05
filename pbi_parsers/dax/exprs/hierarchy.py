@@ -22,9 +22,9 @@ class HierarchyExpression(Expression):
     def pprint(self) -> str:
         return f"""
 Hierarchy (
-    {self.table.text},
-    {self.column.text}
-    {self.level.text}
+    table: {self.table.text},
+    column: {self.column.text},
+    level: {self.level.text}
 )""".strip()
 
     @classmethod

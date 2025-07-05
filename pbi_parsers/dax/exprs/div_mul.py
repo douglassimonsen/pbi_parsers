@@ -52,7 +52,6 @@ class DivMulExpression(Expression):
         right_str = textwrap.indent(self.right.pprint(), " " * 10)[10:]
         return f"""
 {op_str} (
-    operator: {self.operator.text},
     left: {left_str},
     right: {right_str}
 )""".strip()
