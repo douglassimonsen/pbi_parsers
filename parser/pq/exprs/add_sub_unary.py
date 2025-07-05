@@ -1,48 +1,47 @@
 import textwrap
 from typing import TYPE_CHECKING
 
-from ..tokens import Token, TokenType
+from parser.pq.tokens import Token, TokenType
+
 from ._base import Expression
 from ._utils import scanner_reset
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.pq.parser import Parser
 
 
 class AddSubUnaryExpression(Expression):
-    """
-    Represents an addition or subtraction expression.
-    """
+    """Represents an addition or subtraction expression."""
 
     operator: Token
     number: Expression
 
-    def __init__(self, operator: Token, number: Expression):
+    def __init__(self, operator: Token, number: Expression) -> None:
         self.operator = operator
         self.number = number
 
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "AddSubUnaryExpression | None":
-        from . import EXPRESSION_HIERARCHY, any_expression_match
+        from . import EXPRESSION_HIERARCHY, any_expression_match  # noqa: PLC0415
 
         skip_index = EXPRESSION_HIERARCHY.index(
-            AddSubUnaryExpression
+            AddSubUnaryExpression,
         )  # intentionally inclusive of self to allow +-++- chains
 
         operator = parser.consume()
 
-        if operator.type not in (TokenType.PLUS_SIGN, TokenType.MINUS_SIGN):
+        if operator.tok_type not in {TokenType.PLUS_SIGN, TokenType.MINUS_SIGN}:
             return None
 
         # Handle chained +-++-+ prefixes
         number: Expression | None = any_expression_match(
-            parser=parser, skip_first=skip_index
+            parser=parser,
+            skip_first=skip_index,
         )
         if number is None:
-            raise ValueError(
-                f"Expected a right term after operator {operator.text}, found: {parser.peek()}"
-            )
+            msg = f"Expected a number after operator {operator.text}, found: {parser.peek()}"
+            raise ValueError(msg)
         return AddSubUnaryExpression(operator=operator, number=number)
 
     def pprint(self) -> str:

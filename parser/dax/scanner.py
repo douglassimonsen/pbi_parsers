@@ -1,31 +1,34 @@
-from ..base import BaseScanner
+from parser.base import BaseScanner
+
 from .tokens import KEYWORD_MAPPING, Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
 
 
 class Scanner(BaseScanner):
-    def scan(self) -> list[Token]:  # type: ignore[override]
+    def scan(self) -> tuple[Token]:
         return super().scan()  # type: ignore[override]
 
     def scan_helper(self) -> Token:
         start_pos: int = self.current_position
 
-        if self.peek() == "":
-            return Token(type=TokenType.EOF, text="")
+        if not self.peek():
+            return Token(tok_type=TokenType.EOF, text="")
 
         if self.match(
-            "in ", case_insensitive=True
-        ):  # I have found no case where "in" is not followed by a space and this allows us to avoid matching with the "int" fubction
+            "in ",
+            case_insensitive=True,
+        ):  # I have found no case where "in" is not followed by a space
+            # this allows us to avoid matching with the "int" function
             return Token(
-                type=TokenType.IN,
+                tok_type=TokenType.IN,
                 text="in",
             )
 
         for keyword, token_type in KEYWORD_MAPPING.items():
             if self.match(keyword, case_insensitive=True):
                 return Token(
-                    type=token_type,
+                    tok_type=token_type,
                     text=keyword,
                 )
 
@@ -33,93 +36,93 @@ class Scanner(BaseScanner):
             while self.match(lambda c: c in WHITESPACE):
                 pass
             return Token(
-                type=TokenType.WHITESPACE,
+                tok_type=TokenType.WHITESPACE,
                 text=self.source[start_pos : self.current_position],
             )
-        elif self.match("var", case_insensitive=True):
+        if self.match("var", case_insensitive=True):
             return Token(
-                type=TokenType.VARIABLE,
+                tok_type=TokenType.VARIABLE,
                 text="var",
             )
-        elif self.match("return", case_insensitive=True):
+        if self.match("return", case_insensitive=True):
             return Token(
-                type=TokenType.RETURN,
+                tok_type=TokenType.RETURN,
                 text="return",
             )
 
-        elif self.match("."):
+        if self.match("."):
             # must come before number literal to avoid conflict
             return Token(
-                type=TokenType.PERIOD,
+                tok_type=TokenType.PERIOD,
                 text=".",
             )
 
-        elif self.match(
-            lambda c: c.isdigit() or c == "."
+        if self.match(
+            lambda c: c.isdigit() or c == ".",
         ):  # must come before unquoted identifier to avoid conflict
             while self.match(lambda c: c.isdigit() or c == "."):
                 pass
             return Token(
-                type=TokenType.NUMBER_LITERAL,
+                tok_type=TokenType.NUMBER_LITERAL,
                 text=self.source[start_pos : self.current_position],
             )
 
-        elif self.match(lambda c: c.isalnum() or c == "_"):
+        if self.match(lambda c: c.isalnum() or c == "_"):
             while self.match(lambda c: c.isalnum() or c == "_"):
                 pass
             return Token(
-                type=TokenType.UNQUOTED_IDENTIFIER,
+                tok_type=TokenType.UNQUOTED_IDENTIFIER,
                 text=self.source[start_pos : self.current_position],
             )
 
-        elif self.match("'"):
+        if self.match("'"):
             while self.match(lambda c: c != "'"):
                 pass
             if self.match("'"):
                 return Token(
-                    type=TokenType.SINGLE_QUOTED_IDENTIFIER,
+                    tok_type=TokenType.SINGLE_QUOTED_IDENTIFIER,
                     text=self.source[start_pos : self.current_position],
                 )
-            else:
-                raise ValueError("Unterminated string literal")
+            msg = "Unterminated string literal"
+            raise ValueError(msg)
 
-        elif self.match("["):
+        if self.match("["):
             while self.match(lambda c: c != "]"):
                 pass
             if self.match("]"):
                 return Token(
-                    type=TokenType.BRACKETED_IDENTIFIER,
+                    tok_type=TokenType.BRACKETED_IDENTIFIER,
                     text=self.source[start_pos : self.current_position],
                 )
-            else:
-                raise ValueError("Unterminated bracketed identifier")
+            msg = "Unterminated bracketed identifier"
+            raise ValueError(msg)
 
-        elif self.match('"'):
+        if self.match('"'):
             while self.match(lambda c: c != '"') or self.match('""'):
                 pass
             if self.match('"'):
                 return Token(
-                    type=TokenType.STRING_LITERAL,
+                    tok_type=TokenType.STRING_LITERAL,
                     text=self.source[start_pos : self.current_position],
                 )
-            else:
-                raise ValueError("Unterminated string literal")
-        elif self.match("//") or self.match("--"):
-            while self.match(lambda c: c not in ("\n", "")):
+            msg = "Unterminated string literal"
+            raise ValueError(msg)
+        if self.match("//") or self.match("--"):
+            while self.match(lambda c: c not in {"\n", ""}):
                 pass
             return Token(
-                type=TokenType.SINGLE_LINE_COMMENT,
+                tok_type=TokenType.SINGLE_LINE_COMMENT,
                 text=self.source[start_pos : self.current_position],
             )
-        elif self.match("/*"):
+        if self.match("/*"):
             if self.match("*") and self.match("/"):
                 return Token(
-                    type=TokenType.MULTI_LINE_COMMENT,
+                    tok_type=TokenType.MULTI_LINE_COMMENT,
                     text=self.source[start_pos : self.current_position],
                 )
-            else:
-                self.advance()
-            raise ValueError("Unterminated multi-line comment")
+            self.advance()
+            msg = "Unterminated multi-line comment"
+            raise ValueError(msg)
 
         fixed_character_mapping = {
             "(": TokenType.LEFT_PAREN,
@@ -147,8 +150,7 @@ class Scanner(BaseScanner):
 
         for char, token_type in fixed_character_mapping.items():
             if self.match(char):
-                return Token(type=token_type, text=char)
+                return Token(tok_type=token_type, text=char)
 
-        raise ValueError(
-            f"Unexpected character: {self.peek()} at position {self.current_position}"
-        )
+        msg = f"Unexpected character: {self.peek()} at position {self.current_position}"
+        raise ValueError(msg)

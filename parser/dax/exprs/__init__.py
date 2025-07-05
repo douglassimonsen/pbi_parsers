@@ -4,8 +4,8 @@ from ._base import Expression
 from .add_sub import AddSubExpression
 from .add_sub_unary import AddSubUnaryExpression
 from .array import ArrayExpression
-from .comparison import ComparisonExpression
 from .column import ColumnExpression
+from .comparison import ComparisonExpression
 from .concatenation import ConcatenationExpression
 from .div_mul import DivMulExpression
 from .exponent import ExponentExpression
@@ -25,7 +25,7 @@ from .table import TableExpression
 from .variable import VariableExpression
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.dax.parser import Parser
 
 # Bool/AddSub/DivMul must be in this order to ensure correct precedence. They must also be above all other expressions.
 # Column expression must be before table and identifier expressions to ensure correct precedence.
@@ -57,25 +57,21 @@ EXPRESSION_HIERARCHY = (
     VariableExpression,
     ParenthesesExpression,
     ArrayExpression,
-    #
     FunctionExpression,
     MeasureExpression,
-    #
     HierarchyExpression,
     ColumnExpression,
     KeywordExpression,
     IdentifierExpression,
-    TableExpression,  #  Technically, it's partially ambiguous with IdentifierExpression
-    #
+    TableExpression,  # Technically, it's partially ambiguous with IdentifierExpression
     LiteralStringExpression,
     LiteralNumberExpression,
 )
 
 
-# TODO: add ability to block expressions so the add/mult/bool hierarchy can use this as well
 def any_expression_match(parser: "Parser", skip_first: int = 0) -> Expression | None:
-    """
-    Matches any expression type.
+    """Matches any expression type.
+
     This is a utility function to simplify the matching process in other expressions.
     """
     for expr in EXPRESSION_HIERARCHY[skip_first:]:
@@ -88,8 +84,8 @@ __all__ = [
     "AddSubExpression",
     "AddSubUnaryExpression",
     "ArrayExpression",
-    "ComparisonExpression",
     "ColumnExpression",
+    "ComparisonExpression",
     "ConcatenationExpression",
     "DivMulExpression",
     "ExponentExpression",

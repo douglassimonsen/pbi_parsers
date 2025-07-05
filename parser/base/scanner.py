@@ -1,6 +1,8 @@
-from typing import Callable
+from collections.abc import Callable
 
 from .tokens import BaseToken
+
+MAX_POSITION = 1_000_000
 
 
 class BaseScanner:
@@ -9,14 +11,15 @@ class BaseScanner:
     current_position: int
     tokens: list[BaseToken]
 
-    def __init__(self, source: str):
+    def __init__(self, source: str) -> None:
         self.source = source
         self.start_position = 0
         self.current_position = 0
         self.tokens = []
 
     def scan_helper(self) -> BaseToken:
-        raise NotImplementedError("Subclasses should implement match_tokens method.")
+        msg = "Subclasses should implement match_tokens method."
+        raise NotImplementedError(msg)
 
     def match(
         self,
@@ -25,20 +28,21 @@ class BaseScanner:
         *,
         case_insensitive: bool = True,
     ) -> bool:
-        """
-        Match a string or a callable matcher against the current position in the source.
+        """Match a string or a callable matcher against the current position in the source.
 
         Args:
         ----
-            matcher (Callable[[str], bool] | str): A string to match or a callable that takes a string and returns a boolean.
+            matcher (Callable[[str], bool] | str): A string to match or a callable that
+                takes a string and returns a boolean.
             chunk (int): The number of characters to check from the current position.
             case_insensitive (bool): If True, perform a case-insensitive match __only__ for strings.
+
         """
         if isinstance(matcher, str):
             chunk = len(matcher)
 
         string_chunk = self.peek(chunk)
-        if string_chunk == "":
+        if not string_chunk:
             return False
 
         if isinstance(matcher, str):
@@ -50,31 +54,31 @@ class BaseScanner:
                 return True
             return False
 
-        else:
-            if matcher(string_chunk):
-                self.advance(chunk)
-                return True
-            return False
+        if matcher(string_chunk):
+            self.advance(chunk)
+            return True
+        return False
 
     def peek(self, chunk: int = 1) -> str:
         return (
             self.source[self.current_position : self.current_position + chunk]
             if self.current_position < len(self.source)
-            else str()
+            else ""
         )
 
     def remaining(self) -> str:
         return self.source[self.current_position :]
 
     def advance(self, chunk: int = 1) -> None:
-        if self.current_position > 1_000_000:
-            raise ValueError("Current position exceeds 1,000,000 characters.")
+        if self.current_position > MAX_POSITION:
+            msg = f"Current position exceeds {MAX_POSITION:,} characters."
+            raise ValueError(msg)
         self.current_position += chunk
 
-    def scan(self) -> list[BaseToken]:
+    def scan(self) -> tuple[BaseToken, ...]:
         while not self.at_end():
             self.tokens.append(self.scan_helper())
-        return self.tokens
+        return tuple(self.tokens)
 
     def at_end(self) -> bool:
         return self.current_position >= len(self.source)

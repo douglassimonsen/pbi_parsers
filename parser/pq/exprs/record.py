@@ -1,44 +1,44 @@
 import textwrap
 from typing import TYPE_CHECKING
 
-from ..tokens import Token, TokenType
+from parser.pq.tokens import TokenType
+
 from ._base import Expression
 from ._utils import scanner_reset
 from .identifier import IdentifierExpression
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.pq.parser import Parser
 
 
 class RecordExpression(Expression):
-    args: list[tuple[Expression, Expression]]
+    args: list[tuple[IdentifierExpression, Expression]]
 
-    def __init__(self, args: list[tuple[Expression, Expression]]):
+    def __init__(self, args: list[tuple[IdentifierExpression, Expression]]) -> None:
         self.args = args
 
     def pprint(self) -> str:
         args = ",\n".join(f"{arg[0].pprint()}: {arg[1].pprint()}" for arg in self.args)
         args = textwrap.indent(args, " " * 4)[4:]
-        base = f"""
+        return f"""
 Record (
     {args}
 )        """.strip()
-        return base
 
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "RecordExpression | None":
-        from . import any_expression_match
+        from . import any_expression_match  # noqa: PLC0415
 
-        args: list[tuple[Token, Expression]] = []
-        if parser.consume().type != TokenType.LEFT_BRACKET:
+        args: list[tuple[IdentifierExpression, Expression]] = []
+        if parser.consume().tok_type != TokenType.LEFT_BRACKET:
             return None
 
-        while parser.peek().type != TokenType.RIGHT_BRACKET:
+        while parser.peek().tok_type != TokenType.RIGHT_BRACKET:
             name = IdentifierExpression.match(parser)
             if name is None:
                 return None
-            if parser.consume().type != TokenType.EQUAL_SIGN:
+            if parser.consume().tok_type != TokenType.EQUAL_SIGN:
                 return None
 
             value = any_expression_match(parser)
@@ -47,7 +47,7 @@ Record (
 
             args.append((name, value))
 
-            if parser.peek().type == TokenType.COMMA:
+            if parser.peek().tok_type == TokenType.COMMA:
                 parser.consume()
 
         parser.consume()  # consume the right bracket

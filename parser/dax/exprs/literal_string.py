@@ -1,22 +1,22 @@
 from typing import TYPE_CHECKING
 
-from ..tokens import Token, TokenType
+from parser.dax.tokens import Token, TokenType
+
 from ._base import Expression
 from ._utils import scanner_reset
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.dax.parser import Parser
 
 
 class LiteralStringExpression(Expression):
     value: Token
 
-    def __init__(self, value: Token):
+    def __init__(self, value: Token) -> None:
         self.value = value
 
     def pprint(self) -> str:
-        base = f"String ({self.value.text})"
-        return base
+        return f"String ({self.value.text})"
 
     @classmethod
     @scanner_reset
@@ -24,3 +24,4 @@ class LiteralStringExpression(Expression):
         if cls.match_tokens(parser, [TokenType.STRING_LITERAL]):
             value = parser.consume()
             return LiteralStringExpression(value=value)
+        return None

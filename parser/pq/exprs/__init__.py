@@ -1,4 +1,3 @@
-from ast import Try
 from typing import TYPE_CHECKING
 
 from ._base import Expression
@@ -33,7 +32,7 @@ from .type_expr import TypingExpression
 from .variable import VariableExpression
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.pq.parser import Parser
 
 """
 operators > all
@@ -59,7 +58,7 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     NegationExpression,
     AddSubUnaryExpression,
     RowIndexExpression,
-    #
+    # above are left-associative operators
     NotExpression,
     EllipsisExpression,
     ArrowExpression,
@@ -83,8 +82,8 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
 
 
 def any_expression_match(parser: "Parser", skip_first: int = 0) -> Expression | None:
-    """
-    Matches any expression type.
+    """Matches any expression type.
+
     This is a utility function to simplify the matching process in other expressions.
     """
     for expr in EXPRESSION_HIERARCHY[skip_first:]:
