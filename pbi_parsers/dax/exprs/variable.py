@@ -19,7 +19,7 @@ class VariableExpression(Expression):
         self.statement = statement
 
     def pprint(self) -> str:
-        statement = textwrap.indent(self.statement.pprint(), " " * 17).lstrip()
+        statement = textwrap.indent(self.statement.pprint(), " " * 15).lstrip()
         return f"""
 Variable (
     name: {self.var_name.text},

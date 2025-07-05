@@ -49,7 +49,7 @@ class AddSubExpression(Expression):
     def pprint(self) -> str:
         op_str = "Add" if self.operator.text == "+" else "Sub"
         left_str = textwrap.indent(self.left.pprint(), " " * 10).lstrip()
-        right_str = textwrap.indent(self.right.pprint(), " " * 10).lstrip()
+        right_str = textwrap.indent(self.right.pprint(), " " * 11).lstrip()
         return f"""
 {op_str} (
     left: {left_str},

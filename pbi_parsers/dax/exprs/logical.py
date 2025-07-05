@@ -50,11 +50,10 @@ class LogicalExpression(Expression):
         return LogicalExpression(operator=operator, left=left_term, right=right_term)
 
     def pprint(self) -> str:
-        op_str = "And" if self.operator.text == "&&" else "Or"
         left_str = textwrap.indent(self.left.pprint(), " " * 10).lstrip()
         right_str = textwrap.indent(self.right.pprint(), " " * 10).lstrip()
         return f"""
-{op_str} (
+Logical (
     operator: {self.operator.text},
     left: {left_str},
     right: {right_str}
