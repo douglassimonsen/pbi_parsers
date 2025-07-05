@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from parser.pq import Parser, Scanner, TokenType
+from pbi_parsers.pq import Parser, Scanner, TokenType
 
 with Path("pqs.json").open(encoding="utf-8") as f:
     statements = json.load(f)
