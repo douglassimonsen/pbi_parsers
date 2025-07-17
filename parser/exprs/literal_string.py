@@ -21,5 +21,5 @@ class LiteralStringExpression(Expression):
     @classmethod
     def match(cls, parser: "Parser") -> "LiteralStringExpression | None":
         if cls.match_tokens(parser, [TokenType.STRING_LITERAL]):
-            value = parser.pop()
+            value = parser.consume()
             return LiteralStringExpression(value=value)
