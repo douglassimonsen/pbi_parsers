@@ -5,7 +5,6 @@ from ..tokens import TokenType
 from ._base import Expression
 from ._utils import scanner_reset
 from .identifier import IdentifierExpression
-from .row_index import RowIndexExpression
 
 if TYPE_CHECKING:
     from ..parser import Parser
@@ -14,30 +13,21 @@ if TYPE_CHECKING:
 class RowExpression(Expression):
     table: IdentifierExpression
     indexer: Expression
-    row_indexer: RowIndexExpression | None
 
     def __init__(
         self,
         table: IdentifierExpression,
         indexer: Expression,
-        row_indexer: RowIndexExpression | None = None,
     ):
         self.table = table
         self.indexer = indexer
-        self.row_indexer = row_indexer
 
     def pprint(self) -> str:
         indexer = textwrap.indent(self.indexer.pprint(), " " * 4)[4:]
-        row_indexer = (
-            textwrap.indent(self.row_indexer.pprint(), " " * 4)[4:]
-            if self.row_indexer
-            else "N/A"
-        )
         base = f"""
 Table (
     name: {self.table.pprint()},
     indexer: {indexer}
-    row_indexer: {row_indexer}
 )        """.strip()
         return base
 
@@ -57,5 +47,4 @@ Table (
         if parser.consume().type != TokenType.RIGHT_CURLY_BRACE:
             return None
 
-        row_indexer = RowIndexExpression.match(parser)
-        return RowExpression(table=table, indexer=indexer, row_indexer=row_indexer)
+        return RowExpression(table=table, indexer=indexer)

@@ -7,6 +7,13 @@ from ._utils import scanner_reset
 if TYPE_CHECKING:
     from ..parser import Parser
 
+NAME_PARTS = (
+    TokenType.QUOTED_IDENTIFER,
+    TokenType.UNQUOTED_IDENTIFIER,
+    TokenType.HASH_IDENTIFIER,
+    *TEXT_TOKENS,
+)
+
 
 class IdentifierExpression(Expression):
     name_parts: list[Token]
@@ -24,18 +31,13 @@ class IdentifierExpression(Expression):
     def match(cls, parser: "Parser") -> "IdentifierExpression | None":
         name_parts = [parser.consume()]
         if (
-            name_parts[0].type
-            not in (
-                TokenType.QUOTED_IDENTIFER,
-                TokenType.UNQUOTED_IDENTIFIER,
-                *TEXT_TOKENS,
-            )
+            name_parts[0].type not in NAME_PARTS
         ):  # TEXT_TOKENS are used to allow keywords to be used as identifiers. This requires identifiers to be matched after keywords.
             return None
 
         while parser.peek().type == TokenType.PERIOD:
             _period, name = parser.consume(), parser.consume()
-            if name.type != TokenType.UNQUOTED_IDENTIFIER:
+            if name.type not in NAME_PARTS:
                 return None
             name_parts.append(name)
 

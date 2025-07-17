@@ -10,23 +10,35 @@ if TYPE_CHECKING:
 
 
 class RowIndexExpression(Expression):
+    table: Expression
     indexer: Expression
 
-    def __init__(self, indexer: Expression):
+    def __init__(self, table: Expression, indexer: Expression):
+        self.table = table
         self.indexer = indexer
 
     def pprint(self) -> str:
+        table = textwrap.indent(self.table.pprint(), " " * 4)[4:]
         indexer = textwrap.indent(self.indexer.pprint(), " " * 4)[4:]
         base = f"""
 Indexer (
-    expr: {indexer}
+    table: {table},
+    indexer: {indexer}
 )        """.strip()
         return base
 
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "RowIndexExpression | None":
-        from . import any_expression_match
+        from . import EXPRESSION_HIERARCHY, any_expression_match
+
+        skip_index = EXPRESSION_HIERARCHY.index(
+            RowIndexExpression
+        )  # intentionally inclusive of self to allow +-++- chains
+
+        table = any_expression_match(parser, skip_first=skip_index + 1)
+        if table is None:
+            return None
 
         if parser.consume().type != TokenType.LEFT_BRACKET:
             return None
@@ -38,4 +50,4 @@ Indexer (
         if parser.consume().type != TokenType.RIGHT_BRACKET:
             return None
 
-        return RowIndexExpression(indexer=indexer)
+        return RowIndexExpression(table=table, indexer=indexer)
