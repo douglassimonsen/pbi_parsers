@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING, Any
 
+from ..base.tokens import TextSlice
 from .tokens import Token, TokenType
 
 if TYPE_CHECKING:
     from .exprs import Expression
 
-EOF_TOKEN = Token(tok_type=TokenType.EOF, text="")
+EOF_TOKEN = Token()
 
 
 class Parser:

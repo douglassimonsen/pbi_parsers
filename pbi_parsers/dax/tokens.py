@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum, auto
 
 from pbi_parsers.base import BaseToken
@@ -48,9 +49,6 @@ KEYWORD_MAPPING = {
 }
 
 
+@dataclass
 class Token(BaseToken):
-    tok_type: TokenType
-    text: str
-
-    def __init__(self, tok_type: TokenType, text: str) -> None:
-        super().__init__(tok_type, text)
+    tok_type: TokenType = TokenType.EOF

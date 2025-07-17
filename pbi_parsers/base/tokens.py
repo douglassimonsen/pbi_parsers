@@ -1,14 +1,27 @@
+from dataclasses import dataclass, field
 from typing import Any
 
 
-class BaseToken:
-    tok_type: Any
-    text: str
+@dataclass
+class TextSlice:
+    text: str = ""
+    start: int = -1
+    end: int = -1
 
-    def __init__(self, tok_type: Any, text: str) -> None:
-        self.tok_type = tok_type
-        self.text = text
+    def get_text(self) -> str:
+        """Returns the text slice."""
+        return self.text[self.start : self.end]
 
     def __repr__(self) -> str:
-        pretty_text = self.text.replace("\n", "\\n").replace("\r", "\\r")
+        """Returns a string representation of the TextSlice."""
+        return f"TextSlice(text='{self.get_text()}', start={self.start}, end={self.end})"
+
+
+@dataclass
+class BaseToken:
+    tok_type: Any
+    text: TextSlice = field(default_factory=TextSlice)
+
+    def __repr__(self) -> str:
+        pretty_text = self.text.get_text().replace("\n", "\\n").replace("\r", "\\r")
         return f"Token(type={self.tok_type.name}, text='{pretty_text}')"

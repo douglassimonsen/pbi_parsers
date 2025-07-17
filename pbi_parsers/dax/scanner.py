@@ -1,5 +1,6 @@
 from pbi_parsers.base import BaseScanner
 
+from ..base.tokens import TextSlice
 from .tokens import KEYWORD_MAPPING, Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
@@ -9,11 +10,20 @@ class Scanner(BaseScanner):
     def scan(self) -> tuple[Token]:
         return super().scan()  # type: ignore[override]
 
+    def create_token(self, tok_type: TokenType, start_pos: int) -> Token:
+        """Create a new token with the given type and text."""
+        text_slice = TextSlice(
+            text=self.source,
+            start=start_pos,
+            end=self.current_position,
+        )
+        return Token(tok_type=tok_type, text=text_slice)
+
     def scan_helper(self) -> Token:
         start_pos: int = self.current_position
 
         if not self.peek():
-            return Token(tok_type=TokenType.EOF, text="")
+            return Token(tok_type=TokenType.EOF, text=TextSlice())
 
         if self.match(
             "in ",
@@ -35,26 +45,25 @@ class Scanner(BaseScanner):
         if self.match(lambda c: c in WHITESPACE):
             while self.match(lambda c: c in WHITESPACE):
                 pass
-            return Token(
+            return self.create_token(
                 tok_type=TokenType.WHITESPACE,
-                text=self.source[start_pos : self.current_position],
+                start_pos=start_pos,
             )
         if self.match("var", case_insensitive=True):
-            return Token(
+            return self.create_token(
                 tok_type=TokenType.VARIABLE,
-                text="var",
+                start_pos=start_pos,
             )
         if self.match("return", case_insensitive=True):
-            return Token(
+            return self.create_token(
                 tok_type=TokenType.RETURN,
-                text="return",
+                start_pos=start_pos,
             )
-
         if self.match("."):
             # must come before number literal to avoid conflict
-            return Token(
+            return self.create_token(
                 tok_type=TokenType.PERIOD,
-                text=".",
+                start_pos=start_pos,
             )
 
         if self.match(
@@ -62,26 +71,26 @@ class Scanner(BaseScanner):
         ):  # must come before unquoted identifier to avoid conflict
             while self.match(lambda c: c.isdigit() or c == "."):
                 pass
-            return Token(
+            return self.create_token(
                 tok_type=TokenType.NUMBER_LITERAL,
-                text=self.source[start_pos : self.current_position],
+                start_pos=start_pos,
             )
 
         if self.match(lambda c: c.isalnum() or c == "_"):
             while self.match(lambda c: c.isalnum() or c == "_"):
                 pass
-            return Token(
+            return self.create_token(
                 tok_type=TokenType.UNQUOTED_IDENTIFIER,
-                text=self.source[start_pos : self.current_position],
+                start_pos=start_pos,
             )
 
         if self.match("'"):
             while self.match(lambda c: c != "'"):
                 pass
             if self.match("'"):
-                return Token(
+                return self.create_token(
                     tok_type=TokenType.SINGLE_QUOTED_IDENTIFIER,
-                    text=self.source[start_pos : self.current_position],
+                    start_pos=start_pos,
                 )
             msg = "Unterminated string literal"
             raise ValueError(msg)
@@ -90,9 +99,9 @@ class Scanner(BaseScanner):
             while self.match(lambda c: c != "]"):
                 pass
             if self.match("]"):
-                return Token(
+                return self.create_token(
                     tok_type=TokenType.BRACKETED_IDENTIFIER,
-                    text=self.source[start_pos : self.current_position],
+                    start_pos=start_pos,
                 )
             msg = "Unterminated bracketed identifier"
             raise ValueError(msg)
@@ -101,24 +110,24 @@ class Scanner(BaseScanner):
             while self.match(lambda c: c != '"') or self.match('""'):
                 pass
             if self.match('"'):
-                return Token(
+                return self.create_token(
                     tok_type=TokenType.STRING_LITERAL,
-                    text=self.source[start_pos : self.current_position],
+                    start_pos=start_pos,
                 )
             msg = "Unterminated string literal"
             raise ValueError(msg)
         if self.match("//") or self.match("--"):
             while self.match(lambda c: c not in {"\n", ""}):
                 pass
-            return Token(
+            return self.create_token(
                 tok_type=TokenType.SINGLE_LINE_COMMENT,
-                text=self.source[start_pos : self.current_position],
+                start_pos=start_pos,
             )
         if self.match("/*"):
             if self.match("*") and self.match("/"):
-                return Token(
+                return self.create_token(
                     tok_type=TokenType.MULTI_LINE_COMMENT,
-                    text=self.source[start_pos : self.current_position],
+                    start_pos=start_pos,
                 )
             self.advance()
             msg = "Unterminated multi-line comment"
@@ -150,7 +159,7 @@ class Scanner(BaseScanner):
 
         for char, token_type in fixed_character_mapping.items():
             if self.match(char):
-                return Token(tok_type=token_type, text=char)
+                return self.create_token(tok_type=token_type, start_pos=start_pos)
 
         msg = f"Unexpected character: {self.peek()} at position {self.current_position}"
         raise ValueError(msg)
