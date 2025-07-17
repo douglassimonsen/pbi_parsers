@@ -26,7 +26,7 @@ Record (
 
     @classmethod
     @scanner_reset
-    def match(cls, parser: "Parser") -> "FunctionExpression | None":
+    def match(cls, parser: "Parser") -> "RecordExpression | None":
         from . import any_expression_match
 
         args: list[tuple[Token, Expression]] = []

@@ -1,4 +1,3 @@
-from ast import IfExp
 from typing import TYPE_CHECKING
 
 from ._base import Expression
@@ -14,6 +13,7 @@ from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .record import RecordExpression
 from .row import RowExpression
+from .statement import StatementExpression
 from .type_expr import TypingExpression
 from .variable import VariableExpression
 
@@ -24,6 +24,7 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     IfExpression,
     ComparisonExpression,
     #
+    StatementExpression,
     ColumnExpression,
     EachExpression,
     ArrayExpression,

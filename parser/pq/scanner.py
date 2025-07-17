@@ -30,7 +30,6 @@ class Scanner(BaseScanner):
         for name, token_type in (
             ("type", TokenType.TYPE),
             ("let", TokenType.LET),
-            ("in ", TokenType.IN),
             ("if", TokenType.IF),
             ("then", TokenType.THEN),
             ("else", TokenType.ELSE),
@@ -38,6 +37,15 @@ class Scanner(BaseScanner):
         ):
             if self.match(name, case_insensitive=True):
                 return Token(type=token_type, text=name)
+
+        if self.match(
+            lambda c: c[:2].lower() == "in" and c[2] in WHITESPACE,
+            chunk=3,
+        ):  # needed to handle case where "in" is followed by a newline, etc
+            return Token(
+                type=TokenType.IN,
+                text="in",
+            )
 
         if self.match('#"'):
             while self.match(lambda c: c != '"') or self.match('""'):
