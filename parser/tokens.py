@@ -23,6 +23,7 @@ class TokenType(Enum):
     RETURN = 19
     IN = 20
     KEYWORD = 21
+    COMPARISON_OPERATOR = 22
 
 
 class Token:

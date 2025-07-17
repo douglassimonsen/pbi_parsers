@@ -44,8 +44,8 @@ if TYPE_CHECKING:
 EXPRESSION_HIERARCHY = (
     # Operators, must come first
     InExpression,
-    BoolExpression,
     LogicalExpression,
+    BoolExpression,
     ConcatenationExpression,
     AddSubExpression,
     DivMulExpression,
