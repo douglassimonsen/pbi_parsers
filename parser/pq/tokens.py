@@ -31,7 +31,6 @@ class TokenType(BaseTokenType):
     TYPE = 27
     TYPE_LITERAL = 28
     COMPARISON_OPERATOR = 29
-    BRACKETED_IDENTIFIER = 30
     IF = 31
     ELSE = 32
     THEN = 33

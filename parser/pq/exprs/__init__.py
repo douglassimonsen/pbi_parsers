@@ -12,6 +12,8 @@ from .if_expr import IfExpression
 from .keyword import KeywordExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
+from .record import RecordExpression
+from .row import RowExpression
 from .type_expr import TypingExpression
 from .variable import VariableExpression
 
@@ -27,7 +29,9 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     ArrayExpression,
     FunctionExpression,
     VariableExpression,  # must be before IdentifierExpression
+    RowExpression,  # must be before IdentifierExpression
     IdentifierExpression,
+    RecordExpression,  # maybe needs to be after IdentifierExpression?
     LiteralStringExpression,
     LiteralNumberExpression,
     TypingExpression,  # must be before KeywordExpression

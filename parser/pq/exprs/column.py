@@ -21,6 +21,17 @@ class ColumnExpression(Expression):
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "ColumnExpression | None":
-        if cls.match_tokens(parser, [TokenType.BRACKETED_IDENTIFIER]):
-            name = parser.consume()
+        if cls.match_tokens(
+            parser,
+            [
+                TokenType.LEFT_BRACKET,
+                TokenType.UNQUOTED_IDENTIFIER,
+                TokenType.RIGHT_BRACKET,
+            ],
+        ):
+            _l_bracket, name, _r_bracket = (
+                parser.consume(),
+                parser.consume(),
+                parser.consume(),
+            )
             return ColumnExpression(name=name)
