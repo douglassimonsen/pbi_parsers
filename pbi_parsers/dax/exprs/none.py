@@ -21,10 +21,10 @@ class NoneExpression(Expression):
         """Returns a list of child expressions."""
         return []
 
-    def position(self) -> tuple[int, int]:
+    def position(self) -> tuple[int, int]:  # noqa: PLR6301
         """Returns the position of the expression."""
         return -1, -1
 
-    def full_text(self) -> str:
+    def full_text(self) -> str:  # noqa: PLR6301
         """Returns the full text of the expression."""
         return ""

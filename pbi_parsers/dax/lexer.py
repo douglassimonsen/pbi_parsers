@@ -1,6 +1,6 @@
 from pbi_parsers.base import BaseLexer
+from pbi_parsers.base.tokens import TextSlice
 
-from ..base.tokens import TextSlice
 from .tokens import KEYWORD_MAPPING, Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
@@ -74,6 +74,7 @@ class Lexer(BaseLexer):
                 tok_type=TokenType.PERIOD,
                 start_pos=start_pos,
             )
+        return None
 
     def _match_number_literal(self, start_pos: int) -> Token | None:
         if self.match(
