@@ -1,18 +1,26 @@
 import json
+from parser.parser import Parser
+from parser.tokens import TokenType
+from pprint import pprint
 
-from expressions import to_ast
 from scanner import Scanner
-from tokens import TokenType
 
 statements = json.load(open("dax.json"))
 
 for statement in statements:
-    statement = "1 + 3 / 1"
+    statement = "1 + 3 / 1"  # asd
     print(statement)
     tokens = Scanner(statement).scan()
-    tokens = [token for token in tokens if token.type != TokenType.WHITESPACE]
+    tokens = list(filter(lambda x: x.type != TokenType.WHITESPACE, tokens))
     for token in tokens:
-        print(token)
-    print(to_ast(tokens).pprint())
-    print("----")
+        pprint(token)
+    p = Parser(tokens)
+    a = p.to_ast()
+    if a is not None:
+        print(a.pprint())
+    print("""\n----""")
     exit()
+try:
+    print(1)
+except TypeError:
+    pass
