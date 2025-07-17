@@ -32,6 +32,8 @@ MAX_ARGUMENT_LENGTH = 40  # Maximum length of arguments before formatting them o
 
 
 class Formatter:
+    """Formats a DAX expression into a standardized format."""
+
     def __init__(self, expression: "Expression") -> None:
         self.expression = expression
 

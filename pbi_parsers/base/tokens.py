@@ -16,6 +16,16 @@ class TextSlice:
         """Returns a string representation of the TextSlice."""
         return f"TextSlice(text='{self.get_text()}', start={self.start}, end={self.end})"
 
+    def __eq__(self, other: object) -> bool:
+        """Checks equality based on the text slice."""
+        if not isinstance(other, TextSlice):
+            return NotImplemented
+        return self.full_text == other.full_text and self.start == other.start and self.end == other.end
+
+    def __hash__(self) -> int:
+        """Returns a hash based on the text slice."""
+        return hash((self.full_text, self.start, self.end))
+
 
 @dataclass
 class BaseToken:
@@ -34,3 +44,13 @@ class BaseToken:
     def position(self) -> tuple[int, int]:
         """Returns the start and end positions of the token."""
         return self.text_slice.start, self.text_slice.end
+
+    def __eq__(self, other: object) -> bool:
+        """Checks equality based on token type and text slice."""
+        if not isinstance(other, BaseToken):
+            return NotImplemented
+        return self.tok_type == other.tok_type and self.text_slice == other.text_slice
+
+    def __hash__(self) -> int:
+        """Returns a hash based on token type and text slice."""
+        return hash((self.tok_type, self.text_slice))
