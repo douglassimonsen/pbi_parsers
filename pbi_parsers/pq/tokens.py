@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum
 
 from pbi_parsers.base import BaseToken
@@ -53,12 +54,9 @@ class TokenType(Enum):
     EXCLAMATION_POINT = 48
 
 
+@dataclass
 class Token(BaseToken):
-    tok_type: TokenType
-    text: str
-
-    def __init__(self, tok_type: TokenType, text: str) -> None:
-        super().__init__(tok_type, text)
+    tok_type: TokenType = TokenType.EOF
 
 
 # These are tokens that could also be used as identifiers in expressions.

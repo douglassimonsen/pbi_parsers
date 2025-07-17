@@ -17,29 +17,30 @@ class Scanner(BaseScanner):
             start=start_pos,
             end=self.current_position,
         )
-        return Token(tok_type=tok_type, text=text_slice)
+        return Token(tok_type=tok_type, text_slice=text_slice)
 
     def scan_helper(self) -> Token:
         start_pos: int = self.current_position
 
         if not self.peek():
-            return Token(tok_type=TokenType.EOF, text=TextSlice())
+            return Token()
 
         if self.match(
             "in ",
             case_insensitive=True,
         ):  # I have found no case where "in" is not followed by a space
             # this allows us to avoid matching with the "int" function
-            return Token(
+            self.advance(-1)  # leave the space to be consumed by whitespace handling
+            return self.create_token(
                 tok_type=TokenType.IN,
-                text="in",
+                start_pos=start_pos,
             )
 
         for keyword, token_type in KEYWORD_MAPPING.items():
             if self.match(keyword, case_insensitive=True):
-                return Token(
+                return self.create_token(
                     tok_type=token_type,
-                    text=keyword,
+                    start_pos=start_pos,
                 )
 
         if self.match(lambda c: c in WHITESPACE):

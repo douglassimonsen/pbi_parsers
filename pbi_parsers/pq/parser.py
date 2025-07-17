@@ -4,7 +4,7 @@ if TYPE_CHECKING:
     from .exprs import Expression
 from .tokens import Token, TokenType
 
-EOF_TOKEN = Token(tok_type=TokenType.EOF, text="")
+EOF_TOKEN = Token()
 
 
 class Parser:

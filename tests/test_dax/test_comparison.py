@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import ComparisonExpression
 
@@ -9,9 +10,9 @@ from pbi_parsers.dax.exprs import ComparisonExpression
     [
         (
             [
-                Token(TokenType.NUMBER_LITERAL, "1"),
-                Token(TokenType.EQUAL_SIGN, "="),
-                Token(TokenType.NUMBER_LITERAL, "1"),
+                Token(TokenType.NUMBER_LITERAL, TextSlice("1", start=0, end=1)),
+                Token(TokenType.EQUAL_SIGN, TextSlice("=", start=0, end=1)),
+                Token(TokenType.NUMBER_LITERAL, TextSlice("1", start=0, end=1)),
             ],
             """Bool (
     operator: =,

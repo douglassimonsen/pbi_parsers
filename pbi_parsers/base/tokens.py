@@ -20,8 +20,13 @@ class TextSlice:
 @dataclass
 class BaseToken:
     tok_type: Any
-    text: TextSlice = field(default_factory=TextSlice)
+    text_slice: TextSlice = field(default_factory=TextSlice)
 
     def __repr__(self) -> str:
-        pretty_text = self.text.get_text().replace("\n", "\\n").replace("\r", "\\r")
+        pretty_text = self.text_slice.get_text().replace("\n", "\\n").replace("\r", "\\r")
         return f"Token(type={self.tok_type.name}, text='{pretty_text}')"
+
+    @property
+    def text(self) -> str:
+        """Returns the text of the token."""
+        return self.text_slice.get_text()

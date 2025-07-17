@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import FunctionExpression
 
@@ -9,10 +10,10 @@ from pbi_parsers.dax.exprs import FunctionExpression
     [
         (
             [
-                Token(TokenType.UNQUOTED_IDENTIFIER, "SUM"),
-                Token(TokenType.LEFT_PAREN, "("),
-                Token(TokenType.UNQUOTED_IDENTIFIER, "col"),
-                Token(TokenType.RIGHT_PAREN, ")"),
+                Token(TokenType.UNQUOTED_IDENTIFIER, TextSlice("SUM", 0, 3)),
+                Token(TokenType.LEFT_PAREN, TextSlice("(", 0, 1)),
+                Token(TokenType.UNQUOTED_IDENTIFIER, TextSlice("col", 0, 3)),
+                Token(TokenType.RIGHT_PAREN, TextSlice(")", 0, 1)),
             ],
             """Function (
     name: SUM,

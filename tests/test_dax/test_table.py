@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import TableExpression
 
@@ -8,7 +9,7 @@ from pbi_parsers.dax.exprs import TableExpression
     ("input_tokens", "output"),
     [
         (
-            [Token(TokenType.UNQUOTED_IDENTIFIER, "Table")],
+            [Token(TokenType.UNQUOTED_IDENTIFIER, TextSlice("Table", 0, 5))],
             """Table (
     Table
 )""",

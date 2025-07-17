@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import HierarchyExpression
 
@@ -9,10 +10,10 @@ from pbi_parsers.dax.exprs import HierarchyExpression
     [
         (
             [
-                Token(TokenType.UNQUOTED_IDENTIFIER, "Table"),
-                Token(TokenType.BRACKETED_IDENTIFIER, "[Column]"),
-                Token(TokenType.PERIOD, "."),
-                Token(TokenType.BRACKETED_IDENTIFIER, "[Level]"),
+                Token(TokenType.UNQUOTED_IDENTIFIER, TextSlice("Table", 0, 5)),
+                Token(TokenType.BRACKETED_IDENTIFIER, TextSlice("[Column]", 0, 8)),
+                Token(TokenType.PERIOD, TextSlice(".", 0, 1)),
+                Token(TokenType.BRACKETED_IDENTIFIER, TextSlice("[Level]", 0, 7)),
             ],
             """Hierarchy (
     table: Table,

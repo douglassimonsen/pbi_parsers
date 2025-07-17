@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import ColumnExpression
 
@@ -8,7 +9,10 @@ from pbi_parsers.dax.exprs import ColumnExpression
     ("input_tokens", "output"),
     [
         (
-            [Token(TokenType.UNQUOTED_IDENTIFIER, "table"), Token(TokenType.BRACKETED_IDENTIFIER, "[col]")],
+            [
+                Token(TokenType.UNQUOTED_IDENTIFIER, TextSlice("table", start=0, end=5)),
+                Token(TokenType.BRACKETED_IDENTIFIER, TextSlice("[col]", start=0, end=5)),
+            ],
             """Column (
     table,
     [col]

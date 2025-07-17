@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import ParenthesesExpression
 
@@ -8,7 +9,11 @@ from pbi_parsers.dax.exprs import ParenthesesExpression
     ("input_tokens", "output"),
     [
         (
-            [Token(TokenType.LEFT_PAREN, "("), Token(TokenType.NUMBER_LITERAL, "1"), Token(TokenType.RIGHT_PAREN, ")")],
+            [
+                Token(TokenType.LEFT_PAREN, TextSlice("(", 0, 1)),
+                Token(TokenType.NUMBER_LITERAL, TextSlice("1", 0, 1)),
+                Token(TokenType.RIGHT_PAREN, TextSlice(")", 0, 1)),
+            ],
             """Parentheses (
     Number (1)
 )""",

@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import DivMulExpression
 
@@ -9,9 +10,9 @@ from pbi_parsers.dax.exprs import DivMulExpression
     [
         (
             [
-                Token(TokenType.NUMBER_LITERAL, "2"),
-                Token(TokenType.MULTIPLY_SIGN, "*"),
-                Token(TokenType.NUMBER_LITERAL, "3"),
+                Token(TokenType.NUMBER_LITERAL, TextSlice("2", start=0, end=1)),
+                Token(TokenType.MULTIPLY_SIGN, TextSlice("*", start=0, end=1)),
+                Token(TokenType.NUMBER_LITERAL, TextSlice("3", start=0, end=1)),
             ],
             """Mul (
     left: Number (2),

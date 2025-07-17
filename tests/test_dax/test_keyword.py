@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import KeywordExpression
 
@@ -7,19 +8,19 @@ from pbi_parsers.dax.exprs import KeywordExpression
 @pytest.mark.parametrize(
     ("input_tokens", "output"),
     [
-        ([Token(TokenType.TRUE, "TRUE")], "Keyword (TRUE)"),
+        ([Token(TokenType.TRUE, TextSlice("TRUE", 0, 4))], "Keyword (TRUE)"),
         (
             [
-                Token(TokenType.TRUE, "TRUE"),
-                Token(TokenType.LEFT_PAREN, "("),
-                Token(TokenType.RIGHT_PAREN, ")"),
+                Token(TokenType.TRUE, TextSlice("TRUE", 0, 4)),
+                Token(TokenType.LEFT_PAREN, TextSlice("(", 0, 1)),
+                Token(TokenType.RIGHT_PAREN, TextSlice(")", 0, 1)),
             ],
             """Function (
     name: TRUE,
     args: 
 )""",
         ),
-        ([Token(TokenType.FALSE, "FALSE")], "Keyword (FALSE)"),
+        ([Token(TokenType.FALSE, TextSlice("FALSE", 0, 5))], "Keyword (FALSE)"),
     ],
 )
 def test_keyword(input_tokens: list[Token], output: str) -> None:

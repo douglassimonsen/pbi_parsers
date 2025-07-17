@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import LogicalExpression
 
@@ -9,9 +10,9 @@ from pbi_parsers.dax.exprs import LogicalExpression
     [
         (
             [
-                Token(TokenType.UNQUOTED_IDENTIFIER, "x"),
-                Token(TokenType.DOUBLE_AMPERSAND_OPERATOR, "&&"),
-                Token(TokenType.UNQUOTED_IDENTIFIER, "y"),
+                Token(TokenType.UNQUOTED_IDENTIFIER, TextSlice("x", 0, 1)),
+                Token(TokenType.DOUBLE_AMPERSAND_OPERATOR, TextSlice("&&", 0, 2)),
+                Token(TokenType.UNQUOTED_IDENTIFIER, TextSlice("y", 0, 1)),
             ],
             """Logical (
     operator: &&,

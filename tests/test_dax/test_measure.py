@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import MeasureExpression
 
@@ -7,7 +8,7 @@ from pbi_parsers.dax.exprs import MeasureExpression
 @pytest.mark.parametrize(
     ("input_tokens", "output"),
     [
-        ([Token(TokenType.BRACKETED_IDENTIFIER, "[Total]")], "Measure ([Total])"),
+        ([Token(TokenType.BRACKETED_IDENTIFIER, TextSlice("[Total]", 0, 7))], "Measure ([Total])"),
     ],
 )
 def test_measure(input_tokens: list[Token], output: str) -> None:

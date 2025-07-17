@@ -1,5 +1,6 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import LiteralNumberExpression
 
@@ -7,7 +8,7 @@ from pbi_parsers.dax.exprs import LiteralNumberExpression
 @pytest.mark.parametrize(
     ("input_tokens", "output"),
     [
-        ([Token(TokenType.NUMBER_LITERAL, "42")], "Number (42)"),
+        ([Token(TokenType.NUMBER_LITERAL, TextSlice("42", 0, 2))], "Number (42)"),
     ],
 )
 def test_literal_number(input_tokens: list[Token], output: str) -> None:

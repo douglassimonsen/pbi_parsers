@@ -1,12 +1,13 @@
 import pytest
 
+from pbi_parsers.base.tokens import TextSlice
 from pbi_parsers.dax import Expression, Parser, Token, TokenType
 from pbi_parsers.dax.exprs import AddSubUnaryExpression
 
-num1 = Token(TokenType.NUMBER_LITERAL, "1")
-num2 = Token(TokenType.NUMBER_LITERAL, "2")
-operator_add = Token(TokenType.PLUS_SIGN, "+")
-operator_sub = Token(TokenType.MINUS_SIGN, "-")
+num1 = Token(TokenType.NUMBER_LITERAL, TextSlice("1", start=0, end=1))
+num2 = Token(TokenType.NUMBER_LITERAL, TextSlice("2", start=0, end=1))
+operator_add = Token(TokenType.PLUS_SIGN, TextSlice("+", start=0, end=1))
+operator_sub = Token(TokenType.MINUS_SIGN, TextSlice("-", start=0, end=1))
 
 args = [
     [
