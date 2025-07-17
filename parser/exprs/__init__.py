@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
-from unittest import skip
 
 from ._base import Expression
 from .add_sub import AddSubExpression
+from .add_sub_unary import AddSubUnaryExpression
 from .bool import BoolExpression
 from .column import ColumnExpression
 from .div_mul import DivMulExpression
@@ -22,10 +22,21 @@ if TYPE_CHECKING:
 # Bool/AddSub/DivMul must be in this order to ensure correct precedence. They must also be above all other expressions.
 # Column expression must be before table and identifier expressions to ensure correct precedence.
 # identifer must be before table to ensure correct precedence.
+
+# operator precedence (https://learn.microsoft.com/en-us/dax/dax-operator-reference):
+# ^
+# unary +,-
+# *,/
+# +,-
+# &
+# =, ==, <>, <, <=, >, >=
+# NOT
+
 EXPRESSION_HIERARCHY = (
     BoolExpression,
     AddSubExpression,
     DivMulExpression,
+    AddSubUnaryExpression,
     #
     VariableExpression,
     ParenthesesExpression,

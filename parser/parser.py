@@ -42,6 +42,8 @@ class Parser:
         from .exprs import any_expression_match
 
         ret = any_expression_match(self)
+        if ret is None:
+            raise ValueError("No valid expression found in the token stream.")
         assert self.peek().type == TokenType.EOF
         return ret
 
