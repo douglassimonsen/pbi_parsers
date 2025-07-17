@@ -11,7 +11,13 @@ if TYPE_CHECKING:
 
 
 class AddSubExpression(Expression):
-    """Represents an addition or subtraction expression."""
+    """Represents an addition or subtraction expression.
+
+    Examples:
+        1 + 2
+        func() - 3
+
+    """
 
     operator: Token
     left: Expression

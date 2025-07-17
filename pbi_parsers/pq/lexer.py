@@ -132,7 +132,7 @@ class Lexer(BaseLexer):
         if self.match(
             lambda c: c.isdigit() or c == ".",
         ):  # must come before unquoted identifier to avoid conflict
-            while self.match(lambda c: c.isdigit() or c == "."):
+            while self.match(lambda c: c.isdigit() or c in {".", "e", "E"}):
                 pass
             return self.create_token(
                 tok_type=TokenType.NUMBER_LITERAL,
@@ -216,9 +216,5 @@ class Lexer(BaseLexer):
             if match_candidate:
                 return match_candidate
 
-        print("---------------------")
-        print(self.remaining())
-        print("---------------------")
-        breakpoint()
         msg = f"Unexpected character '{self.peek()}' at position {self.current_position}"
         raise ValueError(msg)

@@ -10,6 +10,14 @@ if TYPE_CHECKING:
 
 
 class HierarchyExpression(Expression):
+    """Represents a hierarchy in DAX.
+
+    Examples:
+        Table[Column].[Level]
+        'Table Name'[Column Name].[Level Name]
+
+    """
+
     table: Token
     column: Token
     level: Token

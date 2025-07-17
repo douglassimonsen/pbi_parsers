@@ -11,7 +11,13 @@ if TYPE_CHECKING:
 
 
 class InExpression(Expression):
-    """Represents an multiplication or division expression."""
+    """Represents an IN check.
+
+    Examples:
+        1 IN {1, 2, 3}
+        "text" IN {"text", "other text"}
+
+    """
 
     value: Expression
     array: Expression

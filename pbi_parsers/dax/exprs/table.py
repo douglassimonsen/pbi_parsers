@@ -10,6 +10,14 @@ if TYPE_CHECKING:
 
 
 class TableExpression(Expression):
+    """Represents a table in DAX.
+
+    Examples:
+        TableName
+        'Table Name'
+
+    """
+
     name: Token
 
     def __init__(self, name: Token) -> None:

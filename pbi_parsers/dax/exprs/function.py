@@ -12,6 +12,14 @@ if TYPE_CHECKING:
 
 
 class FunctionExpression(Expression):
+    """Represents a function call in DAX.
+
+    Examples:
+        SUM(Table[Column])
+        CALCULATE(SUM(Table[Column]), FILTER(Table, Table[Column] > 0))
+
+    """
+
     name_parts: list[Token]  # necessary for function names with periods
     args: list[Expression]
     parens: tuple[Token, Token]  # left and right parentheses
@@ -31,12 +39,7 @@ Function (
 )        """.strip()
 
     @classmethod
-    @lexer_reset
-    def match(cls, parser: "Parser") -> "FunctionExpression | None":
-        from . import any_expression_match  # noqa: PLC0415
-
-        args: list[Expression] = []
-
+    def _match_function_name(cls, parser: "Parser") -> list[Token] | None:
         name_parts = [parser.consume()]
         if name_parts[0].tok_type != TokenType.UNQUOTED_IDENTIFIER:
             return None
@@ -48,6 +51,18 @@ Function (
             if period.tok_type != TokenType.PERIOD:
                 return None
             name_parts.extend((period, name))
+
+        return name_parts
+
+    @classmethod
+    @lexer_reset
+    def match(cls, parser: "Parser") -> "FunctionExpression | None":
+        from . import any_expression_match  # noqa: PLC0415
+
+        args: list[Expression] = []
+        name_parts = cls._match_function_name(parser)
+        if name_parts is None:
+            return None
 
         left_paren = parser.consume()
         if left_paren.tok_type != TokenType.LEFT_PAREN:

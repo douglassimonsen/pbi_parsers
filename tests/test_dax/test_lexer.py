@@ -6,6 +6,7 @@ from pbi_parsers.dax.tokens import TokenType
 
 command1 = "1 + 2"
 command2 = "func({})"
+command3 = "1.1e2"
 
 
 @pytest.mark.parametrize(
@@ -30,6 +31,10 @@ command2 = "func({})"
                 Token(TokenType.RIGHT_CURLY_BRACE, TextSlice(command2, 6, 7)),
                 Token(TokenType.RIGHT_PAREN, TextSlice(command2, 7, 8)),
             ),
+        ),
+        (
+            command3,
+            (Token(TokenType.NUMBER_LITERAL, TextSlice(command3, 0, 5)),),
         ),
     ],
 )

@@ -9,6 +9,13 @@ from pbi_parsers.dax.exprs import LiteralNumberExpression
     ("input_tokens", "output"),
     [
         ([Token(TokenType.NUMBER_LITERAL, TextSlice("42", 0, 2))], "Number (42)"),
+        ([Token(TokenType.NUMBER_LITERAL, TextSlice("3.14", 0, 4))], "Number (3.14)"),
+        (
+            [
+                Token(TokenType.NUMBER_LITERAL, TextSlice("1.1e1", 0, 5)),
+            ],
+            "Number (1.1e1)",
+        ),
     ],
 )
 def test_literal_number(input_tokens: list[Token], output: str) -> None:

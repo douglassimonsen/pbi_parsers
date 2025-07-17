@@ -38,11 +38,16 @@ class BaseToken:
 
     @property
     def text(self) -> str:
-        """Returns the text of the token."""
+        """Returns the text underlying the token."""
         return self.text_slice.get_text()
 
     def position(self) -> tuple[int, int]:
-        """Returns the start and end positions of the token."""
+        """Returns the start and end positions of the token.
+
+        Returns:
+            tuple[int, int]: A tuple containing the start and end positions of the token within the source text.
+
+        """
         return self.text_slice.start, self.text_slice.end
 
     def __eq__(self, other: object) -> bool:

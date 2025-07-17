@@ -33,7 +33,7 @@ MAX_ARGUMENT_LENGTH = 40  # Maximum length of arguments before formatting them o
 
 
 def format_comments(comments: list[Token], indent_chars: int) -> str:
-    """Formats a list of comments into a single string."""
+    """Concatenates a list of comments into a single string."""
     base = "\n".join(comment.text_slice.get_text().strip() for comment in comments)
     return textwrap.indent(base, " " * indent_chars)
 

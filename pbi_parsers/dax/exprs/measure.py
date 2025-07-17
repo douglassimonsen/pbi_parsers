@@ -10,6 +10,13 @@ if TYPE_CHECKING:
 
 
 class MeasureExpression(Expression):
+    """Represents a measure in DAX.
+
+    Examples:
+        [Measure Name]
+
+    """
+
     name: Token
 
     def __init__(self, name: Token) -> None:

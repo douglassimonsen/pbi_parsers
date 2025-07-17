@@ -11,6 +11,14 @@ if TYPE_CHECKING:
 
 
 class ArrayExpression(Expression):
+    """Represents an array expression.
+
+    Examples:
+        {1, 2, 3}
+        {func(), 4, 5}
+
+    """
+
     elements: list[Expression]
     braces: tuple[Token, Token]
 

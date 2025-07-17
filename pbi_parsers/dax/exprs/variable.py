@@ -11,6 +11,16 @@ if TYPE_CHECKING:
 
 
 class VariableExpression(Expression):
+    """Represents a variable assignment in DAX.
+
+    Examples:
+        VAR x = 1
+        VAR y = x + 2
+
+        VAR z = func()
+
+    """
+
     var_name: Token
     statement: Expression
 

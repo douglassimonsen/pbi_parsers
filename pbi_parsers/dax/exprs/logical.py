@@ -11,7 +11,13 @@ if TYPE_CHECKING:
 
 
 class LogicalExpression(Expression):
-    """Represents an addition or subtraction expression."""
+    """AND/OR boolean expression in DAX.
+
+    Examples:
+        1 || 2
+        func() && 3
+
+    """
 
     operator: Token
     left: Expression

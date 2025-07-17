@@ -10,6 +10,14 @@ if TYPE_CHECKING:
 
 
 class ParenthesesExpression(Expression):
+    """Represents a parenthesized expression in DAX.
+
+    Examples:
+        (1 + 2)
+        (func())
+
+    """
+
     inner_statement: Expression
     parens: tuple[Token, Token]
 

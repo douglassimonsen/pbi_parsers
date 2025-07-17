@@ -18,6 +18,7 @@ class BaseLexer:
         self.tokens = []
 
     def scan_helper(self) -> BaseToken:
+        """Contains the orchestration logic for converting tokens into expressions."""
         msg = "Subclasses should implement match_tokens method."
         raise NotImplementedError(msg)
 
@@ -60,6 +61,15 @@ class BaseLexer:
         return False
 
     def peek(self, chunk: int = 1) -> str:
+        """Returns the next chunk of text from the current position. Defaults to a single character.
+
+        Args:
+            chunk (int): The number of characters to return from the current position.
+
+        Returns:
+            str: The next chunk of text from the current position.
+
+        """
         return (
             self.source[self.current_position : self.current_position + chunk]
             if self.current_position < len(self.source)
@@ -67,18 +77,51 @@ class BaseLexer:
         )
 
     def remaining(self) -> str:
+        """Returns the remaining text from the current position to the end of the source.
+
+        Only used for testing and debugging purposes.
+
+        Returns:
+            str: The remaining text from the current position to the end of the source.
+
+        """
         return self.source[self.current_position :]
 
     def advance(self, chunk: int = 1) -> None:
+        """Advances the current position by the specified chunk size.
+
+        Generally used alongside peek to consume characters.
+
+        Args:
+            chunk (int): The number of characters to advance the current position.
+
+        Raises:
+            ValueError: If the current position exceeds a predefined MAX_POSITION (1,000,000 characters).
+                This is to avoid errors with the lexer causing the process to hang
+
+        """
         if self.current_position > MAX_POSITION:
             msg = f"Current position exceeds {MAX_POSITION:,} characters."
             raise ValueError(msg)
         self.current_position += chunk
 
     def scan(self) -> tuple[BaseToken, ...]:
+        """Repeatedly calls scan_helper until the end of the source is reached.
+
+        Returns:
+            tuple[BaseToken, ...]: A tuple of tokens scanned from the source.
+
+        """
         while not self.at_end():
             self.tokens.append(self.scan_helper())
         return tuple(self.tokens)
 
     def at_end(self) -> bool:
+        """Checks if the current position is at (or beyond) the end of the source.
+
+        Returns:
+            bool: True if the current position is at or beyond the end of the source, False
+                otherwise.
+
+        """
         return self.current_position >= len(self.source)

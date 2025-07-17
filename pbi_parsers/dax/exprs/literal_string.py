@@ -10,6 +10,14 @@ if TYPE_CHECKING:
 
 
 class LiteralStringExpression(Expression):
+    """A literal string in DAX.
+
+    Examples:
+        "Hello, World!"
+        "Another String"
+
+    """
+
     value: Token
 
     def __init__(self, value: Token) -> None:

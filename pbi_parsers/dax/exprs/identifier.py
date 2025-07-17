@@ -10,6 +10,14 @@ if TYPE_CHECKING:
 
 
 class IdentifierExpression(Expression):
+    """Represents a simple identifier of a variable.
+
+    Examples:
+        VariableName
+        AnotherVariableName
+
+    """
+
     name: Token
 
     def __init__(self, name: Token) -> None:

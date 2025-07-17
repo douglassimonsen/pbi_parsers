@@ -11,7 +11,13 @@ if TYPE_CHECKING:
 
 
 class AddSubUnaryExpression(Expression):
-    """Represents an addition or subtraction expression."""
+    """Represents an addition or subtraction expression.
+
+    Examples:
+        +2
+        -func()
+
+    """
 
     operator: Token
     number: Expression

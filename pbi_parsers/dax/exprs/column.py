@@ -10,6 +10,14 @@ if TYPE_CHECKING:
 
 
 class ColumnExpression(Expression):
+    """Represents a column of a table in DAX.
+
+    Examples:
+        Table[Column]
+        'Table Name'[Column Name]
+
+    """
+
     table: Token
     column: Token
 

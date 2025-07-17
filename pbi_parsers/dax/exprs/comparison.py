@@ -11,7 +11,15 @@ if TYPE_CHECKING:
 
 
 class ComparisonExpression(Expression):
-    """Represents an multiplication or division expression."""
+    """Represents a boolean comparison expression.
+
+    Examples:
+        1 <> 2
+        func() = 3
+        4 > 5
+        6 <= 7
+
+    """
 
     operator: Token
     left: Expression

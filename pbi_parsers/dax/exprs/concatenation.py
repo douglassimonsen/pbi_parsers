@@ -11,7 +11,13 @@ if TYPE_CHECKING:
 
 
 class ConcatenationExpression(Expression):
-    """Represents an addition or subtraction expression."""
+    """Represents a concatenation operator on two elements.
+
+    Examples:
+        "Hello" & " World"
+        Table[Column] & " Text"
+
+    """
 
     operator: Token
     left: Expression

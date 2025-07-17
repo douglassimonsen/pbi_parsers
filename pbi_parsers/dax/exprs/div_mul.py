@@ -11,7 +11,15 @@ if TYPE_CHECKING:
 
 
 class DivMulExpression(Expression):
-    """Represents an multiplication or division expression."""
+    """Represents an multiplication or division expression.
+
+    Examples:
+        2 * 3
+        4 / 5
+        6 * 7
+        8 / func(1, 2)
+
+    """
 
     operator: Token
     left: Expression

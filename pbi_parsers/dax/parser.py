@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Any
 
-from ..base.tokens import TextSlice
 from .tokens import Token, TokenType
 
 if TYPE_CHECKING:
@@ -22,8 +21,12 @@ class Parser:
     def peek(self, forward: int = 0) -> Token:
         """Peek at the next token without advancing the index.
 
-        :param forward: How many tokens to look ahead.
-        :return: The token at the current index + forward.
+        Args:
+            forward (int): How many tokens to look ahead. Defaults to 0.
+
+        Returns:
+            Token: The token at the current index + forward.
+
         """
         if self.index + forward >= len(self.__tokens):
             return EOF_TOKEN
@@ -32,7 +35,9 @@ class Parser:
     def remaining(self) -> list[Token]:
         """Returns the remaining tokens from the current index.
 
-        :return: A list of tokens from the current index to the end.
+        Returns:
+            list[Token]: The list of tokens from the current index to the end.
+
         """
         return self.__tokens[self.index :]
 

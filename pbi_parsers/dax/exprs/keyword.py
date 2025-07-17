@@ -11,6 +11,14 @@ if TYPE_CHECKING:
 
 
 class KeywordExpression(Expression):
+    """Represents a keyword in DAX.
+
+    Examples:
+        TRUE
+        FALSE
+
+    """
+
     name: Token
 
     def __init__(self, name: Token) -> None:

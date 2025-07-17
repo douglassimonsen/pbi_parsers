@@ -47,9 +47,6 @@ Statement (
             if parser.peek().tok_type == TokenType.COMMA:
                 parser.consume()
             elif parser.peek().tok_type != TokenType.IN:
-                print(parser.remaining())
-                print(statements)
-                exit()
                 msg = f"Expected a comma or 'in' token, got {parser.peek().tok_type}"
                 raise ValueError(msg)
         if not statements:

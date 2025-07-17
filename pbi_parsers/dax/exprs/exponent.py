@@ -11,7 +11,13 @@ if TYPE_CHECKING:
 
 
 class ExponentExpression(Expression):
-    """Represents an addition or subtraction expression."""
+    """Represents the exponentiation operation in DAX.
+
+    Examples:
+        2 ^ 3
+        func() ^ 4
+
+    """
 
     base: Expression
     power: Expression

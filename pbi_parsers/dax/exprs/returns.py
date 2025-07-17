@@ -12,6 +12,17 @@ if TYPE_CHECKING:
 
 
 class ReturnExpression(Expression):
+    """Represents a RETURN statement in DAX.
+
+    Examples:
+        VAR x = 1
+        RETURN x + 2
+
+        VAR x = 1
+        RETURN x
+
+    """
+
     ret: Expression
     variable_statements: list[VariableExpression]
 

@@ -10,6 +10,15 @@ if TYPE_CHECKING:
 
 
 class LiteralNumberExpression(Expression):
+    """Represents a literal number in DAX.
+
+    Examples:
+        42
+        3.14
+        -1000
+
+    """
+
     value: Token
 
     def __init__(self, value: Token) -> None:
