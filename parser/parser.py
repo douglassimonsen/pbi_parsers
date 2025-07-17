@@ -1,11 +1,7 @@
-from typing import Final, Iterable
+from typing import Any, Final, Iterable
 
 from .exprs import (
-    AddSubExpression,
-    BoolExpression,
     Expression,
-    FunctionExpression,
-    VariableExpression,
 )
 from .tokens import Token, TokenType
 
@@ -15,10 +11,12 @@ EOF_TOKEN = Token(type=TokenType.EOF, text="")
 class Parser:
     __tokens: Final[list[Token]]
     index: int = 0
+    cache: dict[Any, Any]
 
     def __init__(self, tokens: list[Token]):
         self.__tokens = tokens
         self.index = 0
+        self.cache = {}
 
     def peek(self, forward: int = 0) -> Token:
         """
@@ -30,14 +28,22 @@ class Parser:
             return EOF_TOKEN
         return self.__tokens[self.index + forward]
 
+    def remaining(self) -> list[Token]:
+        """
+        Returns the remaining tokens from the current index.
+        :return: A list of tokens from the current index to the end.
+        """
+        return self.__tokens[self.index :]
+
     def to_ast(self) -> Expression | None:
         """
         Parse the tokens and return the root expression.
         """
-        return VariableExpression.match(self)
-        return BoolExpression.match(self)
-        return FunctionExpression.match(self)
-        return AddSubExpression.match(self)
+        from .exprs import any_expression_match
+
+        ret = any_expression_match(self)
+        assert self.peek().type == TokenType.EOF
+        return ret
 
     def consume(self) -> Token:
         """Returns the next token and advances the index."""

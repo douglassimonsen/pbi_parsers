@@ -8,6 +8,7 @@ from ._utils import or_match, scanner_reset
 from .column import ColumnExpression
 from .div_mul import DivMulExpression
 from .function import FunctionExpression
+from .identifier import IdentifierExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .measure import MeasureExpression
@@ -23,6 +24,7 @@ add_sub_match = partial(
         ColumnExpression,
         MeasureExpression,
         FunctionExpression,
+        IdentifierExpression,
         LiteralStringExpression,
         LiteralNumberExpression,
         ParenthesesExpression,
