@@ -1,7 +1,7 @@
-from enum import Enum
+from ..base import BaseToken, BaseTokenType
 
 
-class TokenType(Enum):
+class TokenType(BaseTokenType):
     OPERATOR = 1
     UNQUOTED_IDENTIFIER = 2
     SINGLE_QUOTED_IDENTIFIER = 3
@@ -26,14 +26,9 @@ class TokenType(Enum):
     COMPARISON_OPERATOR = 22
 
 
-class Token:
-    type: TokenType
+class Token(BaseToken):
+    type: TokenType  # type: ignore
     text: str
 
     def __init__(self, type: TokenType, text: str):
-        self.type = type
-        self.text = text
-
-    def __repr__(self):
-        pretty_text = self.text.replace("\n", "\\n").replace("\r", "\\r")
-        return f"Token(type={self.type.name}, text='{pretty_text}')"
+        super().__init__(type, text)
