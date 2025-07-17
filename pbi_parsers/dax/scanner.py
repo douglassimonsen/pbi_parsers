@@ -19,12 +19,7 @@ class Scanner(BaseScanner):
         )
         return Token(tok_type=tok_type, text_slice=text_slice)
 
-    def scan_helper(self) -> Token:
-        start_pos: int = self.current_position
-
-        if not self.peek():
-            return Token()
-
+    def _match_in(self, start_pos: int) -> Token | None:
         if self.match(
             "in ",
             case_insensitive=True,
@@ -35,14 +30,18 @@ class Scanner(BaseScanner):
                 tok_type=TokenType.IN,
                 start_pos=start_pos,
             )
+        return None
 
+    def _match_keyword(self, start_pos: int) -> Token | None:
         for keyword, token_type in KEYWORD_MAPPING.items():
             if self.match(keyword, case_insensitive=True):
                 return self.create_token(
                     tok_type=token_type,
                     start_pos=start_pos,
                 )
+        return None
 
+    def _match_whitespace(self, start_pos: int) -> Token | None:
         if self.match(lambda c: c in WHITESPACE):
             while self.match(lambda c: c in WHITESPACE):
                 pass
@@ -50,16 +49,25 @@ class Scanner(BaseScanner):
                 tok_type=TokenType.WHITESPACE,
                 start_pos=start_pos,
             )
+        return None
+
+    def _match_var(self, start_pos: int) -> Token | None:
         if self.match("var", case_insensitive=True):
             return self.create_token(
                 tok_type=TokenType.VARIABLE,
                 start_pos=start_pos,
             )
+        return None
+
+    def _match_return(self, start_pos: int) -> Token | None:
         if self.match("return", case_insensitive=True):
             return self.create_token(
                 tok_type=TokenType.RETURN,
                 start_pos=start_pos,
             )
+        return None
+
+    def _match_period(self, start_pos: int) -> Token | None:
         if self.match("."):
             # must come before number literal to avoid conflict
             return self.create_token(
@@ -67,6 +75,7 @@ class Scanner(BaseScanner):
                 start_pos=start_pos,
             )
 
+    def _match_number_literal(self, start_pos: int) -> Token | None:
         if self.match(
             lambda c: c.isdigit() or c == ".",
         ):  # must come before unquoted identifier to avoid conflict
@@ -76,7 +85,9 @@ class Scanner(BaseScanner):
                 tok_type=TokenType.NUMBER_LITERAL,
                 start_pos=start_pos,
             )
+        return None
 
+    def _match_unquoted_identifier(self, start_pos: int) -> Token | None:
         if self.match(lambda c: c.isalnum() or c == "_"):
             while self.match(lambda c: c.isalnum() or c == "_"):
                 pass
@@ -84,7 +95,9 @@ class Scanner(BaseScanner):
                 tok_type=TokenType.UNQUOTED_IDENTIFIER,
                 start_pos=start_pos,
             )
+        return None
 
+    def _match_single_quoted_identifier(self, start_pos: int) -> Token | None:
         if self.match("'"):
             while self.match(lambda c: c != "'"):
                 pass
@@ -95,7 +108,9 @@ class Scanner(BaseScanner):
                 )
             msg = "Unterminated string literal"
             raise ValueError(msg)
+        return None
 
+    def _match_bracketed_identifier(self, start_pos: int) -> Token | None:
         if self.match("["):
             while self.match(lambda c: c != "]"):
                 pass
@@ -106,7 +121,9 @@ class Scanner(BaseScanner):
                 )
             msg = "Unterminated bracketed identifier"
             raise ValueError(msg)
+        return None
 
+    def _match_string_literal(self, start_pos: int) -> Token | None:
         if self.match('"'):
             while self.match(lambda c: c != '"') or self.match('""'):
                 pass
@@ -117,6 +134,9 @@ class Scanner(BaseScanner):
                 )
             msg = "Unterminated string literal"
             raise ValueError(msg)
+        return None
+
+    def _match_single_line_comment(self, start_pos: int) -> Token | None:
         if self.match("//") or self.match("--"):
             while self.match(lambda c: c not in {"\n", ""}):
                 pass
@@ -124,6 +144,9 @@ class Scanner(BaseScanner):
                 tok_type=TokenType.SINGLE_LINE_COMMENT,
                 start_pos=start_pos,
             )
+        return None
+
+    def _match_multi_line_comment(self, start_pos: int) -> Token | None:
         if self.match("/*"):
             if self.match("*") and self.match("/"):
                 return self.create_token(
@@ -133,7 +156,9 @@ class Scanner(BaseScanner):
             self.advance()
             msg = "Unterminated multi-line comment"
             raise ValueError(msg)
+        return None
 
+    def _match_token(self, start_pos: int) -> Token | None:
         fixed_character_mapping = {
             "(": TokenType.LEFT_PAREN,
             ")": TokenType.RIGHT_PAREN,
@@ -161,6 +186,33 @@ class Scanner(BaseScanner):
         for char, token_type in fixed_character_mapping.items():
             if self.match(char):
                 return self.create_token(tok_type=token_type, start_pos=start_pos)
+        return None
+
+    def scan_helper(self) -> Token:
+        start_pos: int = self.current_position
+
+        if not self.peek():
+            return Token()
+
+        for candidate_func in (
+            self._match_in,
+            self._match_keyword,
+            self._match_whitespace,
+            self._match_var,
+            self._match_return,
+            self._match_period,
+            self._match_number_literal,
+            self._match_unquoted_identifier,
+            self._match_single_quoted_identifier,
+            self._match_bracketed_identifier,
+            self._match_string_literal,
+            self._match_single_line_comment,
+            self._match_multi_line_comment,
+            self._match_token,
+        ):
+            match_candidate = candidate_func(start_pos)
+            if match_candidate:
+                return match_candidate
 
         msg = f"Unexpected character: {self.peek()} at position {self.current_position}"
         raise ValueError(msg)

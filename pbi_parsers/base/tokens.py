@@ -8,14 +8,6 @@ class TextSlice:
     start: int = -1
     end: int = -1
 
-    def get_text(self) -> str:
-        """Returns the text slice."""
-        return self.full_text[self.start : self.end]
-
-    def __repr__(self) -> str:
-        """Returns a string representation of the TextSlice."""
-        return f"TextSlice(text='{self.get_text()}', start={self.start}, end={self.end})"
-
     def __eq__(self, other: object) -> bool:
         """Checks equality based on the text slice."""
         if not isinstance(other, TextSlice):
@@ -25,6 +17,14 @@ class TextSlice:
     def __hash__(self) -> int:
         """Returns a hash based on the text slice."""
         return hash((self.full_text, self.start, self.end))
+
+    def __repr__(self) -> str:
+        """Returns a string representation of the TextSlice."""
+        return f"TextSlice(text='{self.get_text()}', start={self.start}, end={self.end})"
+
+    def get_text(self) -> str:
+        """Returns the text slice."""
+        return self.full_text[self.start : self.end]
 
 
 @dataclass
