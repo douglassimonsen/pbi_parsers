@@ -4,7 +4,7 @@ from ..base import BaseScanner
 from .tokens import Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
-KEYWORDS = ("null", "true", "false")
+KEYWORDS = ("null", "true", "false", "type", "text", "")
 
 
 class Scanner(BaseScanner):
@@ -30,10 +30,15 @@ class Scanner(BaseScanner):
         if self.match('#"'):
             while self.match(lambda c: c != '"') or self.match('""'):
                 pass
-            return Token(
-                type=TokenType.QUOTED_IDENTIFER,
-                text=self.source[start_pos : self.current_position],
-            )
+            if self.match('"'):
+                return Token(
+                    type=TokenType.QUOTED_IDENTIFER,
+                    text=self.source[start_pos : self.current_position],
+                )
+            else:
+                raise ValueError(
+                    f"Unterminated string literal at positions: {start_pos} to {self.current_position}"
+                )
 
         elif self.match('"'):
             while self.match(lambda c: c != '"') or self.match('""'):
@@ -44,7 +49,9 @@ class Scanner(BaseScanner):
                     text=self.source[start_pos : self.current_position],
                 )
             else:
-                raise ValueError("Unterminated string literal")
+                raise ValueError(
+                    f"Unterminated string literal at positions: {start_pos} to {self.current_position}"
+                )
 
         elif self.match("'"):
             while self.match(lambda c: c != "'"):

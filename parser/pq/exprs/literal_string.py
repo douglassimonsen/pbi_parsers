@@ -5,7 +5,7 @@ from ._base import Expression
 from ._utils import scanner_reset
 
 if TYPE_CHECKING:
-    from ...dax.parser import Parser
+    from ..parser import Parser
 
 
 class LiteralStringExpression(Expression):
