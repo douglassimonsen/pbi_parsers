@@ -1,6 +1,7 @@
 import string
-from parser.tokens import Token, TokenType
 from typing import Callable
+
+from .tokens import Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
 KEYWORDS = ("TRUE", "FALSE", "ASC", "DESC")
