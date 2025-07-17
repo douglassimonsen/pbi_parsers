@@ -27,8 +27,15 @@ from .exprs import (
     TableExpression,
     VariableExpression,
 )
+from .tokens import Token
 
 MAX_ARGUMENT_LENGTH = 40  # Maximum length of arguments before formatting them on new lines
+
+
+def format_comments(comments: list[Token], indent_chars: int) -> str:
+    """Formats a list of comments into a single string."""
+    base = "\n".join(comment.text_slice.get_text().strip() for comment in comments)
+    return textwrap.indent(base, " " * indent_chars)
 
 
 class Formatter:
@@ -67,7 +74,13 @@ class Formatter:
             VariableExpression: cls._format_variable,
         }
         if type(expr) in mapper:
-            return mapper[type(expr)](expr)
+            base_format = mapper[type(expr)](expr)
+            if expr.pre_comments:
+                base_format = f"{format_comments(expr.pre_comments, 0)}\n{base_format}"
+            if expr.post_comments:
+                base_format = f"{base_format}  {format_comments(expr.post_comments, 0)}"
+            return base_format
+
         msg = f"Unsupported expression type: {type(expr).__name__}"
         raise TypeError(msg)
 

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from pbi_parsers.dax.tokens import TokenType
 
@@ -7,6 +7,9 @@ if TYPE_CHECKING:
 
 
 class Expression:
+    pre_comments: list[Any] = []
+    post_comments: list[Any] = []
+
     def pprint(self) -> str:
         msg = "Subclasses should implement this method."
         raise NotImplementedError(msg)

@@ -147,16 +147,19 @@ class Scanner(BaseScanner):
         return None
 
     def _match_multi_line_comment(self, start_pos: int) -> Token | None:
-        if self.match("/*"):
-            if self.match("*") and self.match("/"):
+        if not self.match("/*"):
+            return None
+
+        while not self.at_end():
+            if self.match("*/", chunk=2):
                 return self.create_token(
                     tok_type=TokenType.MULTI_LINE_COMMENT,
                     start_pos=start_pos,
                 )
             self.advance()
-            msg = "Unterminated multi-line comment"
-            raise ValueError(msg)
-        return None
+
+        msg = "Unterminated multi-line comment"
+        raise ValueError(msg)
 
     def _match_token(self, start_pos: int) -> Token | None:
         fixed_character_mapping = {

@@ -1,7 +1,9 @@
 from collections.abc import Callable
 from typing import ParamSpec, TypeVar
 
+from pbi_parsers.dax.exprs._base import Expression
 from pbi_parsers.dax.parser import Parser
+from pbi_parsers.dax.tokens import TokenType
 
 P = ParamSpec("P")  # Represents the parameters of the decorated function
 R = TypeVar("R")  # Represents the return type of the decorated function
@@ -15,6 +17,10 @@ def scanner_reset(func: Callable[P, R]) -> Callable[P, R]:
             raise TypeError(msg)
         idx = parser.index
 
+        pre_comments = []
+        while parser.peek().tok_type in {TokenType.SINGLE_LINE_COMMENT, TokenType.MULTI_LINE_COMMENT}:
+            pre_comments.append(parser.consume())
+
         # Speed up of a bazillion
         cached_val, cached_index = parser.cache.get((idx, id(func)), (None, -1))
         if cached_val is not None:
@@ -22,6 +28,14 @@ def scanner_reset(func: Callable[P, R]) -> Callable[P, R]:
             return cached_val
 
         ret = func(*args, **kwargs)
+
+        post_comments = []
+        while parser.peek().tok_type in {TokenType.SINGLE_LINE_COMMENT, TokenType.MULTI_LINE_COMMENT}:
+            post_comments.append(parser.consume())
+
+        if isinstance(ret, Expression):
+            ret.pre_comments = pre_comments
+            ret.post_comments = post_comments
 
         parser.cache[idx, id(func)] = (ret, parser.index)
         if ret is None:
