@@ -1,3 +1,4 @@
+import textwrap
 from typing import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
@@ -10,18 +11,35 @@ if TYPE_CHECKING:
 
 class TypingExpression(Expression):
     type_name: list[Token]
+    column_mapping: Expression | None = None
 
-    def __init__(self, type_name: list[Token]):
+    def __init__(
+        self, type_name: list[Token], column_mapping: Expression | None = None
+    ):
         self.type_name = type_name
+        self.column_mapping = column_mapping
 
     def pprint(self) -> str:
         type_name = ".".join(t.text for t in self.type_name)
-        base = f"Type ({type_name})"
+        if self.column_mapping is None:
+            base = f"Type ({type_name})"
+        else:
+            column_mapping = textwrap.indent(self.column_mapping.pprint(), " " * 10)[
+                10:
+            ]
+            base = f"""
+Type (
+    type: {type_name},
+    column: {column_mapping}
+)
+"""
         return base
 
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "TypingExpression | None":
+        from . import any_expression_match
+
         type_keyword = parser.consume()
         if type_keyword.type == TokenType.TYPE_LITERAL:
             return TypingExpression(type_name=[type_keyword])
@@ -37,4 +55,8 @@ class TypingExpression(Expression):
             if period.type != TokenType.PERIOD:
                 return None
             name_parts.append(name)
-        return TypingExpression(type_name=name_parts)
+        if len(name_parts) == 1 and name_parts[0].text == "table":
+            column_mapping = any_expression_match(parser)
+        else:
+            column_mapping = None
+        return TypingExpression(type_name=name_parts, column_mapping=column_mapping)

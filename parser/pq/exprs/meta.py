@@ -21,7 +21,7 @@ class MetaExpression(Expression):
         left_term = textwrap.indent(self.left_term.pprint(), " " * 10)[10:]
         right_term = textwrap.indent(self.right_term.pprint(), " " * 10)[10:]
         base = f"""
-If (
+Meta (
     left: {left_term},
     right: {right_term},
 )""".strip()
