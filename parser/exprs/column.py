@@ -28,8 +28,12 @@ Column (
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "ColumnExpression | None":
-        if cls.match_tokens(
-            parser, [TokenType.SINGLE_QUOTED_IDENTIFIER, TokenType.BRACKETED_IDENTIFIER]
+        table, column = parser.consume(), parser.consume()
+        if table.type not in (
+            TokenType.SINGLE_QUOTED_IDENTIFIER,
+            TokenType.UNQUOTED_IDENTIFIER,
         ):
-            table, column = parser.consume(), parser.consume()
-            return ColumnExpression(table=table, column=column)
+            return None
+        if column.type != TokenType.BRACKETED_IDENTIFIER:
+            return None
+        return ColumnExpression(table=table, column=column)
