@@ -73,6 +73,9 @@ Function (
 
         return FunctionExpression(name_parts=name_parts, args=args, parens=(left_paren, right_paren))
 
+    def function_name(self) -> str:
+        return "".join(x.text for x in self.name_parts)
+
     def children(self) -> list[Expression]:
         """Returns a list of child expressions."""
         return self.args
