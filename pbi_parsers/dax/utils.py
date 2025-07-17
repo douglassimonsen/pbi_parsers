@@ -90,8 +90,13 @@ class Context:
 # TODO: adding ^^^ below a subsection,
 # TODO: handle beginning at an offset, dedenting the section to start with the first non-space
 # TODO: handle when the beginning starts in the middle of a line
-def highlight_section(node: Expression | Token) -> Context:
+def highlight_section(node: Expression | Token | list[Token] | list[Expression]) -> Context:
+    if isinstance(node, list):
+        position = (node[0].position()[0], node[-1].position()[1])
+        first_node = node[0]
+        full_text = first_node.text_slice.full_text if isinstance(first_node, Token) else first_node.full_text()
+        return Context(position, full_text)
+
     position = node.position()
     full_text = node.text_slice.full_text if isinstance(node, Token) else node.full_text()
-
     return Context(position, full_text)
