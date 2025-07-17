@@ -1,6 +1,9 @@
 import textwrap
+from functools import partial
 
 from tokens import Token, TokenType
+
+# MAke a parser class with a pointer index
 
 
 class Expression:
@@ -8,7 +11,7 @@ class Expression:
         raise NotImplementedError("Subclasses should implement this method.")
 
     @classmethod
-    def match(cls, tokens: list[Token]) -> "Expression | None":
+    def match(cls, tokens: list[Token]) -> "tuple[Expression | None, list[Token]]":
         """
         Attempt to match the current tokens to this expression type.
         Returns an instance of the expression if matched, otherwise None.
@@ -21,6 +24,9 @@ class Expression:
             if token.type != token_type:
                 return False
         return True
+
+    def __repr__(self) -> str:
+        return self.pprint(depth=0)
 
 
 class ColumnExpression(Expression):
@@ -40,12 +46,15 @@ Column (
         return textwrap.indent(base, " " * (depth * 4))
 
     @classmethod
-    def match(cls, tokens: list[Token]) -> "ColumnExpression | None":
+    def match(
+        cls, tokens: list[Token]
+    ) -> "tuple[ColumnExpression | None, list[Token]]":
+        tokens = tokens[:]
         if cls.match_tokens(
             tokens, [TokenType.SINGLE_QUOTED_IDENTIFIER, TokenType.BRACKETED_IDENTIFIER]
         ):
             table, column = tokens.pop(0), tokens.pop(0)
-            return ColumnExpression(table=table, column=column)
+            return ColumnExpression(table=table, column=column), tokens
 
 
 class LiteralStringExpression(Expression):
@@ -59,7 +68,9 @@ class LiteralStringExpression(Expression):
         return textwrap.indent(base, " " * (depth * 4))
 
     @classmethod
-    def match(cls, tokens: list[Token]) -> "LiteralStringExpression | None":
+    def match(
+        cls, tokens: list[Token]
+    ) -> "tuple[LiteralStringExpression | None, list[Token]]":
         if cls.match_tokens(tokens, [TokenType.STRING_LITERAL]):
             value = tokens.pop(0)
             return LiteralStringExpression(value=value)
@@ -72,11 +83,13 @@ class LiteralNumberExpression(Expression):
         self.value = value
 
     def pprint(self, depth: int = 0) -> str:
-        base = f"LiteralNumber ({self.value.text})"
+        base = f"Number ({self.value.text})"
         return textwrap.indent(base, " " * (depth * 4))
 
     @classmethod
-    def match(cls, tokens: list[Token]) -> "LiteralNumberExpression | None":
+    def match(
+        cls, tokens: list[Token]
+    ) -> "tuple[LiteralNumberExpression | None, list[Token]]":
         if cls.match_tokens(tokens, [TokenType.NUMBER_LITERAL]):
             value = tokens.pop(0)
             return LiteralNumberExpression(value=value)
@@ -93,13 +106,18 @@ class MeasureExpression(Expression):
         return textwrap.indent(base, " " * (depth * 4))
 
     @classmethod
-    def match(cls, tokens: list[Token]) -> "MeasureExpression | None":
+    def match(
+        cls, tokens: list[Token]
+    ) -> "tuple[MeasureExpression | None, list[Token]]":
         if cls.match_tokens(tokens, [TokenType.BRACKETED_IDENTIFIER]):
             name = tokens.pop(0)
             return MeasureExpression(name=name)
 
 
 class FunctionExpression(Expression):
+    name: Token
+    args: list[Expression]
+
     def __init__(self, name: Token, args: list[Expression]):
         self.name = name
         self.args = args
@@ -115,7 +133,9 @@ Function (
         return textwrap.indent(base, " " * (depth * 4))
 
     @classmethod
-    def match(cls, tokens: list[Token]) -> "FunctionExpression | None":
+    def match(
+        cls, tokens: list[Token]
+    ) -> "tuple[FunctionExpression | None, list[Token]]":
         if not cls.match_tokens(
             tokens, [TokenType.UNQUOTED_IDENTIFIER, TokenType.LEFT_PAREN]
         ):
@@ -149,12 +169,140 @@ Function (
         ret = FunctionExpression(name=name, args=args)
         return ret
 
-    def __repr__(self) -> str:
-        return f"""
-Function (
-    name: {self.name}
+
+def or_match(
+    exprs: tuple[type[Expression], ...], tokens: list[Token]
+) -> Expression | None:
+    """
+    Match non-operator expressions like Column, Measure, Function, LiteralString, and LiteralNumber.
+    """
+    for expr in exprs:
+        if ret := expr.match(tokens):
+            return ret
+    return None
+
+
+div_mul_match = partial(
+    or_match,
+    exprs=(
+        ColumnExpression,
+        MeasureExpression,
+        FunctionExpression,
+        LiteralStringExpression,
+        LiteralNumberExpression,
+    ),
 )
-"""
+
+
+class DivMulExpression(Expression):
+    """
+    Represents an multiplication or division expression.
+    """
+
+    operator: Token
+    left: Expression
+    right: Expression
+
+    def __init__(self, operator: Token, left: Expression, right: Expression):
+        self.operator = operator
+        self.left = left
+        self.right = right
+
+    @classmethod
+    def match(
+        cls, tokens: list[Token]
+    ) -> "tuple[DivMulExpression | None, list[Token]]":
+        left_term = div_mul_match(tokens=tokens)
+        if not left_term:
+            return None
+        if not cls.match_tokens(tokens, [TokenType.OPERATOR]):
+            return None
+        if tokens[0].text not in ("*", "/"):
+            return None
+        operator = tokens.pop(0)
+        right_term = div_mul_match(tokens=tokens)
+        if right_term is None:
+            raise ValueError(
+                f"Expected a right term after operator {operator.text}, found: {tokens[:3]}"
+            )
+        return DivMulExpression(
+            operator=operator, left=left_term, right=right_term
+        ), tokens
+
+    def pprint(self, depth: int = 0) -> str:
+        if self.operator.text == "*":
+            op_str = "Mul"
+        else:
+            op_str = "Div"
+        left_str = textwrap.indent(self.left.pprint(), " " * 10)[10:]
+        right_str = textwrap.indent(self.right.pprint(), " " * 10)[10:]
+        return f"""
+{op_str} (
+    operator: {self.operator.text},
+    left: {left_str},
+    right: {right_str}
+)"""
+
+
+add_sub_match = partial(
+    or_match,
+    exprs=(
+        DivMulExpression,
+        ColumnExpression,
+        MeasureExpression,
+        FunctionExpression,
+        LiteralStringExpression,
+        LiteralNumberExpression,
+    ),
+)
+
+
+class AddSubExpression(Expression):
+    """
+    Represents an addition or subtraction expression.
+    """
+
+    operator: Token
+    left: Expression
+    right: Expression
+
+    def __init__(self, operator: Token, left: Expression, right: Expression):
+        self.operator = operator
+        self.left = left
+        self.right = right
+
+    @classmethod
+    def match(
+        cls, tokens: list[Token]
+    ) -> "tuple[AddSubExpression | None, list[Token]]":
+        left_term = add_sub_match(tokens=tokens)
+        if not left_term:
+            return None
+        if not cls.match_tokens(tokens, [TokenType.OPERATOR]):
+            return None
+        if tokens[0].text not in ("+", "-"):
+            return None
+        operator = tokens.pop(0)
+        right_term = add_sub_match(tokens=tokens)
+        if right_term is None:
+            raise ValueError(
+                f"Expected a right term after operator {operator.text}, found: {tokens[:3]}"
+            )
+        return DivMulExpression(operator=operator, left=left_term, right=right_term)
+
+    def __repr__(self, depth: int = 0) -> str:
+        if self.operator.text == "+":
+            op_str = "Add"
+        else:
+            op_str = "Sub"
+        left_str = self.left.pprint(depth + 1)
+        right_str = self.right.pprint(depth + 1)
+        return f"""
+{op_str} (
+    operator: {self.operator.text},
+    left: {left_str},
+    right: {right_str}
+)"""
 
 
 def to_ast(tokens: list[Token]) -> Expression:
@@ -162,6 +310,11 @@ def to_ast(tokens: list[Token]) -> Expression:
     Convert a list of tokens into an abstract syntax tree (AST).
     """
     while tokens:
+        if ret := AddSubExpression.match(tokens):
+            return ret
+        exit()
+        if ret := DivMulExpression.match(tokens):
+            return ret
         if ret := ColumnExpression.match(tokens):
             return ret
         if ret := FunctionExpression.match(tokens):

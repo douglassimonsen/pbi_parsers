@@ -7,6 +7,7 @@ from tokens import TokenType
 statements = json.load(open("dax.json"))
 
 for statement in statements:
+    statement = "1 + 3 / 1"
     print(statement)
     tokens = Scanner(statement).scan()
     tokens = [token for token in tokens if token.type != TokenType.WHITESPACE]
@@ -14,3 +15,4 @@ for statement in statements:
         print(token)
     print(to_ast(tokens).pprint())
     print("----")
+    exit()
