@@ -21,6 +21,8 @@ class TokenType(Enum):
     LEFT_CURLY_BRACE = 17
     RIGHT_CURLY_BRACE = 18
     RETURN = 19
+    IN = 20
+    KEYWORD = 21
 
 
 class Token:
