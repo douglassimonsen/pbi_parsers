@@ -14,3 +14,11 @@ venv\Scripts\activate
 python -m pip install .
 pre-commit install
 ```
+
+
+## Testing
+
+```shell
+
+pip install -e .
+```

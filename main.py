@@ -1,6 +1,6 @@
 import json
 
-from parser.dax import Parser, Scanner, TokenType
+from pbi_parsers.dax import Parser, Scanner, TokenType
 
 x = "1"
 statements = json.load(open("dax.json", encoding="utf-8"))
