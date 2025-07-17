@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from ..parser import Parser
 
 
-class BoolExpression(Expression):
+class ComparisonExpression(Expression):
     """
     Represents an multiplication or division expression.
     """
@@ -25,10 +25,10 @@ class BoolExpression(Expression):
 
     @classmethod
     @scanner_reset
-    def match(cls, parser: "Parser") -> "BoolExpression | None":
+    def match(cls, parser: "Parser") -> "ComparisonExpression | None":
         from . import EXPRESSION_HIERARCHY, any_expression_match
 
-        skip_index = EXPRESSION_HIERARCHY.index(BoolExpression)
+        skip_index = EXPRESSION_HIERARCHY.index(ComparisonExpression)
 
         left_term = any_expression_match(parser=parser, skip_first=skip_index + 1)
         operator = parser.consume()
@@ -43,7 +43,7 @@ class BoolExpression(Expression):
             raise ValueError(
                 f"Expected a right term after operator {operator.text}, found: {parser.peek()}"
             )
-        return BoolExpression(operator=operator, left=left_term, right=right_term)
+        return ComparisonExpression(operator=operator, left=left_term, right=right_term)
 
     def pprint(self) -> str:
         left_str = textwrap.indent(self.left.pprint(), " " * 10)[10:]

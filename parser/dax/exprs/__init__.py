@@ -4,7 +4,7 @@ from ._base import Expression
 from .add_sub import AddSubExpression
 from .add_sub_unary import AddSubUnaryExpression
 from .array import ArrayExpression
-from .bool import BoolExpression
+from .comparison import ComparisonExpression
 from .column import ColumnExpression
 from .concatenation import ConcatenationExpression
 from .div_mul import DivMulExpression
@@ -46,7 +46,7 @@ EXPRESSION_HIERARCHY = (
     # Operators, must come first
     InExpression,
     LogicalExpression,
-    BoolExpression,
+    ComparisonExpression,
     ConcatenationExpression,
     AddSubExpression,
     DivMulExpression,
@@ -88,7 +88,7 @@ __all__ = [
     "AddSubExpression",
     "AddSubUnaryExpression",
     "ArrayExpression",
-    "BoolExpression",
+    "ComparisonExpression",
     "ColumnExpression",
     "ConcatenationExpression",
     "DivMulExpression",
