@@ -20,10 +20,10 @@ class ReturnExpression(Expression):
         self.variable_statements = variable_statements
 
     def pprint(self) -> str:
-        return_val = textwrap.indent(self.ret.pprint(), " " * 13).lstrip()
+        return_val = textwrap.indent(self.ret.pprint(), " " * 12).lstrip()
         statements = textwrap.indent(
             ",\n".join(stmt.pprint() for stmt in self.variable_statements),
-            " " * 17,
+            " " * 16,
         ).lstrip()
         return f"""
 Return (
