@@ -16,7 +16,7 @@ def any_expression_match(parser) -> Expression | None:
     """
     for expr in (
         AddSubExpression,
-        # DivMulExpression,  # ignored since it's a sub-expression of AddSubExpression
+        DivMulExpression,
         ColumnExpression,
         MeasureExpression,
         FunctionExpression,

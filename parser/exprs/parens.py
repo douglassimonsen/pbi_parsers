@@ -16,8 +16,10 @@ class ParenthesesExpression(Expression):
         self.inner_statement = inner_statement
 
     def pprint(self, depth: int = 0) -> str:
-        base = f"Parentheses (
-            {self.inner_statement})"
+        base = f"""
+Parentheses (
+    {self.inner_statement}
+)""".strip()
         return textwrap.indent(base, " " * (depth * 4))
 
     @classmethod

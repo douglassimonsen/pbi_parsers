@@ -54,7 +54,6 @@ Function (
                 )
 
             if not cls.match_tokens(parser, [TokenType.RIGHT_PAREN]):
-                print(name, args)
                 assert parser.consume().type == TokenType.COMMA
         _right_paren = parser.consume()
         ret = FunctionExpression(name=name, args=args)

@@ -11,6 +11,7 @@ from .function import FunctionExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .measure import MeasureExpression
+from .parens import ParenthesesExpression
 
 if TYPE_CHECKING:
     from ..parser import Parser
@@ -24,6 +25,7 @@ add_sub_match = partial(
         FunctionExpression,
         LiteralStringExpression,
         LiteralNumberExpression,
+        ParenthesesExpression,
     ),
 )
 
