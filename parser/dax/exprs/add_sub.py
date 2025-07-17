@@ -35,7 +35,10 @@ class AddSubExpression(Expression):
 
         if not left_term:
             return None
-        if operator.type != TokenType.OPERATOR or operator.text not in ("+", "-"):
+        if operator.type not in (
+            TokenType.PLUS_SIGN,
+            TokenType.MINUS_SIGN,
+        ):
             return None
 
         right_term = any_expression_match(parser=parser, skip_first=skip_index)

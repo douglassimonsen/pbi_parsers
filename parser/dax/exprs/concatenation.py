@@ -35,7 +35,7 @@ class ConcatenationExpression(Expression):
 
         if not left_term:
             return None
-        if operator.type != TokenType.OPERATOR or operator.text != "&":
+        if operator.type != TokenType.AMPERSAND_OPERATOR:
             return None
 
         right_term = any_expression_match(parser=parser, skip_first=skip_index)

@@ -1,29 +1,51 @@
+from enum import auto
+
 from ..base import BaseToken, BaseTokenType
 
 
 class TokenType(BaseTokenType):
-    OPERATOR = 1
-    UNQUOTED_IDENTIFIER = 2
-    SINGLE_QUOTED_IDENTIFIER = 3
-    BRACKETED_IDENTIFIER = 4
-    STRING_LITERAL = 5
-    NUMBER_LITERAL = 6
-    LEFT_PAREN = 7
-    RIGHT_PAREN = 8
-    SINGLE_LINE_COMMENT = 9
-    MULTI_LINE_COMMENT = 10
-    COMMA = 11
-    VARIABLE = 12
-    WHITESPACE = 13
-    EQUAL_SIGN = 14
-    EOF = 15
-    PERIOD = 16
-    LEFT_CURLY_BRACE = 17
-    RIGHT_CURLY_BRACE = 18
-    RETURN = 19
-    IN = 20
-    KEYWORD = 21
-    COMPARISON_OPERATOR = 22
+    AMPERSAND_OPERATOR = auto()
+    ASC = auto()
+    BRACKETED_IDENTIFIER = auto()
+    COMMA = auto()
+    COMPARISON_OPERATOR = auto()
+    DESC = auto()
+    DIVIDE_SIGN = auto()
+    DOUBLE_AMPERSAND_OPERATOR = auto()
+    DOUBLE_PIPE_OPERATOR = auto()
+    EOF = auto()
+    EQUAL_SIGN = auto()
+    EXPONENTIATION_SIGN = auto()
+    FALSE = auto()
+    IN = auto()
+    LEFT_CURLY_BRACE = auto()
+    LEFT_PAREN = auto()
+    MINUS_SIGN = auto()
+    MODULUS_SIGN = auto()
+    MULTIPLY_SIGN = auto()
+    MULTI_LINE_COMMENT = auto()
+    NOT_EQUAL_SIGN = auto()
+    NUMBER_LITERAL = auto()
+    PERIOD = auto()
+    PLUS_SIGN = auto()
+    RETURN = auto()
+    RIGHT_CURLY_BRACE = auto()
+    RIGHT_PAREN = auto()
+    SINGLE_LINE_COMMENT = auto()
+    SINGLE_QUOTED_IDENTIFIER = auto()
+    STRING_LITERAL = auto()
+    TRUE = auto()
+    UNQUOTED_IDENTIFIER = auto()
+    VARIABLE = auto()
+    WHITESPACE = auto()
+
+
+KEYWORD_MAPPING = {
+    "TRUE": TokenType.TRUE,
+    "FALSE": TokenType.FALSE,
+    "ASC": TokenType.ASC,
+    "DESC": TokenType.DESC,
+}
 
 
 class Token(BaseToken):

@@ -32,7 +32,10 @@ class AddSubUnaryExpression(Expression):
 
         operator = parser.consume()
 
-        if operator.type != TokenType.OPERATOR or operator.text not in ("+", "-"):
+        if operator.type not in (
+            TokenType.PLUS_SIGN,
+            TokenType.MINUS_SIGN,
+        ):
             return None
 
         # Handle chained +-++-+ prefixes
