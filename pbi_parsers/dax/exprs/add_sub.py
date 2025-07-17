@@ -55,3 +55,6 @@ class AddSubExpression(Expression):
     left: {left_str},
     right: {right_str}
 )""".strip()
+
+    def position(self) -> tuple[int, int]:
+        return self.left.position()[0], self.right.position()[1]

@@ -53,3 +53,6 @@ Exponent (
     def children(self) -> list[Expression]:
         """Returns a list of child expressions."""
         return [self.base, self.power]
+
+    def position(self) -> tuple[int, int]:
+        return self.base.position()[0], self.power.position()[1]

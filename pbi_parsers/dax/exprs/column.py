@@ -40,3 +40,6 @@ Column (
     def children(self) -> list[Expression]:  # noqa: PLR6301
         """Returns a list of child expressions."""
         return []
+
+    def position(self) -> tuple[int, int]:
+        return self.table.text_slice.start, self.column.text_slice.end

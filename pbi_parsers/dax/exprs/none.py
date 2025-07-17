@@ -20,3 +20,7 @@ class NoneExpression(Expression):
     def children(self) -> list[Expression]:  # noqa: PLR6301
         """Returns a list of child expressions."""
         return []
+
+    def position(self) -> tuple[int, int]:
+        """Returns the position of the expression."""
+        return -1, -1

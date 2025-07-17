@@ -53,3 +53,6 @@ In (
     def children(self) -> list[Expression]:
         """Returns a list of child expressions."""
         return [self.value, self.array]
+
+    def position(self) -> tuple[int, int]:
+        return self.value.position()[0], self.array.position()[1]

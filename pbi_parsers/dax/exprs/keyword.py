@@ -32,11 +32,18 @@ Keyword ({self.name.text})""".strip()
             if (p1.tok_type, p2.tok_type) == (TokenType.LEFT_PAREN, TokenType.RIGHT_PAREN):
                 # This is a special case for boolean keywords with parentheses.
                 # IDK why microsoft made TRUE() a function too
-                parser.consume()
-                parser.consume()
-                return FunctionExpression(name_parts=[name], args=[])
+                left_paren = parser.consume()
+                right_paren = parser.consume()
+                return FunctionExpression(
+                    name_parts=[name],
+                    args=[],
+                    parens=(left_paren, right_paren),
+                )
         return KeywordExpression(name=name)
 
     def children(self) -> list[Expression]:  # noqa: PLR6301
         """Returns a list of child expressions."""
         return []
+
+    def position(self) -> tuple[int, int]:
+        return self.name.text_slice.start, self.name.text_slice.end

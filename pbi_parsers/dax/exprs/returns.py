@@ -57,3 +57,6 @@ Return (
     def children(self) -> list[Expression]:
         """Returns a list of child expressions."""
         return [self.ret, *self.variable_statements]
+
+    def position(self) -> tuple[int, int]:
+        return self.variable_statements[0].position()[0], self.ret.position()[1]

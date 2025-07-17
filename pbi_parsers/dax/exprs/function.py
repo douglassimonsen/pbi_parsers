@@ -14,10 +14,12 @@ if TYPE_CHECKING:
 class FunctionExpression(Expression):
     name_parts: list[Token]  # necessary for function names with periods
     args: list[Expression]
+    parens: tuple[Token, Token]  # left and right parentheses
 
-    def __init__(self, name_parts: list[Token], args: list[Expression]) -> None:
+    def __init__(self, name_parts: list[Token], args: list[Expression], parens: tuple[Token, Token]) -> None:
         self.name_parts = name_parts
         self.args = args
+        self.parens = parens
 
     def pprint(self) -> str:
         args = ",\n".join(arg.pprint() for arg in self.args)
@@ -47,7 +49,8 @@ Function (
                 return None
             name_parts.extend((period, name))
 
-        if parser.consume().tok_type != TokenType.LEFT_PAREN:
+        left_paren = parser.consume()
+        if left_paren.tok_type != TokenType.LEFT_PAREN:
             return None
 
         while not cls.match_tokens(parser, [TokenType.RIGHT_PAREN]):
@@ -62,9 +65,17 @@ Function (
 
             if not cls.match_tokens(parser, [TokenType.RIGHT_PAREN]):
                 assert parser.consume().tok_type == TokenType.COMMA
-        _right_paren = parser.consume()
-        return FunctionExpression(name_parts=name_parts, args=args)
+
+        right_paren = parser.consume()
+        if right_paren.tok_type != TokenType.RIGHT_PAREN:
+            msg = f"Expected a right parenthesis, found: {right_paren}"
+            raise ValueError(msg)
+
+        return FunctionExpression(name_parts=name_parts, args=args, parens=(left_paren, right_paren))
 
     def children(self) -> list[Expression]:
         """Returns a list of child expressions."""
         return self.args
+
+    def position(self) -> tuple[int, int]:
+        return self.parens[0].text_slice.start, self.parens[1].text_slice.end

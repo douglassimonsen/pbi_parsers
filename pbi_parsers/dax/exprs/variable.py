@@ -50,3 +50,6 @@ Variable (
     def children(self) -> list[Expression]:
         """Returns a list of child expressions."""
         return [self.statement]
+
+    def position(self) -> tuple[int, int]:
+        return self.var_name.text_slice.start, self.statement.position()[1]

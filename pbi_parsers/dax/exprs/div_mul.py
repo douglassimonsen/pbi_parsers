@@ -59,3 +59,6 @@ class DivMulExpression(Expression):
     def children(self) -> list[Expression]:
         """Returns a list of child expressions."""
         return [self.left, self.right]
+
+    def position(self) -> tuple[int, int]:
+        return self.left.position()[0], self.right.position()[1]

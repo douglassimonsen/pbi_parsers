@@ -31,3 +31,8 @@ class Expression:
         """Returns a list of child expressions."""
         msg = "This method should be implemented by subclasses."
         raise NotImplementedError(msg)
+
+    def position(self) -> tuple[int, int]:
+        """Returns the start and end positions of the expression in the source code."""
+        msg = "This method should be implemented by subclasses."
+        raise NotImplementedError(msg)
