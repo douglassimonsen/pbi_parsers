@@ -10,6 +10,7 @@ from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .measure import MeasureExpression
 from .parens import ParenthesesExpression
+from .table import TableExpression
 from .variable import VariableExpression
 
 if TYPE_CHECKING:
@@ -33,6 +34,7 @@ def any_expression_match(parser: "Parser") -> Expression | None:
         LiteralStringExpression,
         LiteralNumberExpression,
         ParenthesesExpression,
+        TableExpression,  # must be after ColumnExpression due to being a prefix of it
         VariableExpression,
     ):
         if match := expr.match(parser):

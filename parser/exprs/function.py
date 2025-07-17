@@ -45,7 +45,7 @@ Function (
         while not cls.match_tokens(parser, [TokenType.RIGHT_PAREN]):
             # We gotta handle operators next :(
             arg = any_expression_match(parser)
-
+            print(arg)
             if arg is not None:
                 args.append(arg)
             else:
