@@ -71,21 +71,9 @@ class Scanner:
             while self.match(lambda c: c in string.ascii_letters + string.digits + "_"):
                 pass
             return Token(
-                type=TokenType.IDENTIFIER,
+                type=TokenType.UNQUOTED_IDENTIFIER,
                 text=self.source[start_pos : self.current_position],
             )
-
-        elif self.match("("):
-            return Token(type=TokenType.LEFT_PAREN, text="(")
-
-        elif self.match(")"):
-            return Token(type=TokenType.RIGHT_PAREN, text=")")
-
-        elif self.match(","):
-            return Token(type=TokenType.COMMA, text=",")
-
-        elif self.match("="):
-            return Token(type=TokenType.EQUAL_SIGN, text="=")
 
         elif self.match("'"):
             while self.match(lambda c: c != "'"):
@@ -135,11 +123,7 @@ class Scanner:
             else:
                 self.advance()
             raise ValueError("Unterminated multi-line comment")
-        elif self.match(lambda c: c in "+-*%&/"):
-            return Token(
-                type=TokenType.OPERATOR,
-                text=self.source[start_pos : self.current_position],
-            )
+
         elif self.match(lambda c: c.isdigit() or c == "."):
             while self.match(lambda c: c.isdigit() or c == "."):
                 pass
@@ -147,28 +131,33 @@ class Scanner:
                 type=TokenType.NUMBER_LITERAL,
                 text=self.source[start_pos : self.current_position],
             )
-        elif self.match("."):
-            return Token(type=TokenType.PERIOD, text=".")
-        elif self.match("{"):
-            return Token(type=TokenType.LEFT_CURLY_BRACE, text="{")
-        elif self.match("}"):
-            return Token(type=TokenType.RIGHT_CURLY_BRACE, text="}")
-        elif self.match("<="):
-            return Token(type=TokenType.OPERATOR, text="<=")
-        elif self.match("<>"):
-            return Token(type=TokenType.OPERATOR, text="<>")
-        elif self.match("<"):  # must be after <>, <=
-            return Token(type=TokenType.OPERATOR, text="<")
-        elif self.match(">="):
-            return Token(type=TokenType.OPERATOR, text=">=")
-        elif self.match(">"):
-            return Token(type=TokenType.OPERATOR, text=">")
-        elif self.match("||"):
-            return Token(type=TokenType.OPERATOR, text="||")
-        elif self.match("|"):
-            return Token(type=TokenType.OPERATOR, text="|")
-        print(self.remaining())
-        breakpoint()
+        fix_character_mapping = {
+            "(": TokenType.LEFT_PAREN,
+            ")": TokenType.RIGHT_PAREN,
+            ",": TokenType.COMMA,
+            "=": TokenType.EQUAL_SIGN,
+            ".": TokenType.PERIOD,
+            "{": TokenType.LEFT_CURLY_BRACE,
+            "}": TokenType.RIGHT_CURLY_BRACE,
+            "<=": TokenType.OPERATOR,
+            "<>": TokenType.OPERATOR,
+            "<": TokenType.OPERATOR,
+            ">=": TokenType.OPERATOR,
+            ">": TokenType.OPERATOR,
+            "||": TokenType.OPERATOR,
+            "|": TokenType.OPERATOR,
+            "&&": TokenType.OPERATOR,
+            "&": TokenType.OPERATOR,
+            "+": TokenType.OPERATOR,
+            "-": TokenType.OPERATOR,
+            "*": TokenType.OPERATOR,
+            "%": TokenType.OPERATOR,
+            "/": TokenType.OPERATOR,
+        }
+
+        for char, token_type in fix_character_mapping.items():
+            if self.match(char):
+                return Token(type=token_type, text=char)
 
     def scan(self) -> None:
         while not self.at_end():
