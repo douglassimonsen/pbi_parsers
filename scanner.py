@@ -72,6 +72,14 @@ class Scanner:
                 text="var",
             )
 
+        elif self.match(lambda c: c.isdigit() or c == "."):
+            while self.match(lambda c: c.isdigit() or c == "."):
+                pass
+            return Token(
+                type=TokenType.NUMBER_LITERAL,
+                text=self.source[start_pos : self.current_position],
+            )
+
         elif self.match(lambda c: c in string.ascii_letters + string.digits + "_"):
             while self.match(lambda c: c in string.ascii_letters + string.digits + "_"):
                 pass
@@ -129,13 +137,6 @@ class Scanner:
                 self.advance()
             raise ValueError("Unterminated multi-line comment")
 
-        elif self.match(lambda c: c.isdigit() or c == "."):
-            while self.match(lambda c: c.isdigit() or c == "."):
-                pass
-            return Token(
-                type=TokenType.NUMBER_LITERAL,
-                text=self.source[start_pos : self.current_position],
-            )
         fix_character_mapping = {
             "(": TokenType.LEFT_PAREN,
             ")": TokenType.RIGHT_PAREN,
