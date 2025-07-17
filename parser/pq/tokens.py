@@ -35,6 +35,7 @@ class TokenType(BaseTokenType):
     ELSE = 32
     THEN = 33
     EACH = 34
+    META = 35
 
 
 class Token(BaseToken):

@@ -21,6 +21,7 @@ class Scanner(BaseScanner):
                     text=keyword,
                 )
 
+        # TODO: handle as a builtin?
         if self.match("int64.type", case_insensitive=True):
             return Token(
                 type=TokenType.TYPE_LITERAL,
@@ -34,6 +35,7 @@ class Scanner(BaseScanner):
             ("then", TokenType.THEN),
             ("else", TokenType.ELSE),
             ("each", TokenType.EACH),
+            ("meta", TokenType.META),
         ):
             if self.match(name, case_insensitive=True):
                 return Token(type=token_type, text=name)
