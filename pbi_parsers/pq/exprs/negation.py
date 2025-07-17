@@ -46,3 +46,7 @@ class NegationExpression(Expression):
 Negation (
     number: {number},
 )""".strip()
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.number]

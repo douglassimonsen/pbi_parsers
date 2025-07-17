@@ -44,3 +44,7 @@ Arrow (
             return None
 
         return ArrowExpression(inputs=inputs, function_body=function_body)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.inputs, self.function_body]

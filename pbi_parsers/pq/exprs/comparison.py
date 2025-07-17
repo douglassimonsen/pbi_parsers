@@ -56,3 +56,7 @@ Bool (
     left: {left_str},
     right: {right_str}
 )""".strip()
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.left, self.right]

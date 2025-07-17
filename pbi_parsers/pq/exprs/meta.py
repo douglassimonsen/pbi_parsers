@@ -48,3 +48,7 @@ Meta (
             return None
 
         return MetaExpression(left_term=left_term, right_term=right_term)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.left_term, self.right_term]

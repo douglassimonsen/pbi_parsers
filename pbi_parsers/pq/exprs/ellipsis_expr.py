@@ -22,3 +22,7 @@ class EllipsisExpression(Expression):
         if parser.consume().tok_type != TokenType.ELLIPSIS:
             return None
         return EllipsisExpression()
+
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []

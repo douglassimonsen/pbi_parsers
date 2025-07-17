@@ -33,3 +33,7 @@ class NotExpression(Expression):
         if expr is None:
             return None
         return NotExpression(expr=expr)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.expr]

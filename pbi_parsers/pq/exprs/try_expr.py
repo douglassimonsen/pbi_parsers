@@ -49,3 +49,7 @@ Try (
             return None
 
         return TryExpression(try_expr=try_expr, otherwise_expr=otherwise_expr)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.try_expr, self.otherwise_expr]

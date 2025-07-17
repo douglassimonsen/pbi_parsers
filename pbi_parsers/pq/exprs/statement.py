@@ -64,3 +64,7 @@ Statement (
             msg = "Expected an expression after 'in' token"
             raise ValueError(msg)
         return StatementExpression(statements=statements, let_expr=in_expr)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.let_expr, *self.statements]

@@ -35,3 +35,7 @@ Each (
         if not each_expr:
             return None
         return EachExpression(each_expr=each_expr)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.each_expr]

@@ -37,3 +37,7 @@ Parentheses (
             return None
 
         return ParenthesesExpression(inner_statement=value)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.inner_statement] if self.inner_statement else []

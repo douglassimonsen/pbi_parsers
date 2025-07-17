@@ -52,3 +52,7 @@ Record (
 
         parser.consume()  # consume the right bracket
         return RecordExpression(args=args)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [val for arg in self.args for val in arg]

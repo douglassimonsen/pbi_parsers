@@ -72,3 +72,7 @@ Type (
             nullable=nullable,
             column_mapping=column_mapping,
         )
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.column_mapping] if self.column_mapping else []

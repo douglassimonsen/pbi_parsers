@@ -64,3 +64,7 @@ If (
         if not else_expr:
             return None
         return IfExpression(if_expr=if_expr, then_expr=then_expr, else_expr=else_expr)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.if_expr, self.then_expr, self.else_expr]

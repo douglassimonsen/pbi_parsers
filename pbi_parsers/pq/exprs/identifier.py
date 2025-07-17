@@ -72,3 +72,6 @@ Bracketed Identifier ({" ".join(part.text for part in self.name_parts)})""".stri
         if right_bracket.tok_type != TokenType.RIGHT_BRACKET:
             return None
         return BracketedIdentifierExpression(name_parts=name_parts)
+
+    def children(self) -> list[Expression]:
+        return super().children()

@@ -16,3 +16,7 @@ class NoneExpression(Expression):
     def match(cls, parser: "Parser") -> "NoneExpression | None":
         msg = "NoneExpression.match should not be called, this is a placeholder for the absence of an expression."
         raise NotImplementedError(msg)
+
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []

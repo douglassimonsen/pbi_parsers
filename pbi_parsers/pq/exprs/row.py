@@ -48,3 +48,7 @@ Table (
             return None
 
         return RowExpression(table=table, indexer=indexer)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.table, self.indexer]
