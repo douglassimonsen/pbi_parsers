@@ -1,9 +1,11 @@
+from ast import Try
 from typing import TYPE_CHECKING
 
 from ._base import Expression
 from .add_sub import AddSubExpression
 from .add_sub_unary import AddSubUnaryExpression
 from .array import ArrayExpression
+from .arrow import ArrowExpression
 from .column import ColumnExpression
 from .comparison import ComparisonExpression
 from .concatenation import ConcatenationExpression
@@ -16,10 +18,12 @@ from .keyword import KeywordExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .meta import MetaExpression
+from .and_or_expr import AndOrExpression
 from .parens import ParenthesesExpression
 from .record import RecordExpression
 from .row import RowExpression
 from .statement import StatementExpression
+from .try_expr import TryExpression
 from .type_expr import TypingExpression
 from .variable import VariableExpression
 
@@ -35,9 +39,11 @@ if, comparison, concatenation, add/sub, div/mul, meta, add/sub, unary
 variable > identifier
 row > identifier
 typing > keyword
+arrow > parentheses
 """
 EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     IfExpression,
+    AndOrExpression,
     ComparisonExpression,
     ConcatenationExpression,
     AddSubExpression,
@@ -45,6 +51,8 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     MetaExpression,
     AddSubUnaryExpression,
     #
+    ArrowExpression,
+    TryExpression,
     ParenthesesExpression,
     StatementExpression,
     ColumnExpression,

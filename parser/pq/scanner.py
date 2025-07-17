@@ -31,9 +31,18 @@ class Scanner(BaseScanner):
             ("each", TokenType.EACH),
             ("meta", TokenType.META),
             ("nullable", TokenType.NULLABLE),
+            ("try", TokenType.TRY),
+            ("otherwise", TokenType.OTHERWISE),
+            ("and", TokenType.AND),
+            ("or", TokenType.OR),
         ):
             if self.match(name, case_insensitive=True):
-                return Token(type=token_type, text=name)
+                if not self.peek().isalpha():
+                    return Token(type=token_type, text=name)
+                else:
+                    # if the next character is an alpha character, it is not a keyword
+                    # but an identifier, so we need to backtrack
+                    self.advance(-len(name))
 
         # keywords have to be checked after the above tokens because "null" blocks "nullable"
         for keyword in KEYWORDS:

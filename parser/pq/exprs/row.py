@@ -1,9 +1,10 @@
 import textwrap
 from typing import TYPE_CHECKING
 
-from ..tokens import Token, TokenType
+from ..tokens import TokenType
 from ._base import Expression
 from ._utils import scanner_reset
+from .identifier import IdentifierExpression
 from .row_index import RowIndexExpression
 
 if TYPE_CHECKING:
@@ -11,13 +12,13 @@ if TYPE_CHECKING:
 
 
 class RowExpression(Expression):
-    table: Token
+    table: IdentifierExpression
     indexer: Expression
     row_indexer: RowIndexExpression | None
 
     def __init__(
         self,
-        table: Token,
+        table: IdentifierExpression,
         indexer: Expression,
         row_indexer: RowIndexExpression | None = None,
     ):
@@ -34,7 +35,7 @@ class RowExpression(Expression):
         )
         base = f"""
 Table (
-    name: {self.table.text},
+    name: {self.table.pprint()},
     indexer: {indexer}
     row_indexer: {row_indexer}
 )        """.strip()
@@ -45,8 +46,8 @@ Table (
     def match(cls, parser: "Parser") -> "RowExpression | None":
         from . import any_expression_match
 
-        table = parser.consume()
-        if table.type != TokenType.UNQUOTED_IDENTIFIER:
+        table = IdentifierExpression.match(parser)
+        if table is None:
             return None
         if parser.consume().type != TokenType.LEFT_CURLY_BRACE:
             return None

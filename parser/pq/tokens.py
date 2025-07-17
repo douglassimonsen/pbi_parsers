@@ -38,6 +38,10 @@ class TokenType(BaseTokenType):
     META = 35
     CONCATENATION_OPERATOR = 36
     NULLABLE = 37
+    TRY = 38
+    OTHERWISE = 39
+    AND = 40
+    OR = 41
 
 
 class Token(BaseToken):
@@ -60,4 +64,6 @@ TEXT_TOKENS = (
     TokenType.EACH,
     TokenType.META,
     TokenType.NULLABLE,
+    TokenType.TRY,
+    TokenType.OTHERWISE,
 )

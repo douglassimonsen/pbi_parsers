@@ -9,9 +9,9 @@ if TYPE_CHECKING:
     from ..parser import Parser
 
 
-class ComparisonExpression(Expression):
+class AndOrExpression(Expression):
     """
-    Represents an multiplication or division expression.
+    Represents an AND or OR expression.
     """
 
     operator: Token
@@ -25,10 +25,10 @@ class ComparisonExpression(Expression):
 
     @classmethod
     @scanner_reset
-    def match(cls, parser: "Parser") -> "ComparisonExpression | None":
+    def match(cls, parser: "Parser") -> "AndOrExpression | None":
         from . import EXPRESSION_HIERARCHY, any_expression_match
 
-        skip_index = EXPRESSION_HIERARCHY.index(ComparisonExpression)
+        skip_index = EXPRESSION_HIERARCHY.index(AndOrExpression)
 
         left_term = any_expression_match(parser=parser, skip_first=skip_index + 1)
         operator = parser.consume()
@@ -36,9 +36,8 @@ class ComparisonExpression(Expression):
         if not left_term:
             return None
         if operator.type not in (
-            TokenType.EQUAL_SIGN,
-            TokenType.COMPARISON_OPERATOR,
-            TokenType.NOT_EQUAL_SIGN,
+            TokenType.AND,
+            TokenType.OR,
         ):
             return None
 
@@ -47,14 +46,13 @@ class ComparisonExpression(Expression):
             raise ValueError(
                 f"Expected a right term after operator {operator.text}, found: {parser.peek()}"
             )
-        return ComparisonExpression(operator=operator, left=left_term, right=right_term)
+        return AndOrExpression(operator=operator, left=left_term, right=right_term)
 
     def pprint(self) -> str:
         left_str = textwrap.indent(self.left.pprint(), " " * 10)[10:]
         right_str = textwrap.indent(self.right.pprint(), " " * 10)[10:]
         return f"""
-Bool (
-    operator: {self.operator.text},
+{self.operator.text} (
     left: {left_str},
     right: {right_str}
 )""".strip()
