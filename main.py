@@ -6,4 +6,5 @@ statements = json.load(open("dax.json"))
 
 for statement in statements:
     print(statement)
-    Scanner.scan(statement)
+    Scanner(statement).scan()
+    print("----")
