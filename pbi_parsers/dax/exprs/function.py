@@ -64,3 +64,7 @@ Function (
                 assert parser.consume().tok_type == TokenType.COMMA
         _right_paren = parser.consume()
         return FunctionExpression(name_parts=name_parts, args=args)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return self.args

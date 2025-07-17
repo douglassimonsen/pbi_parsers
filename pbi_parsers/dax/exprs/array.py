@@ -47,3 +47,7 @@ Array (
                 assert parser.consume().tok_type == TokenType.COMMA
         _right_brace = parser.consume()
         return ArrayExpression(elements=elements)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return self.elements

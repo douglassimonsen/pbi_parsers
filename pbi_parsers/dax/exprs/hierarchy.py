@@ -48,3 +48,7 @@ Hierarchy (
         if level.tok_type != TokenType.BRACKETED_IDENTIFIER:
             return None
         return HierarchyExpression(table=table, column=column, level=level)
+
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []

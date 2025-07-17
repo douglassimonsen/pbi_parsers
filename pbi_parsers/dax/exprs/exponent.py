@@ -49,3 +49,7 @@ Exponent (
     base: {base_str},
     power: {power_str}
 )""".strip()
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.base, self.power]

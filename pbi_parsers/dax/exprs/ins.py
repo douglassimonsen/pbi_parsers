@@ -49,3 +49,7 @@ In (
     value: {value_str},
     array: {array_str}
 )""".strip()
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.value, self.array]

@@ -36,3 +36,7 @@ Column (
         if column.tok_type != TokenType.BRACKETED_IDENTIFIER:
             return None
         return ColumnExpression(table=table, column=column)
+
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []

@@ -53,3 +53,7 @@ Return (
             msg = "ReturnExpression.match called without valid return expression"
             raise ValueError(msg)
         return ReturnExpression(ret=ret, variable_statements=statements)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.ret, *self.variable_statements]

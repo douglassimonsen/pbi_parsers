@@ -36,3 +36,7 @@ Parentheses (
             raise ValueError(msg)
         assert parser.consume().tok_type == TokenType.RIGHT_PAREN  # Consume the right parenthesis
         return ParenthesesExpression(inner_statement=value)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.inner_statement]

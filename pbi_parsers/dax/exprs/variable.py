@@ -46,3 +46,7 @@ Variable (
             msg = "VariableExpression.match called without valid inner expression"
             raise ValueError(msg)
         return VariableExpression(var_name=var_name, statement=statement)
+
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.statement]

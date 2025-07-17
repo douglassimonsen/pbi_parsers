@@ -25,3 +25,7 @@ class MeasureExpression(Expression):
             name = parser.consume()
             return MeasureExpression(name=name)
         return None
+
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []

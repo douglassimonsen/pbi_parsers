@@ -25,3 +25,7 @@ class LiteralStringExpression(Expression):
             value = parser.consume()
             return LiteralStringExpression(value=value)
         return None
+
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []

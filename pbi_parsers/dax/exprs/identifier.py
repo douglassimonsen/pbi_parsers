@@ -26,3 +26,7 @@ Identifier ({self.name.text})""".strip()
         if name.tok_type != TokenType.UNQUOTED_IDENTIFIER:
             return None
         return IdentifierExpression(name=name)
+
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []

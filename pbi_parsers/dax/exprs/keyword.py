@@ -36,3 +36,7 @@ Keyword ({self.name.text})""".strip()
                 parser.consume()
                 return FunctionExpression(name_parts=[name], args=[])
         return KeywordExpression(name=name)
+
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []

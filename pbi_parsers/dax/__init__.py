@@ -1,13 +1,19 @@
+from . import exprs
+from .exprs import Expression
 from .formatter import Formatter
+from .main import format_expression, to_ast
 from .parser import Parser
 from .scanner import Scanner
 from .tokens import Token, TokenType
-from .exprs import Expression
+
 __all__ = [
+    "Expression",
     "Formatter",
     "Parser",
     "Scanner",
     "Token",
     "TokenType",
-    "Expression",
+    "exprs",
+    "format_expression",
+    "to_ast",
 ]

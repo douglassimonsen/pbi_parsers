@@ -26,3 +26,8 @@ class Expression:
 
     def __repr__(self) -> str:
         return self.pprint()
+
+    def children(self) -> list["Expression"]:
+        """Returns a list of child expressions."""
+        msg = "This method should be implemented by subclasses."
+        raise NotImplementedError(msg)
