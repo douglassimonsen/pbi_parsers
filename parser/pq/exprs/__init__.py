@@ -5,6 +5,7 @@ from .array import ArrayExpression
 from .function import FunctionExpression
 from .identifier import IdentifierExpression
 from .keyword import KeywordExpression
+from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .type_expr import TypingExpression
 from .variable import VariableExpression
@@ -14,11 +15,12 @@ if TYPE_CHECKING:
 EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     ArrayExpression,
     FunctionExpression,
+    VariableExpression,  # must be before IdentifierExpression
     IdentifierExpression,
     LiteralStringExpression,
+    LiteralNumberExpression,
     TypingExpression,  # must be before KeywordExpression
     KeywordExpression,
-    VariableExpression,
 )
 
 

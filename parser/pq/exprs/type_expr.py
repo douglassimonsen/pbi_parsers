@@ -23,20 +23,18 @@ class TypingExpression(Expression):
     @scanner_reset
     def match(cls, parser: "Parser") -> "TypingExpression | None":
         type_keyword = parser.consume()
-        if (
-            type_keyword.type != TokenType.KEYWORD
-            or type_keyword.text.lower() != "type"
-        ):
+        if type_keyword.type == TokenType.TYPE_LITERAL:
+            return TypingExpression(type_name=[type_keyword])
+        if type_keyword.type != TokenType.TYPE:
             return None
 
         name_parts = [parser.consume()]
-        if name_parts[0].type == TokenType.KEYWORD:
-            return TypingExpression(type_name=name_parts)
-        elif name_parts[0].type == TokenType.UNQUOTED_IDENTIFIER:
-            while parser.peek().type == TokenType.UNQUOTED_IDENTIFIER:
-                period, name = parser.consume(), parser.consume()
-                if name.type != TokenType.UNQUOTED_IDENTIFIER:
-                    return None
-                if period.type != TokenType.PERIOD:
-                    return None
-                name_parts.extend((period, name))
+        # single part name (i.e. no period)
+        while parser.peek().type == TokenType.PERIOD:
+            period, name = parser.consume(), parser.consume()
+            if name.type not in (TokenType.UNQUOTED_IDENTIFIER, TokenType.TYPE):
+                return None
+            if period.type != TokenType.PERIOD:
+                return None
+            name_parts.append(name)
+        return TypingExpression(type_name=name_parts)
