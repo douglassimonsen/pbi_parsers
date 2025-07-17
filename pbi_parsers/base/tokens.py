@@ -4,13 +4,13 @@ from typing import Any
 
 @dataclass
 class TextSlice:
-    text: str = ""
+    full_text: str = ""
     start: int = -1
     end: int = -1
 
     def get_text(self) -> str:
         """Returns the text slice."""
-        return self.text[self.start : self.end]
+        return self.full_text[self.start : self.end]
 
     def __repr__(self) -> str:
         """Returns a string representation of the TextSlice."""
@@ -30,3 +30,7 @@ class BaseToken:
     def text(self) -> str:
         """Returns the text of the token."""
         return self.text_slice.get_text()
+
+    def position(self) -> tuple[int, int]:
+        """Returns the start and end positions of the token."""
+        return self.text_slice.start, self.text_slice.end

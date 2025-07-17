@@ -13,7 +13,7 @@ class Scanner(BaseScanner):
     def create_token(self, tok_type: TokenType, start_pos: int) -> Token:
         """Create a new token with the given type and text."""
         text_slice = TextSlice(
-            text=self.source,
+            full_text=self.source,
             start=start_pos,
             end=self.current_position,
         )

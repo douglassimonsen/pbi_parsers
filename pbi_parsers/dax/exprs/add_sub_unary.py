@@ -55,5 +55,9 @@ Number (
     number: {number},
 )""".strip()
 
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.number]
+
     def position(self) -> tuple[int, int]:
         return self.operator.text_slice.start, self.number.position()[1]

@@ -1,4 +1,4 @@
-from . import exprs
+from . import exprs, utils
 from .exprs import Expression
 from .formatter import Formatter
 from .main import format_expression, to_ast
@@ -16,4 +16,5 @@ __all__ = [
     "exprs",
     "format_expression",
     "to_ast",
+    "utils",
 ]
