@@ -2,8 +2,8 @@ from collections.abc import Iterable
 
 from .exprs._base import Expression
 from .formatter import Formatter
+from .lexer import Lexer
 from .parser import Parser
-from .scanner import Scanner
 from .tokens import Token, TokenType
 
 
@@ -41,7 +41,7 @@ def to_ast(text: str) -> Expression | None:
             When not matched, returns None.
 
     """
-    tokens = Scanner(text).scan()
+    tokens = Lexer(text).scan()
     tokens = remove_non_executing_tokens(tokens)
     parser = Parser(tokens)
     return parser.to_ast()

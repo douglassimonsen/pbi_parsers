@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from pbi_parsers.pq.tokens import TEXT_TOKENS, Token, TokenType
 
 from ._base import Expression
-from ._utils import scanner_reset
+from ._utils import lexer_reset
 
 if TYPE_CHECKING:
     from pbi_parsers.pq.parser import Parser
@@ -27,7 +27,7 @@ class IdentifierExpression(Expression):
         return f"Identifier ({name})"
 
     @classmethod
-    @scanner_reset
+    @lexer_reset
     def match(cls, parser: "Parser") -> "IdentifierExpression | None":
         name_parts = [parser.consume()]
         if (
@@ -56,7 +56,7 @@ class BracketedIdentifierExpression(Expression):
 Bracketed Identifier ({" ".join(part.text for part in self.name_parts)})""".strip()
 
     @classmethod
-    @scanner_reset
+    @lexer_reset
     def match(cls, parser: "Parser") -> "BracketedIdentifierExpression | None":
         left_bracket = parser.consume()
         if left_bracket.tok_type != TokenType.LEFT_BRACKET:

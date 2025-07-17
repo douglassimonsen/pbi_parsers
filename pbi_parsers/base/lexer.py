@@ -5,7 +5,7 @@ from .tokens import BaseToken
 MAX_POSITION = 1_000_000
 
 
-class BaseScanner:
+class BaseLexer:
     source: str
     start_position: int
     current_position: int

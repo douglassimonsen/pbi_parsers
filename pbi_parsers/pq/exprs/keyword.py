@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from pbi_parsers.pq.tokens import Token, TokenType
 
 from ._base import Expression
-from ._utils import scanner_reset
+from ._utils import lexer_reset
 
 if TYPE_CHECKING:
     from pbi_parsers.pq.parser import Parser
@@ -20,7 +20,7 @@ class KeywordExpression(Expression):
 Keyword ({self.name.text})""".strip()
 
     @classmethod
-    @scanner_reset
+    @lexer_reset
     def match(cls, parser: "Parser") -> "KeywordExpression | None":
         name = parser.consume()
         if name.tok_type != TokenType.KEYWORD:

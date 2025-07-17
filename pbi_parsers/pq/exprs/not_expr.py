@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from pbi_parsers.pq.tokens import TokenType
 
 from ._base import Expression
-from ._utils import scanner_reset
+from ._utils import lexer_reset
 
 if TYPE_CHECKING:
     from pbi_parsers.pq.parser import Parser
@@ -22,7 +22,7 @@ class NotExpression(Expression):
         return f"Not ({self.expr.pprint()})"
 
     @classmethod
-    @scanner_reset
+    @lexer_reset
     def match(cls, parser: "Parser") -> "NotExpression | None":
         from . import any_expression_match  # noqa: PLC0415
 

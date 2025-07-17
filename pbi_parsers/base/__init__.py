@@ -1,7 +1,7 @@
-from .scanner import BaseScanner
+from .lexer import BaseLexer
 from .tokens import BaseToken
 
 __all__ = [
-    "BaseScanner",
+    "BaseLexer",
     "BaseToken",
 ]

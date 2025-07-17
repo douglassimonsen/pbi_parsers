@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from pbi_parsers.pq.tokens import Token, TokenType
 
 from ._base import Expression
-from ._utils import scanner_reset
+from ._utils import lexer_reset
 
 if TYPE_CHECKING:
     from pbi_parsers.pq.parser import Parser
@@ -19,7 +19,7 @@ class LiteralStringExpression(Expression):
         return f"String ({self.value.text})"
 
     @classmethod
-    @scanner_reset
+    @lexer_reset
     def match(cls, parser: "Parser") -> "LiteralStringExpression | None":
         if cls.match_tokens(parser, [TokenType.STRING_LITERAL]):
             value = parser.consume()

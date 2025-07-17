@@ -1,6 +1,6 @@
 import string
 
-from pbi_parsers.base import BaseScanner
+from pbi_parsers.base import BaseLexer
 from pbi_parsers.base.tokens import TextSlice
 
 from .tokens import Token, TokenType
@@ -27,7 +27,7 @@ RESERVED_WORDS = (
 )
 
 
-class Scanner(BaseScanner):
+class Lexer(BaseLexer):
     def scan(self) -> tuple[Token]:
         return super().scan()  # type: ignore[override]
 

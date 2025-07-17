@@ -1,4 +1,4 @@
-from pbi_parsers.base import BaseScanner
+from pbi_parsers.base import BaseLexer
 
 from ..base.tokens import TextSlice
 from .tokens import KEYWORD_MAPPING, Token, TokenType
@@ -6,7 +6,7 @@ from .tokens import KEYWORD_MAPPING, Token, TokenType
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
 
 
-class Scanner(BaseScanner):
+class Lexer(BaseLexer):
     def scan(self) -> tuple[Token]:
         return super().scan()  # type: ignore[override]
 

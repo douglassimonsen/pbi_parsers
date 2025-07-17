@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from pbi_parsers.dax.tokens import KEYWORD_MAPPING, Token, TokenType
 
 from ._base import Expression
-from ._utils import scanner_reset
+from ._utils import lexer_reset
 from .function import FunctionExpression
 
 if TYPE_CHECKING:
@@ -21,7 +21,7 @@ class KeywordExpression(Expression):
 Keyword ({self.name.text})""".strip()
 
     @classmethod
-    @scanner_reset
+    @lexer_reset
     def match(cls, parser: "Parser") -> "KeywordExpression | FunctionExpression | None":
         name = parser.consume()
         if name.tok_type not in KEYWORD_MAPPING.values():

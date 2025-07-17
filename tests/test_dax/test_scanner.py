@@ -1,7 +1,7 @@
 import pytest
 
 from pbi_parsers.base.tokens import TextSlice
-from pbi_parsers.dax import Scanner, Token
+from pbi_parsers.dax import Lexer, Token
 from pbi_parsers.dax.tokens import TokenType
 
 command1 = "1 + 2"
@@ -33,6 +33,6 @@ command2 = "func({})"
         ),
     ],
 )
-def test_scanner(input_str: str, output: tuple[Token, ...]) -> None:
-    tokens = Scanner(input_str).scan()
+def test_lexer(input_str: str, output: tuple[Token, ...]) -> None:
+    tokens = Lexer(input_str).scan()
     assert tokens == output

@@ -9,8 +9,8 @@ P = ParamSpec("P")  # Represents the parameters of the decorated function
 R = TypeVar("R")  # Represents the return type of the decorated function
 
 
-def scanner_reset(func: Callable[P, R]) -> Callable[P, R]:
-    def scanner_reset_inner(*args: P.args, **kwargs: P.kwargs) -> R:
+def lexer_reset(func: Callable[P, R]) -> Callable[P, R]:
+    def lexer_reset_inner(*args: P.args, **kwargs: P.kwargs) -> R:
         parser = args[1]
         if not isinstance(parser, Parser):
             msg = f"Expected the second argument to be a Parser instance, got {type(parser)}"
@@ -42,4 +42,4 @@ def scanner_reset(func: Callable[P, R]) -> Callable[P, R]:
             parser.index = idx
         return ret
 
-    return scanner_reset_inner
+    return lexer_reset_inner

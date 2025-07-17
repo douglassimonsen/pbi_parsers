@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from pbi_parsers.pq.tokens import TokenType
 
 from ._base import Expression
-from ._utils import scanner_reset
+from ._utils import lexer_reset
 from .identifier import IdentifierExpression
 
 if TYPE_CHECKING:
@@ -26,7 +26,7 @@ Record (
 )        """.strip()
 
     @classmethod
-    @scanner_reset
+    @lexer_reset
     def match(cls, parser: "Parser") -> "RecordExpression | None":
         from . import any_expression_match  # noqa: PLC0415
 

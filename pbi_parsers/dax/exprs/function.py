@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from pbi_parsers.dax.tokens import Token, TokenType
 
 from ._base import Expression
-from ._utils import scanner_reset
+from ._utils import lexer_reset
 from .none import NoneExpression
 
 if TYPE_CHECKING:
@@ -31,7 +31,7 @@ Function (
 )        """.strip()
 
     @classmethod
-    @scanner_reset
+    @lexer_reset
     def match(cls, parser: "Parser") -> "FunctionExpression | None":
         from . import any_expression_match  # noqa: PLC0415
 

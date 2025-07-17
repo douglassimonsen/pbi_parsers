@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from pbi_parsers.dax.tokens import Token, TokenType
 
 from ._base import Expression
-from ._utils import scanner_reset
+from ._utils import lexer_reset
 
 if TYPE_CHECKING:
     from pbi_parsers.dax.parser import Parser
@@ -25,7 +25,7 @@ Column (
 )""".strip()
 
     @classmethod
-    @scanner_reset
+    @lexer_reset
     def match(cls, parser: "Parser") -> "ColumnExpression | None":
         table, column = parser.consume(), parser.consume()
         if table.tok_type not in {
