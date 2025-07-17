@@ -102,7 +102,7 @@ class Scanner(BaseScanner):
 
         return None
 
-    def _match_whitespace(self, start_pos: int) -> None:
+    def _match_whitespace(self, start_pos: int) -> Token | None:
         if self.match(lambda c: c in WHITESPACE):
             while self.match(lambda c: c in WHITESPACE):
                 pass
