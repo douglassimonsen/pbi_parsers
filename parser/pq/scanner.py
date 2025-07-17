@@ -34,6 +34,7 @@ class Scanner(BaseScanner):
             ("if", TokenType.IF),
             ("then", TokenType.THEN),
             ("else", TokenType.ELSE),
+            ("each", TokenType.EACH),
         ):
             if self.match(name, case_insensitive=True):
                 return Token(type=token_type, text=name)

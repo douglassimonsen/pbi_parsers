@@ -35,6 +35,7 @@ class TokenType(BaseTokenType):
     IF = 31
     ELSE = 32
     THEN = 33
+    EACH = 34
 
 
 class Token(BaseToken):
