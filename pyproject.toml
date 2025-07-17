@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pbi_parsers"
-description = "Accessing PBIX files programmatically"
+description = "Power BI lexer, parsers, and formatters for DAX and M (Power Query) languages"
 readme = "README.md"
 requires-python = ">=3.11.0"
 dynamic = ["version"]
@@ -20,9 +20,6 @@ dev = [
 
 [tool.hatch.version]
 path = "pbi_parsers/__init__.py"
-
-[tool.hatch.metadata]
-allow-direct-references = true # needed for mermaid dep
 
 [tool.doc8]
 max-line-length = 120
@@ -60,9 +57,3 @@ ignore = [
   "D203",    # ignored due to incompatibility with D211
   "D213",    # ignored due to incompatibility with D212
 ]
-
-[tool.bandit]
-exclude_dirs = ["tests/**"]
-skips = ["B101"]
-
-[tool.mypy]
