@@ -3,7 +3,7 @@ from parser.tokens import Token, TokenType
 from typing import Callable
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
-KEYWORDS = ("TRUE", "FALSE")
+KEYWORDS = ("TRUE", "FALSE", "ASC", "DESC")
 
 
 class Scanner:
