@@ -45,13 +45,11 @@ class DivMulExpression(Expression):
     @scanner_reset
     def match(cls, parser: "Parser") -> "DivMulExpression | None":
         left_term = div_mul_match(parser=parser)
+        operator = parser.consume()
         if not left_term:
             return None
-        if not cls.match_tokens(parser, [TokenType.OPERATOR]):
+        if operator.type != TokenType.OPERATOR or operator.text not in ("*", "/"):
             return None
-        if parser.peek().text not in ("*", "/"):
-            return None
-        operator = parser.consume()
         right_term = div_mul_match(parser=parser)
         if right_term is None:
             raise ValueError(

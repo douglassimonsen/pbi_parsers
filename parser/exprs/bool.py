@@ -50,13 +50,11 @@ class BoolExpression(Expression):
     @scanner_reset
     def match(cls, parser: "Parser") -> "BoolExpression | None":
         left_term = bool_match(parser=parser)
+        operator = parser.consume()
         if not left_term:
             return None
-        if not cls.match_tokens(parser, [TokenType.EQUAL_SIGN]):
+        if operator.type != TokenType.EQUAL_SIGN:
             return None
-        if parser.peek().text != "=":
-            return None
-        operator = parser.consume()
         right_term = bool_match(parser=parser)
         if right_term is None:
             raise ValueError(
