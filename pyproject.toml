@@ -12,7 +12,9 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = [
-  "pytest >= 8.4.1"
+  "build >= 1.2.2",
+  "hatchling >= 1.27.0",
+  "pytest >= 8.4.1",
 ]
 
 [tool.hatch.version]

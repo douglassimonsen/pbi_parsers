@@ -22,3 +22,9 @@ pre-commit install
 
 pip install -e .
 ```
+
+# Build Wheel
+
+```shell
+python -m build .
+```
