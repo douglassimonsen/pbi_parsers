@@ -26,7 +26,7 @@ R = TypeVar("R")  # Represents the return type of the decorated function
 
 def scanner_reset(func: Callable[P, R]) -> Callable[P, R]:
     def scanner_reset_inner(*args: P.args, **kwargs: P.kwargs) -> R:
-        parser: Parser = args[1]
+        parser: "Parser" = args[1]  # type: ignore
         idx = parser.index
         ret = func(*args, **kwargs)
         if ret is None:
