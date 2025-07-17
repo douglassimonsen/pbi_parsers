@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING
+
 from ..tokens import TokenType
+
 if TYPE_CHECKING:
     from ..parser import Parser
-
 
 
 class Expression:
@@ -19,8 +20,8 @@ class Expression:
 
     @staticmethod
     def match_tokens(parser: "Parser", match_tokens: list[TokenType]) -> bool:
-        for token, token_type in zip(parser, match_tokens):
-            if token.type != token_type:
+        for i, token_type in enumerate(match_tokens):
+            if parser.peek(i).type != token_type:
                 return False
         return True
 

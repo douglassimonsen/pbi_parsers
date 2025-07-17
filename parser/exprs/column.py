@@ -2,6 +2,8 @@ import textwrap
 
 from git import TYPE_CHECKING
 
+from ._utils import scanner_reset
+
 from ..tokens import Token, TokenType
 from ._base import Expression
 
@@ -26,6 +28,7 @@ Column (
         return textwrap.indent(base, " " * (depth * 4))
 
     @classmethod
+    @scanner_reset
     def match(cls, parser: "Parser") -> "ColumnExpression | None":
         if cls.match_tokens(
             parser, [TokenType.SINGLE_QUOTED_IDENTIFIER, TokenType.BRACKETED_IDENTIFIER]

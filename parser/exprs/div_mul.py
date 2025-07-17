@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
 from ._base import Expression
-from ._utils import or_match
+from ._utils import or_match, scanner_reset
 from .column import ColumnExpression
 from .function import FunctionExpression
 from .literal_number import LiteralNumberExpression
@@ -40,6 +40,7 @@ class DivMulExpression(Expression):
         self.right = right
 
     @classmethod
+    @scanner_reset
     def match(cls, parser: "Parser") -> "DivMulExpression | None":
         left_term = div_mul_match(parser=parser)
         if not left_term:
@@ -68,4 +69,4 @@ class DivMulExpression(Expression):
     operator: {self.operator.text},
     left: {left_str},
     right: {right_str}
-)"""
+)""".strip()
