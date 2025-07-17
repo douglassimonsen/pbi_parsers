@@ -35,7 +35,6 @@ Parentheses (
             raise ValueError(
                 "ParenthesesExpression.match called without valid inner expression"
             )
-        assert (
-            parser.consume().type == TokenType.RIGHT_PAREN
-        )  # Consume the right parenthesis
+        if parser.consume().type != TokenType.RIGHT_PAREN:
+            return None
         return ParenthesesExpression(inner_statement=value)

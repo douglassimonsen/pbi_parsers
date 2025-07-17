@@ -1,7 +1,7 @@
 import textwrap
 from typing import TYPE_CHECKING
 
-from ..tokens import Token, TokenType
+from ..tokens import Token, TokenType, TEXT_TOKENS
 from ._base import Expression
 from ._utils import scanner_reset
 
@@ -11,12 +11,17 @@ if TYPE_CHECKING:
 
 class TypingExpression(Expression):
     type_name: list[Token]
+    nullable: Token | None = None
     column_mapping: Expression | None = None
 
     def __init__(
-        self, type_name: list[Token], column_mapping: Expression | None = None
+        self,
+        type_name: list[Token],
+        nullable: Token | None = None,
+        column_mapping: Expression | None = None,
     ):
         self.type_name = type_name
+        self.nullable = nullable
         self.column_mapping = column_mapping
 
     def pprint(self) -> str:
@@ -46,6 +51,11 @@ Type (
         if type_keyword.type != TokenType.TYPE:
             return None
 
+        if parser.peek().type == TokenType.NULLABLE:
+            nullable = parser.consume()
+        else:
+            nullable = None
+
         name_parts = [parser.consume()]
         # single part name (i.e. no period)
         while parser.peek().type == TokenType.PERIOD:
@@ -59,4 +69,6 @@ Type (
             column_mapping = any_expression_match(parser)
         else:
             column_mapping = None
-        return TypingExpression(type_name=name_parts, column_mapping=column_mapping)
+        return TypingExpression(
+            type_name=name_parts, nullable=nullable, column_mapping=column_mapping
+        )

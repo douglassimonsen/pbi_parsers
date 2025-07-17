@@ -37,6 +37,7 @@ class TokenType(BaseTokenType):
     EACH = 34
     META = 35
     CONCATENATION_OPERATOR = 36
+    NULLABLE = 37
 
 
 class Token(BaseToken):
@@ -45,3 +46,18 @@ class Token(BaseToken):
 
     def __init__(self, type: TokenType, text: str):
         super().__init__(type, text)
+
+
+# These are tokens that could also be used as identifiers in expressions.
+TEXT_TOKENS = (
+    TokenType.KEYWORD,
+    TokenType.LET,
+    TokenType.IN,
+    TokenType.TYPE,
+    TokenType.IF,
+    TokenType.ELSE,
+    TokenType.THEN,
+    TokenType.EACH,
+    TokenType.META,
+    TokenType.NULLABLE,
+)

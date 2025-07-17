@@ -14,13 +14,6 @@ class Scanner(BaseScanner):
         if self.peek() == "":
             return Token(type=TokenType.EOF, text="")
 
-        for keyword in KEYWORDS:
-            if self.match(keyword, case_insensitive=True):
-                return Token(
-                    type=TokenType.KEYWORD,
-                    text=keyword,
-                )
-
         # TODO: handle as a builtin?
         for c in ("int64.type", "currency.type"):
             if self.match(c, case_insensitive=True):
@@ -37,9 +30,18 @@ class Scanner(BaseScanner):
             ("else", TokenType.ELSE),
             ("each", TokenType.EACH),
             ("meta", TokenType.META),
+            ("nullable", TokenType.NULLABLE),
         ):
             if self.match(name, case_insensitive=True):
                 return Token(type=token_type, text=name)
+
+        # keywords have to be checked after the above tokens because "null" blocks "nullable"
+        for keyword in KEYWORDS:
+            if self.match(keyword, case_insensitive=True):
+                return Token(
+                    type=TokenType.KEYWORD,
+                    text=keyword,
+                )
 
         if self.match(
             lambda c: c[:2].lower() == "in" and c[2] in WHITESPACE,
