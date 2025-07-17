@@ -1,11 +1,10 @@
-from pytest import mark
+import pytest
 
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import ArrayExpression
 
 
-# TODO: Add specific test cases for ArrayExpression
-@mark.parametrize(
+@pytest.mark.parametrize(
     ("input_tokens", "output"),
     [
         # Example placeholder test

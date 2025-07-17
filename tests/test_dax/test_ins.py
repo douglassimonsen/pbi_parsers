@@ -1,11 +1,10 @@
-from pytest import mark
+import pytest
 
 from pbi_parsers.dax import Parser, Token, TokenType
 from pbi_parsers.dax.exprs import InExpression
 
 
-# TODO: Add specific test cases for InExpression
-@mark.parametrize(
+@pytest.mark.parametrize(
     ("input_tokens", "output"),
     [
         (
