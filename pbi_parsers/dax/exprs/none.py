@@ -24,3 +24,7 @@ class NoneExpression(Expression):
     def position(self) -> tuple[int, int]:
         """Returns the position of the expression."""
         return -1, -1
+
+    def full_text(self) -> str:
+        """Returns the full text of the expression."""
+        return ""

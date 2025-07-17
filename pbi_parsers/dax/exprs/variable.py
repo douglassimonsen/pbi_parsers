@@ -53,3 +53,6 @@ Variable (
 
     def position(self) -> tuple[int, int]:
         return self.var_name.text_slice.start, self.statement.position()[1]
+
+    def full_text(self) -> str:
+        return self.var_name.text_slice.full_text

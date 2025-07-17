@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 
 class ReturnExpression(Expression):
     ret: Expression
-    variable_statements: list[Expression]
+    variable_statements: list[VariableExpression]
 
-    def __init__(self, ret: Expression, variable_statements: list[Expression]) -> None:
+    def __init__(self, ret: Expression, variable_statements: list[VariableExpression]) -> None:
         self.ret = ret
         self.variable_statements = variable_statements
 
@@ -39,7 +39,7 @@ Return (
         if not cls.match_tokens(parser, [TokenType.VARIABLE]):
             return None
 
-        statements: list[Expression] = []
+        statements: list[VariableExpression] = []
         while not cls.match_tokens(parser, [TokenType.RETURN]):
             statement = VariableExpression.match(parser)
             if statement is None:
@@ -60,3 +60,6 @@ Return (
 
     def position(self) -> tuple[int, int]:
         return self.variable_statements[0].position()[0], self.ret.position()[1]
+
+    def full_text(self) -> str:
+        return self.ret.full_text()

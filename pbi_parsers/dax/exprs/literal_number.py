@@ -32,3 +32,6 @@ class LiteralNumberExpression(Expression):
 
     def position(self) -> tuple[int, int]:
         return self.value.text_slice.start, self.value.text_slice.end
+
+    def full_text(self) -> str:
+        return self.value.text_slice.full_text

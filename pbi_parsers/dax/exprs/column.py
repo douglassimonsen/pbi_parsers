@@ -43,3 +43,6 @@ Column (
 
     def position(self) -> tuple[int, int]:
         return self.table.text_slice.start, self.column.text_slice.end
+
+    def full_text(self) -> str:
+        return self.table.text_slice.full_text

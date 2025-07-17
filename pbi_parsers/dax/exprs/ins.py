@@ -56,3 +56,6 @@ In (
 
     def position(self) -> tuple[int, int]:
         return self.value.position()[0], self.array.position()[1]
+
+    def full_text(self) -> str:
+        return self.value.full_text()

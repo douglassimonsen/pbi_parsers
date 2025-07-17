@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 from pbi_parsers.dax.tokens import TokenType
@@ -28,14 +27,17 @@ class Expression:
     def __repr__(self) -> str:
         return self.pprint()
 
-    @abstractmethod
     def children(self) -> list["Expression"]:
         """Returns a list of child expressions."""
         msg = "This method should be implemented by subclasses."
         raise NotImplementedError(msg)
 
-    @abstractmethod
     def position(self) -> tuple[int, int]:
         """Returns the start and end positions of the expression in the source code."""
+        msg = "This method should be implemented by subclasses."
+        raise NotImplementedError(msg)
+
+    def full_text(self) -> str:
+        """Returns the full text of the expression."""
         msg = "This method should be implemented by subclasses."
         raise NotImplementedError(msg)

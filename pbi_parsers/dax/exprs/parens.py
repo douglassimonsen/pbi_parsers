@@ -47,3 +47,7 @@ Parentheses (
     def position(self) -> tuple[int, int]:
         """Returns the position of the expression."""
         return self.parens[0].text_slice.start, self.parens[1].text_slice.end
+
+    def full_text(self) -> str:
+        """Returns the full text of the expression."""
+        return self.parens[0].text_slice.full_text

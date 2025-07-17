@@ -16,7 +16,13 @@ def find_all(ast: Expression, class_type: type[T]) -> list[T]:
     return ret
 
 
+# TODO: adding ^^^ below a subsection,
+# TODO: handle beginning at an offset, dedenting the section to start with the first non-space
+# TODO: handle when the beginning starts in the middle of a line
 def highlight_section(node: Expression | Token):
     position = node.position()
-    if isinstance(node, Expression):
-        text = 1
+    if isinstance(node, Token):
+        section = node.text_slice.full_text[position[0] : position[1]]
+    else:
+        section = node.full_text()[position[0] : position[1]]
+    return f"{section} {position}"

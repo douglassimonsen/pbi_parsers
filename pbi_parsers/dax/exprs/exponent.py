@@ -56,3 +56,6 @@ Exponent (
 
     def position(self) -> tuple[int, int]:
         return self.base.position()[0], self.power.position()[1]
+
+    def full_text(self) -> str:
+        return self.base.full_text()

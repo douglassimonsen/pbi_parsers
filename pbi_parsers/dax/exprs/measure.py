@@ -32,3 +32,6 @@ class MeasureExpression(Expression):
 
     def position(self) -> tuple[int, int]:
         return self.name.text_slice.start, self.name.text_slice.end
+
+    def full_text(self) -> str:
+        return self.name.text_slice.full_text

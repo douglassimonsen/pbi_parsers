@@ -63,3 +63,6 @@ Bool (
 
     def position(self) -> tuple[int, int]:
         return self.left.position()[0], self.right.position()[1]
+
+    def full_text(self) -> str:
+        return self.operator.text_slice.full_text
