@@ -42,6 +42,13 @@ class TokenType(BaseTokenType):
     OTHERWISE = 39
     AND = 40
     OR = 41
+    SINGLE_LINE_COMMENT = 42
+    MULTI_LINE_COMMENT = 43
+    ELLIPSIS = 44
+    NOT = 45
+    IS = 46
+    AS = 47
+    EXCLAMATION_POINT = 48
 
 
 class Token(BaseToken):
@@ -66,4 +73,9 @@ TEXT_TOKENS = (
     TokenType.NULLABLE,
     TokenType.TRY,
     TokenType.OTHERWISE,
+    TokenType.AND,
+    TokenType.OR,
+    TokenType.NOT,
+    TokenType.IS,
+    TokenType.AS,
 )

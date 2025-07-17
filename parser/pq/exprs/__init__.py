@@ -12,13 +12,17 @@ from .comparison import ComparisonExpression
 from .concatenation import ConcatenationExpression
 from .div_mul import DivMulExpression
 from .each import EachExpression
+from .ellipsis_expr import EllipsisExpression
 from .function import FunctionExpression
 from .identifier import BracketedIdentifierExpression, IdentifierExpression
 from .if_expr import IfExpression
+from .is_expr import IsExpression
 from .keyword import KeywordExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
 from .meta import MetaExpression
+from .negation import NegationExpression
+from .not_expr import NotExpression
 from .parens import ParenthesesExpression
 from .record import RecordExpression
 from .row import RowExpression
@@ -50,10 +54,14 @@ EXPRESSION_HIERARCHY: tuple[type[Expression], ...] = (
     ConcatenationExpression,
     AddSubExpression,
     DivMulExpression,
+    IsExpression,
     MetaExpression,
+    NegationExpression,
     AddSubUnaryExpression,
     RowIndexExpression,
     #
+    NotExpression,
+    EllipsisExpression,
     ArrowExpression,
     TryExpression,
     ParenthesesExpression,

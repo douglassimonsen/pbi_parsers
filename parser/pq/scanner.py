@@ -35,6 +35,10 @@ class Scanner(BaseScanner):
             ("otherwise", TokenType.OTHERWISE),
             ("and", TokenType.AND),
             ("or", TokenType.OR),
+            ("not", TokenType.NOT),
+            ("in", TokenType.IN),
+            ("is", TokenType.IS),
+            ("as", TokenType.AS),
         ):
             if self.match(name, case_insensitive=True):
                 if not self.peek().isalpha():
@@ -51,15 +55,6 @@ class Scanner(BaseScanner):
                     type=TokenType.KEYWORD,
                     text=keyword,
                 )
-
-        if self.match(
-            lambda c: c[:2].lower() == "in" and c[2] in WHITESPACE,
-            chunk=3,
-        ):  # needed to handle case where "in" is followed by a newline, etc
-            return Token(
-                type=TokenType.IN,
-                text="in",
-            )
 
         if self.match('#"'):
             while self.match(lambda c: c != '"') or self.match('""'):
@@ -105,6 +100,11 @@ class Scanner(BaseScanner):
                 type=TokenType.WHITESPACE,
                 text=self.source[start_pos : self.current_position],
             )
+        elif self.match("..."):
+            return Token(
+                type=TokenType.ELLIPSIS,
+                text="...",
+            )
 
         elif self.match("."):
             # must come before number literal to avoid conflict
@@ -139,6 +139,14 @@ class Scanner(BaseScanner):
                 text=self.source[start_pos : self.current_position],
             )
 
+        elif self.match("//") or self.match("--"):
+            while self.match(lambda c: c not in ("\n", "")):
+                pass
+            return Token(
+                type=TokenType.SINGLE_LINE_COMMENT,
+                text=self.source[start_pos : self.current_position],
+            )
+
         fixed_character_mapping = {
             "=>": TokenType.LAMBDA_ARROW,
             ">=": TokenType.COMPARISON_OPERATOR,
@@ -157,6 +165,7 @@ class Scanner(BaseScanner):
             "/": TokenType.DIVIDE_SIGN,
             ">": TokenType.COMPARISON_OPERATOR,
             "&": TokenType.CONCATENATION_OPERATOR,
+            "!": TokenType.EXCLAMATION_POINT,
         }
 
         for char, token_type in fixed_character_mapping.items():
