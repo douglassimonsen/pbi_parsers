@@ -25,5 +25,3 @@ for j, statement in enumerate(statements):
     a = p.to_ast()
     if a is not None:
         print(a.pprint())
-    breakpoint()
-    print("""\n----""")
