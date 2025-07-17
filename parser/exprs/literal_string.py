@@ -15,7 +15,7 @@ class LiteralStringExpression(Expression):
         self.value = value
 
     def pprint(self) -> str:
-        base = f"LiteralString ({self.value.text})"
+        base = f"String ({self.value.text})"
         return base
 
     @classmethod

@@ -5,11 +5,14 @@ from .add_sub import AddSubExpression
 from .add_sub_unary import AddSubUnaryExpression
 from .bool import BoolExpression
 from .column import ColumnExpression
+from .concatenation import ConcatenationExpression
 from .div_mul import DivMulExpression
+from .exponent import ExponentExpression
 from .function import FunctionExpression
 from .identifier import IdentifierExpression
 from .literal_number import LiteralNumberExpression
 from .literal_string import LiteralStringExpression
+from .logical import LogicalExpression
 from .measure import MeasureExpression
 from .parens import ParenthesesExpression
 from .returns import ReturnExpression
@@ -24,18 +27,22 @@ if TYPE_CHECKING:
 # identifer must be before table to ensure correct precedence.
 
 # operator precedence (https://learn.microsoft.com/en-us/dax/dax-operator-reference):
-# ^
+# ^ (note: the docs disagree, but I think this is correct)
 # unary +,-
 # *,/
 # +,-
 # &
+# &&, || (note: this is not specified in the docs, so I'm guessing here)
 # =, ==, <>, <, <=, >, >=
 # NOT
 
 EXPRESSION_HIERARCHY = (
     BoolExpression,
+    LogicalExpression,
+    ConcatenationExpression,
     AddSubExpression,
     DivMulExpression,
+    ExponentExpression,
     AddSubUnaryExpression,
     #
     VariableExpression,
