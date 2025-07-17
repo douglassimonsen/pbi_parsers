@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING
 
-from ..tokens import TokenType
+from parser.pq.tokens import TokenType
+
 from ._base import Expression
 from ._utils import scanner_reset
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.pq.parser import Parser
 
 
 class NotExpression(Expression):
@@ -14,7 +15,7 @@ class NotExpression(Expression):
     def __init__(
         self,
         expr: Expression,
-    ):
+    ) -> None:
         self.expr = expr
 
     def pprint(self) -> str:
@@ -23,9 +24,9 @@ class NotExpression(Expression):
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "NotExpression | None":
-        from . import any_expression_match
+        from . import any_expression_match  # noqa: PLC0415
 
-        if parser.consume().type != TokenType.NOT:
+        if parser.consume().tok_type != TokenType.NOT:
             return None
 
         expr = any_expression_match(parser)

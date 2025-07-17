@@ -1,9 +1,9 @@
-from enum import auto
+from enum import Enum, auto
 
-from ..base import BaseToken, BaseTokenType
+from parser.base import BaseToken
 
 
-class TokenType(BaseTokenType):
+class TokenType(Enum):
     AMPERSAND_OPERATOR = auto()
     ASC = auto()
     BRACKETED_IDENTIFIER = auto()
@@ -49,8 +49,8 @@ KEYWORD_MAPPING = {
 
 
 class Token(BaseToken):
-    type: TokenType  # type: ignore
+    tok_type: TokenType
     text: str
 
-    def __init__(self, type: TokenType, text: str):
-        super().__init__(type, text)
+    def __init__(self, tok_type: TokenType, text: str) -> None:
+        super().__init__(tok_type, text)

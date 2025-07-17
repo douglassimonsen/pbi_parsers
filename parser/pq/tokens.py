@@ -1,7 +1,9 @@
-from ..base import BaseToken, BaseTokenType
+from enum import Enum
+
+from parser.base import BaseToken
 
 
-class TokenType(BaseTokenType):
+class TokenType(Enum):
     LET = 1
     EOF = 2
     KEYWORD = 3
@@ -52,11 +54,11 @@ class TokenType(BaseTokenType):
 
 
 class Token(BaseToken):
-    type: TokenType  # type: ignore
+    tok_type: TokenType
     text: str
 
-    def __init__(self, type: TokenType, text: str):
-        super().__init__(type, text)
+    def __init__(self, tok_type: TokenType, text: str) -> None:
+        super().__init__(tok_type, text)
 
 
 # These are tokens that could also be used as identifiers in expressions.

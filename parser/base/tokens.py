@@ -1,18 +1,14 @@
-from enum import Enum
-
-
-class BaseTokenType(Enum):
-    pass
+from typing import Any
 
 
 class BaseToken:
-    type: BaseTokenType
+    tok_type: Any
     text: str
 
-    def __init__(self, type: BaseTokenType, text: str):
-        self.type = type
+    def __init__(self, tok_type: Any, text: str) -> None:
+        self.tok_type = tok_type
         self.text = text
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         pretty_text = self.text.replace("\n", "\\n").replace("\r", "\\r")
-        return f"Token(type={self.type.name}, text='{pretty_text}')"
+        return f"Token(type={self.tok_type.name}, text='{pretty_text}')"

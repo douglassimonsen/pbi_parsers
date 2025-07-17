@@ -1,22 +1,22 @@
 from typing import TYPE_CHECKING
 
-from ..tokens import Token, TokenType
+from parser.pq.tokens import Token, TokenType
+
 from ._base import Expression
 from ._utils import scanner_reset
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.pq.parser import Parser
 
 
 class LiteralNumberExpression(Expression):
     value: Token
 
-    def __init__(self, value: Token):
+    def __init__(self, value: Token) -> None:
         self.value = value
 
     def pprint(self) -> str:
-        base = f"Number ({self.value.text})"
-        return base
+        return f"Number ({self.value.text})"
 
     @classmethod
     @scanner_reset
@@ -24,3 +24,4 @@ class LiteralNumberExpression(Expression):
         if cls.match_tokens(parser, [TokenType.NUMBER_LITERAL]):
             value = parser.consume()
             return LiteralNumberExpression(value=value)
+        return None

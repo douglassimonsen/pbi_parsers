@@ -1,24 +1,23 @@
 import textwrap
 from typing import TYPE_CHECKING
 
-from ..tokens import Token, TokenType
+from parser.pq.tokens import Token, TokenType
+
 from ._base import Expression
 from ._utils import scanner_reset
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.pq.parser import Parser
 
 
 class ConcatenationExpression(Expression):
-    """
-    Represents an addition or subtraction expression.
-    """
+    """Represents an addition or subtraction expression."""
 
     operator: Token
     left: Expression
     right: Expression
 
-    def __init__(self, operator: Token, left: Expression, right: Expression):
+    def __init__(self, operator: Token, left: Expression, right: Expression) -> None:
         self.operator = operator
         self.left = left
         self.right = right
@@ -26,7 +25,7 @@ class ConcatenationExpression(Expression):
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "ConcatenationExpression | None":
-        from . import EXPRESSION_HIERARCHY, any_expression_match
+        from . import EXPRESSION_HIERARCHY, any_expression_match  # noqa: PLC0415
 
         skip_index = EXPRESSION_HIERARCHY.index(ConcatenationExpression)
 
@@ -35,16 +34,17 @@ class ConcatenationExpression(Expression):
 
         if not left_term:
             return None
-        if operator.type != TokenType.CONCATENATION_OPERATOR:
+        if operator.tok_type != TokenType.CONCATENATION_OPERATOR:
             return None
 
         right_term = any_expression_match(parser=parser, skip_first=skip_index)
         if right_term is None:
-            raise ValueError(
-                f"Expected a right term after operator {operator.text}, found: {parser.peek()}"
-            )
+            msg = f"Expected a right term after operator {operator.text}, found: {parser.peek()}"
+            raise ValueError(msg)
         return ConcatenationExpression(
-            operator=operator, left=left_term, right=right_term
+            operator=operator,
+            left=left_term,
+            right=right_term,
         )
 
     def pprint(self) -> str:

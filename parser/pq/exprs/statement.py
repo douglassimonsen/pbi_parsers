@@ -1,65 +1,66 @@
 import textwrap
 from typing import TYPE_CHECKING
 
-from ..tokens import TokenType
+from parser.pq.tokens import TokenType
+
 from ._base import Expression
 from ._utils import scanner_reset
 from .variable import VariableExpression
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.pq.parser import Parser
 
 
-# TODO: maybe convert to StatementExpression in the future?
 class StatementExpression(Expression):
     statements: list[VariableExpression]
     let_expr: Expression
 
-    def __init__(self, let_expr: Expression, statements: list[VariableExpression]):
+    def __init__(self, let_expr: Expression, statements: list[VariableExpression]) -> None:
         self.let_expr = let_expr
         self.statements = statements
 
     def pprint(self) -> str:
         let_expr = textwrap.indent(self.let_expr.pprint(), " " * 14)[14:]
         statements = textwrap.indent(
-            ",\n".join(statement.pprint() for statement in self.statements), " " * 17
+            ",\n".join(statement.pprint() for statement in self.statements),
+            " " * 17,
         )[17:]
-        base = f"""
+        return f"""
 Statement (
     statements: {statements}
     let_expr: {let_expr}
 )
 """.strip()
-        return base
 
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "StatementExpression | None":
-        from . import any_expression_match
+        from . import any_expression_match  # noqa: PLC0415
 
-        if parser.consume().type != TokenType.LET:
+        if parser.consume().tok_type != TokenType.LET:
             return None
 
         statements = []
-        while parser.peek().type != TokenType.IN:
+        while parser.peek().tok_type != TokenType.IN:
             statements.append(VariableExpression.match(parser))
 
-            if parser.peek().type == TokenType.COMMA:
+            if parser.peek().tok_type == TokenType.COMMA:
                 parser.consume()
-            elif parser.peek().type != TokenType.IN:
+            elif parser.peek().tok_type != TokenType.IN:
                 print(parser.remaining())
                 print(statements)
-                breakpoint()
-                raise ValueError(
-                    f"Expected a comma or 'in' token, got {parser.peek().type}"
-                )
+                exit()
+                msg = f"Expected a comma or 'in' token, got {parser.peek().tok_type}"
+                raise ValueError(msg)
         if not statements:
             return None
 
-        if parser.consume().type != TokenType.IN:
-            raise ValueError("Expected 'in' token after let statements")
+        if parser.consume().tok_type != TokenType.IN:
+            msg = "Expected 'in' token after let statements"
+            raise ValueError(msg)
 
         in_expr = any_expression_match(parser)
         if in_expr is None:
-            raise ValueError("Expected an expression after 'in' token")
+            msg = "Expected an expression after 'in' token"
+            raise ValueError(msg)
         return StatementExpression(statements=statements, let_expr=in_expr)

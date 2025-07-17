@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pbyx"
+description = "Accessing PBIX files programmatically"
+readme = "README.md"
+requires-python = ">=3.11.0"
+dynamic = ["version"]
+dependencies = [
+]
+
+
+[tool.hatch.version]
+path = "parser/__init__.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true # needed for mermaid dep
+
+[tool.doc8]
+max-line-length = 120
+file-encoding = "utf8"
+
+[tool.ruff]
+line-length = 120
+preview = true
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
+  "CPY001",  # https://docs.astral.sh/ruff/rules/missing-copyright-notice/
+  "DOC201",  # https://docs.astral.sh/ruff/rules/docstring-missing-returns/
+  "D100",    # https://docs.astral.sh/ruff/rules/undocumented-public-module/
+  "D401",    # https://docs.astral.sh/ruff/rules/non-imperative-mood/
+  "ERA001",  # https://docs.astral.sh/ruff/rules/commented-out-code/
+  "N815",    # https://docs.astral.sh/ruff/rules/mixed-case-variable-in-class-scope/ ignored for now. Can be undone by replacing the pydantic fields with Field(alias=...)
+  "PLR1722", # https://docs.astral.sh/ruff/rules/sys-exit-alias/
+  "RUF012",
+  "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
+  "S101",
+  "T100",    # https://docs.astral.sh/ruff/rules/debugger/
+  "T201",    # https://docs.astral.sh/ruff/rules/print/
+  "TD002",
+  "TD003",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D105",
+  "D107",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests/**"]
+skips = ["B101"]
+
+[tool.mypy]

@@ -1,13 +1,13 @@
 import json
-from pathlib import Path
 
-from parser.pq import Parser, Scanner, TokenType
+from parser.dax import Parser, Scanner, TokenType
 
-with Path("pqs.json").open(encoding="utf-8") as f:
-    statements = json.load(f)
+x = "1"
+statements = json.load(open("dax.json", encoding="utf-8"))
 
 for j, statement in enumerate(statements):
-    # statement = r"""
+    #     statement = """
+
     # """
     print(j, len(statements), statement)
     tokens = Scanner(statement).scan()
@@ -22,8 +22,8 @@ for j, statement in enumerate(statements):
             tokens,
         ),
     )
-    for i, token in enumerate(tokens):
-        print(i, token)
+    # for i, token in enumerate(tokens):
+    #     print(i, token)
     p = Parser(tokens)
     a = p.to_ast()
-    # exit()
+    # print(a)

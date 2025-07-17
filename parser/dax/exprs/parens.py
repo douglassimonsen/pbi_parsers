@@ -1,30 +1,30 @@
 from typing import TYPE_CHECKING
 
-from ..tokens import TokenType
+from parser.dax.tokens import TokenType
+
 from ._base import Expression
 from ._utils import scanner_reset
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.dax.parser import Parser
 
 
 class ParenthesesExpression(Expression):
     inner_statement: Expression
 
-    def __init__(self, inner_statement: Expression):
+    def __init__(self, inner_statement: Expression) -> None:
         self.inner_statement = inner_statement
 
     def pprint(self) -> str:
-        base = f"""
+        return f"""
 Parentheses (
     {self.inner_statement}
 )""".strip()
-        return base
 
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "ParenthesesExpression | None":
-        from . import any_expression_match
+        from . import any_expression_match  # noqa: PLC0415
 
         if not cls.match_tokens(parser, [TokenType.LEFT_PAREN]):
             return None
@@ -32,10 +32,7 @@ Parentheses (
         parser.consume()
         value = any_expression_match(parser)
         if value is None:
-            raise ValueError(
-                "ParenthesesExpression.match called without valid inner expression"
-            )
-        assert (
-            parser.consume().type == TokenType.RIGHT_PAREN
-        )  # Consume the right parenthesis
+            msg = "ParenthesesExpression.match called without valid inner expression"
+            raise ValueError(msg)
+        assert parser.consume().tok_type == TokenType.RIGHT_PAREN  # Consume the right parenthesis
         return ParenthesesExpression(inner_statement=value)

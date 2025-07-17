@@ -1,30 +1,29 @@
 import textwrap
 from typing import TYPE_CHECKING
 
-from ..tokens import TokenType
+from parser.dax.tokens import TokenType
+
 from ._base import Expression
 from ._utils import scanner_reset
 
 if TYPE_CHECKING:
-    from ..parser import Parser
+    from parser.dax.parser import Parser
 
 
 class InExpression(Expression):
-    """
-    Represents an multiplication or division expression.
-    """
+    """Represents an multiplication or division expression."""
 
     value: Expression
     array: Expression
 
-    def __init__(self, value: Expression, array: Expression):
+    def __init__(self, value: Expression, array: Expression) -> None:
         self.value = value
         self.array = array
 
     @classmethod
     @scanner_reset
     def match(cls, parser: "Parser") -> "InExpression | None":
-        from . import EXPRESSION_HIERARCHY, any_expression_match
+        from . import EXPRESSION_HIERARCHY, any_expression_match  # noqa: PLC0415
 
         skip_index = EXPRESSION_HIERARCHY.index(InExpression)
 
@@ -33,14 +32,13 @@ class InExpression(Expression):
 
         if not left_term:
             return None
-        if operator.type != TokenType.IN:
+        if operator.tok_type != TokenType.IN:
             return None
 
         right_term = any_expression_match(parser=parser, skip_first=skip_index)
         if right_term is None:
-            raise ValueError(
-                f"Expected a right term after operator {operator.text}, found: {parser.peek()}"
-            )
+            msg = f"Expected a right term after operator {operator.text}, found: {parser.peek()}"
+            raise ValueError(msg)
         return InExpression(value=left_term, array=right_term)
 
     def pprint(self) -> str:
