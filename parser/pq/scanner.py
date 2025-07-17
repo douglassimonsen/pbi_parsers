@@ -4,7 +4,7 @@ from ..base import BaseScanner
 from .tokens import Token, TokenType
 
 WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
-KEYWORDS = ()
+KEYWORDS = ("null", "true", "false")
 
 
 class Scanner(BaseScanner):
@@ -38,10 +38,14 @@ class Scanner(BaseScanner):
         elif self.match('"'):
             while self.match(lambda c: c != '"') or self.match('""'):
                 pass
-            return Token(
-                type=TokenType.STRING_LITERAL,
-                text=self.source[start_pos : self.current_position],
-            )
+            if self.match('"'):
+                return Token(
+                    type=TokenType.STRING_LITERAL,
+                    text=self.source[start_pos : self.current_position],
+                )
+            else:
+                raise ValueError("Unterminated string literal")
+
         elif self.match("'"):
             while self.match(lambda c: c != "'"):
                 pass
@@ -59,6 +63,13 @@ class Scanner(BaseScanner):
             return Token(
                 type=TokenType.WHITESPACE,
                 text=self.source[start_pos : self.current_position],
+            )
+
+        elif self.match("."):
+            # must come before number literal to avoid conflict
+            return Token(
+                type=TokenType.PERIOD,
+                text=".",
             )
 
         elif self.match(
@@ -90,7 +101,6 @@ class Scanner(BaseScanner):
         fixed_character_mapping = {
             "=>": TokenType.LAMBDA_ARROW,
             "=": TokenType.EQUAL_SIGN,
-            ".": TokenType.PERIOD,
             "(": TokenType.LEFT_PAREN,
             ")": TokenType.RIGHT_PAREN,
             "{": TokenType.LEFT_CURLY_BRACE,
@@ -113,3 +123,6 @@ class Scanner(BaseScanner):
         print(self.remaining())
         print("---------------------")
         breakpoint()
+        raise ValueError(
+            f"Unexpected character '{self.peek()}' at position {self.current_position}"
+        )
