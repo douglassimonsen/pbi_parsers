@@ -1,4 +1,3 @@
-import textwrap
 from typing import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
@@ -15,12 +14,12 @@ class TableExpression(Expression):
     def __init__(self, name: Token):
         self.name = name
 
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
         base = f"""
 Table (
     {self.name.text}
 )""".strip()
-        return textwrap.indent(base, " " * (depth * 4))
+        return base
 
     @classmethod
     @scanner_reset

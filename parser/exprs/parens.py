@@ -1,4 +1,3 @@
-import textwrap
 from typing import TYPE_CHECKING
 
 from ..tokens import TokenType
@@ -15,12 +14,12 @@ class ParenthesesExpression(Expression):
     def __init__(self, inner_statement: Expression):
         self.inner_statement = inner_statement
 
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
         base = f"""
 Parentheses (
     {self.inner_statement}
 )""".strip()
-        return textwrap.indent(base, " " * (depth * 4))
+        return base
 
     @classmethod
     @scanner_reset

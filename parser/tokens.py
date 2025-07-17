@@ -20,6 +20,7 @@ class TokenType(Enum):
     PERIOD = 16
     LEFT_CURLY_BRACE = 17
     RIGHT_CURLY_BRACE = 18
+    RETURN = 19
 
 
 class Token:

@@ -49,12 +49,12 @@ class AddSubExpression(Expression):
     def match(cls, parser: "Parser") -> "AddSubExpression | None":
         left_term = add_sub_match(parser=parser)
         operator = parser.consume()
+
         if not left_term:
-            return None
-        if not cls.match_tokens(parser, [TokenType.OPERATOR]):
             return None
         if operator.type != TokenType.OPERATOR or operator.text not in ("+", "-"):
             return None
+
         right_term = add_sub_match(parser=parser)
         if right_term is None:
             raise ValueError(
@@ -62,13 +62,13 @@ class AddSubExpression(Expression):
             )
         return AddSubExpression(operator=operator, left=left_term, right=right_term)
 
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
         if self.operator.text == "+":
             op_str = "Add"
         else:
             op_str = "Sub"
-        left_str = textwrap.indent(self.left.pprint(), " " * 10)[10:]
-        right_str = textwrap.indent(self.right.pprint(), " " * 10)[10:]
+        left_str = textwrap.indent(self.left.pprint(), " " * 10).lstrip()
+        right_str = textwrap.indent(self.right.pprint(), " " * 10).lstrip()
         return f"""
 {op_str} (
     operator: {self.operator.text},

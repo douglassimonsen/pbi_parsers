@@ -18,14 +18,15 @@ class VariableExpression(Expression):
         self.var_name = var_name
         self.statement = statement
 
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
+        statement = textwrap.indent(self.statement.pprint(), " " * 17).lstrip()
         base = f"""
 Variable (
     name: {self.var_name.text},
-    statement: {self.statement}
+    statement: {statement}
 )
 """.strip()
-        return textwrap.indent(base, " " * (depth * 4))
+        return base
 
     @classmethod
     @scanner_reset

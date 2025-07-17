@@ -1,4 +1,3 @@
-import textwrap
 from typing import TYPE_CHECKING
 
 from ..tokens import Token, TokenType
@@ -17,13 +16,13 @@ class ColumnExpression(Expression):
         self.table = table
         self.column = column
 
-    def pprint(self, depth: int = 0) -> str:
+    def pprint(self) -> str:
         base = f"""
 Column (
     {self.table.text}, 
     {self.column.text}
 )""".strip()
-        return textwrap.indent(base, " " * (depth * 4))
+        return base
 
     @classmethod
     @scanner_reset
