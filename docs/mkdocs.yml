@@ -4,9 +4,11 @@ nav:
   - Home: index.md
   - API:
       - DAX:
+          - Lexer: api/dax/lexer.md
           - Parser: api/dax/parser.md
           - Formatter: api/dax/formatter.md
       - PQ:
+          - Lexer: api/pq/lexer.md
           - Parser: api/pq/parser.md
           - Formatter: api/pq/formatter.md
       - Shared:
