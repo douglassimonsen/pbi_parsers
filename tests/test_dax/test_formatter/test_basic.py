@@ -1,6 +1,6 @@
 import pytest
 
-from pbi_parsers.dax import Formatter, to_ast
+from ....pbi_parsers.dax.main import format_expression
 
 
 @pytest.mark.parametrize(
@@ -27,9 +27,5 @@ func.name(
     ],
 )
 def test_add_sub(input_str: str, output: str) -> None:
-    expr = to_ast(input_str)
-    if expr is None:
-        msg = f"Failed to parse expression: {input_str}"
-        raise ValueError(msg)
-    formatted_str = Formatter(expr).format()
+    formatted_str = format_expression(input_str)
     assert formatted_str == output, f"Expected: {output}, but got: {formatted_str}"
