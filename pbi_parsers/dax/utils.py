@@ -35,7 +35,7 @@ HTML = jinja2.Template("""
     <span>{{ section_line }}</span>
 {% endfor %}
 <div>
-""")
+""")  # noqa: E501
 
 
 class Context:
@@ -87,9 +87,6 @@ class Context:
         )
 
 
-# TODO: adding ^^^ below a subsection,
-# TODO: handle beginning at an offset, dedenting the section to start with the first non-space
-# TODO: handle when the beginning starts in the middle of a line
 def highlight_section(node: Expression | Token | list[Token] | list[Expression]) -> Context:
     if isinstance(node, list):
         position = (node[0].position()[0], node[-1].position()[1])

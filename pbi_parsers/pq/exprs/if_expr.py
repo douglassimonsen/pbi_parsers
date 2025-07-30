@@ -38,7 +38,7 @@ If (
 
     @classmethod
     @lexer_reset
-    def match(cls, parser: "Parser") -> "IfExpression | None":
+    def match(cls, parser: "Parser") -> "IfExpression | None":  # noqa: PLR0911
         from . import any_expression_match  # noqa: PLC0415
 
         if_ = parser.consume()

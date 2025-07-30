@@ -18,7 +18,7 @@ from pbi_parsers.dax.exprs import KeywordExpression
             """Function (
     name: TRUE,
     args: 
-)""",
+)""",  # noqa: W291
         ),
         ([Token(TokenType.FALSE, TextSlice("FALSE", 0, 5))], "Keyword (FALSE)"),
     ],

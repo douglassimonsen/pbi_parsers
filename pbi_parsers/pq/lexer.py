@@ -40,7 +40,6 @@ class Lexer(BaseLexer):
         )
         return Token(tok_type=tok_type, text_slice=text_slice)
 
-    # TODO: handle as a builtin?
     def _match_type_literal(self, start_pos: int) -> Token | None:
         for c in ("int64.type", "currency.type"):
             if self.match(c, case_insensitive=True):
