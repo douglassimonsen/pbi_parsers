@@ -4,6 +4,11 @@ Based on [Crafting Interpreters](https://timothya.com/pdfs/crafting-interpreters
 
 For more information, see the [docs](https://douglassimonsen.github.io/pbi_parsers/)
 
+# Installation
+
+```shell
+python -m pip install pbi_parsers
+```
 
 # Dev Instructions
 
