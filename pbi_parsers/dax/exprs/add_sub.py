@@ -28,6 +28,13 @@ class AddSubExpression(Expression):
         self.left = left
         self.right = right
 
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.left, self.right]
+
+    def full_text(self) -> str:
+        return self.operator.text_slice.full_text
+
     @classmethod
     @lexer_reset
     def match(cls, parser: "Parser") -> "AddSubExpression | None":
@@ -52,6 +59,9 @@ class AddSubExpression(Expression):
             raise ValueError(msg)
         return AddSubExpression(operator=operator, left=left_term, right=right_term)
 
+    def position(self) -> tuple[int, int]:
+        return self.left.position()[0], self.right.position()[1]
+
     def pprint(self) -> str:
         op_str = "Add" if self.operator.text == "+" else "Sub"
         left_str = textwrap.indent(self.left.pprint(), " " * 10).lstrip()
@@ -61,13 +71,3 @@ class AddSubExpression(Expression):
     left: {left_str},
     right: {right_str}
 )""".strip()
-
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return [self.left, self.right]
-
-    def position(self) -> tuple[int, int]:
-        return self.left.position()[0], self.right.position()[1]
-
-    def full_text(self) -> str:
-        return self.operator.text_slice.full_text

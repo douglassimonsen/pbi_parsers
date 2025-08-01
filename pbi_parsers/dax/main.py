@@ -7,6 +7,22 @@ from .parser import Parser
 from .tokens import Token, TokenType
 
 
+def format_expression(text: str) -> str:
+    """Formats a DAX expression string into a more readable format.
+
+    Args:
+        text (str): The DAX expression to format.
+
+    Returns:
+        str: The formatted DAX expression.
+
+    """
+    ast = to_ast(text)
+    if ast is None:
+        return text
+    return Formatter(ast).format()
+
+
 def remove_non_executing_tokens(tokens: Iterable[Token]) -> list[Token]:
     """Removes tokens that are not executed in the DAX expression.
 
@@ -45,19 +61,3 @@ def to_ast(text: str) -> Expression | None:
     tokens = remove_non_executing_tokens(tokens)
     parser = Parser(tokens)
     return parser.to_ast()
-
-
-def format_expression(text: str) -> str:
-    """Formats a DAX expression string into a more readable format.
-
-    Args:
-        text (str): The DAX expression to format.
-
-    Returns:
-        str: The formatted DAX expression.
-
-    """
-    ast = to_ast(text)
-    if ast is None:
-        return text
-    return Formatter(ast).format()

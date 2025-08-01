@@ -10,6 +10,17 @@ R = TypeVar("R")  # Represents the return type of the decorated function
 
 
 def lexer_reset(func: Callable[P, R]) -> Callable[P, R]:
+    """Decorator to reset the lexer state before and after parsing an expression.
+
+    This decorator performs the following actions:
+    1. Collects pre-comments before parsing.
+    2. Caches the result of the parsing function to avoid redundant parsing.
+    3. Collects post-comments after parsing.
+
+    The caching is required since the operator precedence otherwise leads to all other expressions being
+    called multiple times.
+    """
+
     def lexer_reset_inner(*args: P.args, **kwargs: P.kwargs) -> R:
         parser = args[1]
         if not isinstance(parser, Parser):

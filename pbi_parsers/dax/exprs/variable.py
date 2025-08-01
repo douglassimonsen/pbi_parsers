@@ -28,14 +28,12 @@ class VariableExpression(Expression):
         self.var_name = var_name
         self.statement = statement
 
-    def pprint(self) -> str:
-        statement = textwrap.indent(self.statement.pprint(), " " * 15).lstrip()
-        return f"""
-Variable (
-    name: {self.var_name.text},
-    statement: {statement}
-)
-""".strip()
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.statement]
+
+    def full_text(self) -> str:
+        return self.var_name.text_slice.full_text
 
     @classmethod
     @lexer_reset
@@ -57,12 +55,14 @@ Variable (
             raise ValueError(msg)
         return VariableExpression(var_name=var_name, statement=statement)
 
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return [self.statement]
-
     def position(self) -> tuple[int, int]:
         return self.var_name.text_slice.start, self.statement.position()[1]
 
-    def full_text(self) -> str:
-        return self.var_name.text_slice.full_text
+    def pprint(self) -> str:
+        statement = textwrap.indent(self.statement.pprint(), " " * 15).lstrip()
+        return f"""
+Variable (
+    name: {self.var_name.text},
+    statement: {statement}
+)
+""".strip()

@@ -32,14 +32,19 @@ class BaseToken:
     tok_type: Any
     text_slice: TextSlice = field(default_factory=TextSlice)
 
+    def __eq__(self, other: object) -> bool:
+        """Checks equality based on token type and text slice."""
+        if not isinstance(other, BaseToken):
+            return NotImplemented
+        return self.tok_type == other.tok_type and self.text_slice == other.text_slice
+
+    def __hash__(self) -> int:
+        """Returns a hash based on token type and text slice."""
+        return hash((self.tok_type, self.text_slice))
+
     def __repr__(self) -> str:
         pretty_text = self.text_slice.get_text().replace("\n", "\\n").replace("\r", "\\r")
         return f"Token(type={self.tok_type.name}, text='{pretty_text}')"
-
-    @property
-    def text(self) -> str:
-        """Returns the text underlying the token."""
-        return self.text_slice.get_text()
 
     def position(self) -> tuple[int, int]:
         """Returns the start and end positions of the token.
@@ -50,12 +55,12 @@ class BaseToken:
         """
         return self.text_slice.start, self.text_slice.end
 
-    def __eq__(self, other: object) -> bool:
-        """Checks equality based on token type and text slice."""
-        if not isinstance(other, BaseToken):
-            return NotImplemented
-        return self.tok_type == other.tok_type and self.text_slice == other.text_slice
+    @property
+    def text(self) -> str:
+        """Returns the text underlying the token.
 
-    def __hash__(self) -> int:
-        """Returns a hash based on token type and text slice."""
-        return hash((self.tok_type, self.text_slice))
+        Returns:
+            str: The text of the token as a string.
+
+        """
+        return self.text_slice.get_text()

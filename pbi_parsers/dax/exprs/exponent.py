@@ -26,6 +26,13 @@ class ExponentExpression(Expression):
         self.base = base
         self.power = power
 
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.base, self.power]
+
+    def full_text(self) -> str:
+        return self.base.full_text()
+
     @classmethod
     @lexer_reset
     def match(cls, parser: "Parser") -> "ExponentExpression | None":
@@ -47,6 +54,9 @@ class ExponentExpression(Expression):
             raise ValueError(msg)
         return ExponentExpression(base=base, power=power)
 
+    def position(self) -> tuple[int, int]:
+        return self.base.position()[0], self.power.position()[1]
+
     def pprint(self) -> str:
         base_str = textwrap.indent(self.base.pprint(), " " * 10).lstrip()
         power_str = textwrap.indent(self.power.pprint(), " " * 10).lstrip()
@@ -55,13 +65,3 @@ Exponent (
     base: {base_str},
     power: {power_str}
 )""".strip()
-
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return [self.base, self.power]
-
-    def position(self) -> tuple[int, int]:
-        return self.base.position()[0], self.power.position()[1]
-
-    def full_text(self) -> str:
-        return self.base.full_text()

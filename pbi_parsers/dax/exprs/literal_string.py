@@ -23,8 +23,12 @@ class LiteralStringExpression(Expression):
     def __init__(self, value: Token) -> None:
         self.value = value
 
-    def pprint(self) -> str:
-        return f"String ({self.value.text})"
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []
+
+    def full_text(self) -> str:
+        return self.value.text_slice.full_text
 
     @classmethod
     @lexer_reset
@@ -34,12 +38,8 @@ class LiteralStringExpression(Expression):
             return LiteralStringExpression(value=value)
         return None
 
-    def children(self) -> list[Expression]:  # noqa: PLR6301
-        """Returns a list of child expressions."""
-        return []
-
     def position(self) -> tuple[int, int]:
         return self.value.text_slice.start, self.value.text_slice.end
 
-    def full_text(self) -> str:
-        return self.value.text_slice.full_text
+    def pprint(self) -> str:
+        return f"String ({self.value.text})"

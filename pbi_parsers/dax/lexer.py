@@ -7,9 +7,6 @@ WHITESPACE = ["\n", "\r", "\t", " ", "\f", "\v"]
 
 
 class Lexer(BaseLexer):
-    def scan(self) -> tuple[Token]:
-        return super().scan()  # type: ignore[override]
-
     def create_token(self, tok_type: TokenType, start_pos: int) -> Token:
         """Create a new token with the given type and text."""
         text_slice = TextSlice(
@@ -18,6 +15,51 @@ class Lexer(BaseLexer):
             end=self.current_position,
         )
         return Token(tok_type=tok_type, text_slice=text_slice)
+
+    def scan(self) -> tuple[Token]:
+        return super().scan()  # type: ignore[override]
+
+    def scan_helper(self) -> Token:
+        start_pos: int = self.current_position
+
+        if not self.peek():
+            return Token()
+
+        for candidate_func in (
+            self._match_in,
+            self._match_keyword,
+            self._match_whitespace,
+            self._match_var,
+            self._match_return,
+            self._match_period,
+            self._match_number_literal,
+            self._match_unquoted_identifier,
+            self._match_single_quoted_identifier,
+            self._match_bracketed_identifier,
+            self._match_string_literal,
+            self._match_single_line_comment,
+            self._match_multi_line_comment,
+            self._match_token,
+        ):
+            match_candidate = candidate_func(start_pos)
+            if match_candidate:
+                return match_candidate
+
+        msg = f"Unexpected character: {self.peek()} at position {self.current_position}"
+        raise ValueError(msg)
+
+    def _match_bracketed_identifier(self, start_pos: int) -> Token | None:
+        if self.match("["):
+            while self.match(lambda c: c != "]"):
+                pass
+            if self.match("]"):
+                return self.create_token(
+                    tok_type=TokenType.BRACKETED_IDENTIFIER,
+                    start_pos=start_pos,
+                )
+            msg = "Unterminated bracketed identifier"
+            raise ValueError(msg)
+        return None
 
     def _match_in(self, start_pos: int) -> Token | None:
         if self.match(
@@ -41,40 +83,20 @@ class Lexer(BaseLexer):
                 )
         return None
 
-    def _match_whitespace(self, start_pos: int) -> Token | None:
-        if self.match(lambda c: c in WHITESPACE):
-            while self.match(lambda c: c in WHITESPACE):
-                pass
-            return self.create_token(
-                tok_type=TokenType.WHITESPACE,
-                start_pos=start_pos,
-            )
-        return None
+    def _match_multi_line_comment(self, start_pos: int) -> Token | None:
+        if not self.match("/*"):
+            return None
 
-    def _match_var(self, start_pos: int) -> Token | None:
-        if self.match("var", case_insensitive=True):
-            return self.create_token(
-                tok_type=TokenType.VARIABLE,
-                start_pos=start_pos,
-            )
-        return None
+        while not self.at_end():
+            if self.match("*/", chunk=2):
+                return self.create_token(
+                    tok_type=TokenType.MULTI_LINE_COMMENT,
+                    start_pos=start_pos,
+                )
+            self.advance()
 
-    def _match_return(self, start_pos: int) -> Token | None:
-        if self.match("return", case_insensitive=True):
-            return self.create_token(
-                tok_type=TokenType.RETURN,
-                start_pos=start_pos,
-            )
-        return None
-
-    def _match_period(self, start_pos: int) -> Token | None:
-        if self.match("."):
-            # must come before number literal to avoid conflict
-            return self.create_token(
-                tok_type=TokenType.PERIOD,
-                start_pos=start_pos,
-            )
-        return None
+        msg = "Unterminated multi-line comment"
+        raise ValueError(msg)
 
     def _match_number_literal(self, start_pos: int) -> Token | None:
         if self.match(
@@ -88,12 +110,29 @@ class Lexer(BaseLexer):
             )
         return None
 
-    def _match_unquoted_identifier(self, start_pos: int) -> Token | None:
-        if self.match(lambda c: c.isalnum() or c == "_"):
-            while self.match(lambda c: c.isalnum() or c == "_"):
+    def _match_period(self, start_pos: int) -> Token | None:
+        if self.match("."):
+            # must come before number literal to avoid conflict
+            return self.create_token(
+                tok_type=TokenType.PERIOD,
+                start_pos=start_pos,
+            )
+        return None
+
+    def _match_return(self, start_pos: int) -> Token | None:
+        if self.match("return", case_insensitive=True):
+            return self.create_token(
+                tok_type=TokenType.RETURN,
+                start_pos=start_pos,
+            )
+        return None
+
+    def _match_single_line_comment(self, start_pos: int) -> Token | None:
+        if self.match("//") or self.match("--"):
+            while self.match(lambda c: c not in {"\n", ""}):
                 pass
             return self.create_token(
-                tok_type=TokenType.UNQUOTED_IDENTIFIER,
+                tok_type=TokenType.SINGLE_LINE_COMMENT,
                 start_pos=start_pos,
             )
         return None
@@ -111,19 +150,6 @@ class Lexer(BaseLexer):
             raise ValueError(msg)
         return None
 
-    def _match_bracketed_identifier(self, start_pos: int) -> Token | None:
-        if self.match("["):
-            while self.match(lambda c: c != "]"):
-                pass
-            if self.match("]"):
-                return self.create_token(
-                    tok_type=TokenType.BRACKETED_IDENTIFIER,
-                    start_pos=start_pos,
-                )
-            msg = "Unterminated bracketed identifier"
-            raise ValueError(msg)
-        return None
-
     def _match_string_literal(self, start_pos: int) -> Token | None:
         if self.match('"'):
             while self.match(lambda c: c != '"') or self.match('""'):
@@ -136,31 +162,6 @@ class Lexer(BaseLexer):
             msg = "Unterminated string literal"
             raise ValueError(msg)
         return None
-
-    def _match_single_line_comment(self, start_pos: int) -> Token | None:
-        if self.match("//") or self.match("--"):
-            while self.match(lambda c: c not in {"\n", ""}):
-                pass
-            return self.create_token(
-                tok_type=TokenType.SINGLE_LINE_COMMENT,
-                start_pos=start_pos,
-            )
-        return None
-
-    def _match_multi_line_comment(self, start_pos: int) -> Token | None:
-        if not self.match("/*"):
-            return None
-
-        while not self.at_end():
-            if self.match("*/", chunk=2):
-                return self.create_token(
-                    tok_type=TokenType.MULTI_LINE_COMMENT,
-                    start_pos=start_pos,
-                )
-            self.advance()
-
-        msg = "Unterminated multi-line comment"
-        raise ValueError(msg)
 
     def _match_token(self, start_pos: int) -> Token | None:
         fixed_character_mapping = {
@@ -192,31 +193,30 @@ class Lexer(BaseLexer):
                 return self.create_token(tok_type=token_type, start_pos=start_pos)
         return None
 
-    def scan_helper(self) -> Token:
-        start_pos: int = self.current_position
+    def _match_unquoted_identifier(self, start_pos: int) -> Token | None:
+        if self.match(lambda c: c.isalnum() or c == "_"):
+            while self.match(lambda c: c.isalnum() or c == "_"):
+                pass
+            return self.create_token(
+                tok_type=TokenType.UNQUOTED_IDENTIFIER,
+                start_pos=start_pos,
+            )
+        return None
 
-        if not self.peek():
-            return Token()
+    def _match_var(self, start_pos: int) -> Token | None:
+        if self.match("var", case_insensitive=True):
+            return self.create_token(
+                tok_type=TokenType.VARIABLE,
+                start_pos=start_pos,
+            )
+        return None
 
-        for candidate_func in (
-            self._match_in,
-            self._match_keyword,
-            self._match_whitespace,
-            self._match_var,
-            self._match_return,
-            self._match_period,
-            self._match_number_literal,
-            self._match_unquoted_identifier,
-            self._match_single_quoted_identifier,
-            self._match_bracketed_identifier,
-            self._match_string_literal,
-            self._match_single_line_comment,
-            self._match_multi_line_comment,
-            self._match_token,
-        ):
-            match_candidate = candidate_func(start_pos)
-            if match_candidate:
-                return match_candidate
-
-        msg = f"Unexpected character: {self.peek()} at position {self.current_position}"
-        raise ValueError(msg)
+    def _match_whitespace(self, start_pos: int) -> Token | None:
+        if self.match(lambda c: c in WHITESPACE):
+            while self.match(lambda c: c in WHITESPACE):
+                pass
+            return self.create_token(
+                tok_type=TokenType.WHITESPACE,
+                start_pos=start_pos,
+            )
+        return None

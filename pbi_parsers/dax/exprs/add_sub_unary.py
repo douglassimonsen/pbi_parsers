@@ -26,6 +26,13 @@ class AddSubUnaryExpression(Expression):
         self.operator = operator
         self.number = number
 
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.number]
+
+    def full_text(self) -> str:
+        return self.operator.text_slice.full_text
+
     @classmethod
     @lexer_reset
     def match(cls, parser: "Parser") -> "AddSubUnaryExpression | None":
@@ -53,6 +60,9 @@ class AddSubUnaryExpression(Expression):
             raise ValueError(msg)
         return AddSubUnaryExpression(operator=operator, number=number)
 
+    def position(self) -> tuple[int, int]:
+        return self.operator.text_slice.start, self.number.position()[1]
+
     def pprint(self) -> str:
         number = textwrap.indent(self.number.pprint(), " " * 12).lstrip()
         return f"""
@@ -60,13 +70,3 @@ Number (
     sign: {self.operator.text},
     number: {number},
 )""".strip()
-
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return [self.number]
-
-    def position(self) -> tuple[int, int]:
-        return self.operator.text_slice.start, self.number.position()[1]
-
-    def full_text(self) -> str:
-        return self.operator.text_slice.full_text

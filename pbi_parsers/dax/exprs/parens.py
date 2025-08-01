@@ -25,11 +25,13 @@ class ParenthesesExpression(Expression):
         self.inner_statement = inner_statement
         self.parens = parens
 
-    def pprint(self) -> str:
-        return f"""
-Parentheses (
-    {self.inner_statement}
-)""".strip()
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.inner_statement]
+
+    def full_text(self) -> str:
+        """Returns the full text of the expression."""
+        return self.parens[0].text_slice.full_text
 
     @classmethod
     @lexer_reset
@@ -48,14 +50,12 @@ Parentheses (
         assert right_paren.tok_type == TokenType.RIGHT_PAREN  # Consume the right parenthesis
         return ParenthesesExpression(inner_statement=value, parens=(left_paren, right_paren))
 
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return [self.inner_statement]
-
     def position(self) -> tuple[int, int]:
         """Returns the position of the expression."""
         return self.parens[0].text_slice.start, self.parens[1].text_slice.end
 
-    def full_text(self) -> str:
-        """Returns the full text of the expression."""
-        return self.parens[0].text_slice.full_text
+    def pprint(self) -> str:
+        return f"""
+Parentheses (
+    {self.inner_statement}
+)""".strip()

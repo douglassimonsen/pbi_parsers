@@ -26,6 +26,13 @@ class InExpression(Expression):
         self.value = value
         self.array = array
 
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.value, self.array]
+
+    def full_text(self) -> str:
+        return self.value.full_text()
+
     @classmethod
     @lexer_reset
     def match(cls, parser: "Parser") -> "InExpression | None":
@@ -47,6 +54,9 @@ class InExpression(Expression):
             raise ValueError(msg)
         return InExpression(value=left_term, array=right_term)
 
+    def position(self) -> tuple[int, int]:
+        return self.value.position()[0], self.array.position()[1]
+
     def pprint(self) -> str:
         value_str = textwrap.indent(self.value.pprint(), " " * 11)[11:]
         array_str = textwrap.indent(self.array.pprint(), " " * 11)[11:]
@@ -55,13 +65,3 @@ In (
     value: {value_str},
     array: {array_str}
 )""".strip()
-
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return [self.value, self.array]
-
-    def position(self) -> tuple[int, int]:
-        return self.value.position()[0], self.array.position()[1]
-
-    def full_text(self) -> str:
-        return self.value.full_text()

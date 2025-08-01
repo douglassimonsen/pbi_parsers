@@ -10,8 +10,17 @@ class Expression:
     pre_comments: list[Any] = []
     post_comments: list[Any] = []
 
-    def pprint(self) -> str:
-        msg = "Subclasses should implement this method."
+    def __repr__(self) -> str:
+        return self.pprint()
+
+    def children(self) -> list["Expression"]:
+        """Returns a list of child expressions."""
+        msg = "This method should be implemented by subclasses."
+        raise NotImplementedError(msg)
+
+    def full_text(self) -> str:
+        """Returns the full text of the expression."""
+        msg = "This method should be implemented by subclasses."
         raise NotImplementedError(msg)
 
     @classmethod
@@ -27,20 +36,11 @@ class Expression:
     def match_tokens(parser: "Parser", match_tokens: list[TokenType]) -> bool:
         return all(parser.peek(i).tok_type == token_type for i, token_type in enumerate(match_tokens))
 
-    def __repr__(self) -> str:
-        return self.pprint()
-
-    def children(self) -> list["Expression"]:
-        """Returns a list of child expressions."""
-        msg = "This method should be implemented by subclasses."
-        raise NotImplementedError(msg)
-
     def position(self) -> tuple[int, int]:
         """Returns the start and end positions of the expression in the source code."""
         msg = "This method should be implemented by subclasses."
         raise NotImplementedError(msg)
 
-    def full_text(self) -> str:
-        """Returns the full text of the expression."""
-        msg = "This method should be implemented by subclasses."
+    def pprint(self) -> str:
+        msg = "Subclasses should implement this method."
         raise NotImplementedError(msg)

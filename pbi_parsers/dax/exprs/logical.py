@@ -28,6 +28,13 @@ class LogicalExpression(Expression):
         self.left = left
         self.right = right
 
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.left, self.right]
+
+    def full_text(self) -> str:
+        return self.left.full_text()
+
     @classmethod
     @lexer_reset
     def match(cls, parser: "Parser") -> "LogicalExpression | None":
@@ -55,6 +62,9 @@ class LogicalExpression(Expression):
             raise ValueError(msg)
         return LogicalExpression(operator=operator, left=left_term, right=right_term)
 
+    def position(self) -> tuple[int, int]:
+        return self.left.position()[0], self.right.position()[1]
+
     def pprint(self) -> str:
         left_str = textwrap.indent(self.left.pprint(), " " * 10).lstrip()
         right_str = textwrap.indent(self.right.pprint(), " " * 10).lstrip()
@@ -64,13 +74,3 @@ Logical (
     left: {left_str},
     right: {right_str}
 )""".strip()
-
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return [self.left, self.right]
-
-    def position(self) -> tuple[int, int]:
-        return self.left.position()[0], self.right.position()[1]
-
-    def full_text(self) -> str:
-        return self.left.full_text()

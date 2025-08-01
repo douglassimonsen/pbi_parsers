@@ -50,25 +50,6 @@ class Context:
     def __repr__(self) -> str:
         return self.to_console()
 
-    @staticmethod
-    def _get_highlighted_text(
-        lines: list[str],
-        position: tuple[int, int],
-    ) -> dict[int, tuple[int, int]]:
-        highlight_line_dict: dict[int, tuple[int, int]] = {}
-
-        remaining_start, remaining_end = position
-        for i, line in enumerate(lines):
-            if len(line) > remaining_start and remaining_end > 0:
-                buffer = len(str(i)) + 3
-                highlight_line_dict[i] = (
-                    buffer + remaining_start,
-                    buffer + min(remaining_end, len(line)),
-                )
-            remaining_start -= len(line) + 1  # +1 for the newline character
-            remaining_end -= len(line) + 1
-        return highlight_line_dict
-
     def to_console(self, context_lines: int = 2) -> str:
         """Render the context for console output."""
         lines = self.full_text.split("\n")
@@ -106,6 +87,25 @@ class Context:
             Style=Style,
             Fore=Fore,
         )
+
+    @staticmethod
+    def _get_highlighted_text(
+        lines: list[str],
+        position: tuple[int, int],
+    ) -> dict[int, tuple[int, int]]:
+        highlight_line_dict: dict[int, tuple[int, int]] = {}
+
+        remaining_start, remaining_end = position
+        for i, line in enumerate(lines):
+            if len(line) > remaining_start and remaining_end > 0:
+                buffer = len(str(i)) + 3
+                highlight_line_dict[i] = (
+                    buffer + remaining_start,
+                    buffer + min(remaining_end, len(line)),
+                )
+            remaining_start -= len(line) + 1  # +1 for the newline character
+            remaining_end -= len(line) + 1
+        return highlight_line_dict
 
 
 def highlight_section(node: Expression | Token | list[Token] | list[Expression]) -> Context:

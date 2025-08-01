@@ -26,13 +26,12 @@ class ArrayExpression(Expression):
         self.elements: list[Expression] = elements
         self.braces = braces
 
-    def pprint(self) -> str:
-        elements = ",\n".join(element.pprint() for element in self.elements)
-        elements = textwrap.indent(elements, " " * 14)[14:]
-        return f"""
-Array (
-    elements: {elements}
-)        """.strip()
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return self.elements
+
+    def full_text(self) -> str:
+        return self.braces[0].text_slice.full_text
 
     @classmethod
     @lexer_reset
@@ -64,12 +63,13 @@ Array (
 
         return ArrayExpression(elements=elements, braces=(left_brace, right_brace))
 
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return self.elements
-
     def position(self) -> tuple[int, int]:
         return self.braces[0].text_slice.start, self.braces[1].text_slice.end
 
-    def full_text(self) -> str:
-        return self.braces[0].text_slice.full_text
+    def pprint(self) -> str:
+        elements = ",\n".join(element.pprint() for element in self.elements)
+        elements = textwrap.indent(elements, " " * 14)[14:]
+        return f"""
+Array (
+    elements: {elements}
+)        """.strip()

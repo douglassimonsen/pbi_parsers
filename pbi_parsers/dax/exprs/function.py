@@ -29,30 +29,15 @@ class FunctionExpression(Expression):
         self.args = args
         self.parens = parens
 
-    def pprint(self) -> str:
-        args = ",\n".join(arg.pprint() for arg in self.args)
-        args = textwrap.indent(args, " " * 10)[10:]
-        return f"""
-Function (
-    name: {"".join(x.text for x in self.name_parts)},
-    args: {args}
-)        """.strip()
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return self.args
 
-    @classmethod
-    def _match_function_name(cls, parser: "Parser") -> list[Token] | None:
-        name_parts = [parser.consume()]
-        if name_parts[0].tok_type != TokenType.UNQUOTED_IDENTIFIER:
-            return None
+    def full_text(self) -> str:
+        return self.parens[0].text_slice.full_text
 
-        while parser.peek().tok_type != TokenType.LEFT_PAREN:
-            period, name = parser.consume(), parser.consume()
-            if name.tok_type != TokenType.UNQUOTED_IDENTIFIER:
-                return None
-            if period.tok_type != TokenType.PERIOD:
-                return None
-            name_parts.extend((period, name))
-
-        return name_parts
+    def function_name(self) -> str:
+        return "".join(x.text for x in self.name_parts)
 
     @classmethod
     @lexer_reset
@@ -88,15 +73,30 @@ Function (
 
         return FunctionExpression(name_parts=name_parts, args=args, parens=(left_paren, right_paren))
 
-    def function_name(self) -> str:
-        return "".join(x.text for x in self.name_parts)
-
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return self.args
-
     def position(self) -> tuple[int, int]:
         return self.parens[0].text_slice.start, self.parens[1].text_slice.end
 
-    def full_text(self) -> str:
-        return self.parens[0].text_slice.full_text
+    def pprint(self) -> str:
+        args = ",\n".join(arg.pprint() for arg in self.args)
+        args = textwrap.indent(args, " " * 10)[10:]
+        return f"""
+Function (
+    name: {"".join(x.text for x in self.name_parts)},
+    args: {args}
+)        """.strip()
+
+    @classmethod
+    def _match_function_name(cls, parser: "Parser") -> list[Token] | None:
+        name_parts = [parser.consume()]
+        if name_parts[0].tok_type != TokenType.UNQUOTED_IDENTIFIER:
+            return None
+
+        while parser.peek().tok_type != TokenType.LEFT_PAREN:
+            period, name = parser.consume(), parser.consume()
+            if name.tok_type != TokenType.UNQUOTED_IDENTIFIER:
+                return None
+            if period.tok_type != TokenType.PERIOD:
+                return None
+            name_parts.extend((period, name))
+
+        return name_parts

@@ -30,17 +30,12 @@ class ReturnExpression(Expression):
         self.ret = ret
         self.variable_statements = variable_statements
 
-    def pprint(self) -> str:
-        return_val = textwrap.indent(self.ret.pprint(), " " * 12).lstrip()
-        statements = textwrap.indent(
-            ",\n".join(stmt.pprint() for stmt in self.variable_statements),
-            " " * 16,
-        ).lstrip()
-        return f"""
-Return (
-    Return: {return_val},
-    Statements: {statements}
-)""".strip()
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.ret, *self.variable_statements]
+
+    def full_text(self) -> str:
+        return self.ret.full_text()
 
     @classmethod
     @lexer_reset
@@ -65,12 +60,17 @@ Return (
             raise ValueError(msg)
         return ReturnExpression(ret=ret, variable_statements=statements)
 
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return [self.ret, *self.variable_statements]
-
     def position(self) -> tuple[int, int]:
         return self.variable_statements[0].position()[0], self.ret.position()[1]
 
-    def full_text(self) -> str:
-        return self.ret.full_text()
+    def pprint(self) -> str:
+        return_val = textwrap.indent(self.ret.pprint(), " " * 12).lstrip()
+        statements = textwrap.indent(
+            ",\n".join(stmt.pprint() for stmt in self.variable_statements),
+            " " * 16,
+        ).lstrip()
+        return f"""
+Return (
+    Return: {return_val},
+    Statements: {statements}
+)""".strip()

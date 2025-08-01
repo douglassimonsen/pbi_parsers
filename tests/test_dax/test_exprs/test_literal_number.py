@@ -16,6 +16,12 @@ from pbi_parsers.dax.exprs import LiteralNumberExpression
             ],
             "Number (1.1e1)",
         ),
+        (
+            [
+                Token(TokenType.NUMBER_LITERAL, TextSlice("-1.1e-2", 0, 7)),
+            ],
+            "Number (-1.1e-2)",
+        ),
     ],
 )
 def test_literal_number(input_tokens: list[Token], output: str) -> None:

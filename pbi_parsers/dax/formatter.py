@@ -104,18 +104,18 @@ class Formatter:
 """
 
     @classmethod
-    def _format_comparison(cls, expr: ComparisonExpression) -> str:
-        left = cls._format_helper(expr.left)
-        right = cls._format_helper(expr.right)
-        return f"""{left} {expr.operator.text} {right}"""
-
-    @classmethod
     def _format_column(cls, expr: ColumnExpression) -> str:
         table = expr.table.text
         if table.startswith("'") and all(c in string.ascii_letters + string.digits + "_" for c in table[1:-1]):
             table = table[1:-1]
         column = expr.column.text
         return f"{table}{column}"
+
+    @classmethod
+    def _format_comparison(cls, expr: ComparisonExpression) -> str:
+        left = cls._format_helper(expr.left)
+        right = cls._format_helper(expr.right)
+        return f"""{left} {expr.operator.text} {right}"""
 
     @classmethod
     def _format_concatenation(cls, expr: ConcatenationExpression) -> str:
@@ -170,11 +170,11 @@ class Formatter:
         return expr.name.text
 
     @classmethod
-    def _format_literal_string(cls, expr: LiteralStringExpression) -> str:
+    def _format_literal_number(cls, expr: LiteralNumberExpression) -> str:
         return expr.value.text
 
     @classmethod
-    def _format_literal_number(cls, expr: LiteralNumberExpression) -> str:
+    def _format_literal_string(cls, expr: LiteralStringExpression) -> str:
         return expr.value.text
 
     @classmethod

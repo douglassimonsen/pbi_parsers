@@ -18,6 +18,14 @@ class Parser:
         self.index = 0
         self.cache = {}
 
+    def consume(self) -> Token:
+        """Returns the next token and advances the index."""
+        if self.index >= len(self.__tokens):
+            return EOF_TOKEN
+        ret = self.__tokens[self.index]
+        self.index += 1
+        return ret
+
     def peek(self, forward: int = 0) -> Token:
         """Peek at the next token without advancing the index.
 
@@ -55,12 +63,4 @@ class Parser:
             msg = "No valid expression found in the token stream."
             raise ValueError(msg)
         assert self.peek().tok_type == TokenType.EOF
-        return ret
-
-    def consume(self) -> Token:
-        """Returns the next token and advances the index."""
-        if self.index >= len(self.__tokens):
-            return EOF_TOKEN
-        ret = self.__tokens[self.index]
-        self.index += 1
         return ret

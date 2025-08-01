@@ -17,10 +17,33 @@ class BaseLexer:
         self.current_position = 0
         self.tokens = []
 
-    def scan_helper(self) -> BaseToken:
-        """Contains the orchestration logic for converting tokens into expressions."""
-        msg = "Subclasses should implement match_tokens method."
-        raise NotImplementedError(msg)
+    def advance(self, chunk: int = 1) -> None:
+        """Advances the current position by the specified chunk size.
+
+        Generally used alongside peek to consume characters.
+
+        Args:
+            chunk (int): The number of characters to advance the current position.
+
+        Raises:
+            ValueError: If the current position exceeds a predefined MAX_POSITION (1,000,000 characters).
+                This is to avoid errors with the lexer causing the process to hang
+
+        """
+        if self.current_position > MAX_POSITION:
+            msg = f"Current position exceeds {MAX_POSITION:,} characters."
+            raise ValueError(msg)
+        self.current_position += chunk
+
+    def at_end(self) -> bool:
+        """Checks if the current position is at (or beyond) the end of the source.
+
+        Returns:
+            bool: True if the current position is at or beyond the end of the source, False
+                otherwise.
+
+        """
+        return self.current_position >= len(self.source)
 
     def match(
         self,
@@ -32,7 +55,6 @@ class BaseLexer:
         """Match a string or a callable matcher against the current position in the source.
 
         Args:
-        ----
             matcher (Callable[[str], bool] | str): A string to match or a callable that
                 takes a string and returns a boolean.
             chunk (int): The number of characters to check from the current position.
@@ -61,7 +83,7 @@ class BaseLexer:
         return False
 
     def peek(self, chunk: int = 1) -> str:
-        """Returns the next chunk of text from the current position. Defaults to a single character.
+        """Returns the next section of text from the current position of length `chunk`. Defaults to a single character.
 
         Args:
             chunk (int): The number of characters to return from the current position.
@@ -87,24 +109,6 @@ class BaseLexer:
         """
         return self.source[self.current_position :]
 
-    def advance(self, chunk: int = 1) -> None:
-        """Advances the current position by the specified chunk size.
-
-        Generally used alongside peek to consume characters.
-
-        Args:
-            chunk (int): The number of characters to advance the current position.
-
-        Raises:
-            ValueError: If the current position exceeds a predefined MAX_POSITION (1,000,000 characters).
-                This is to avoid errors with the lexer causing the process to hang
-
-        """
-        if self.current_position > MAX_POSITION:
-            msg = f"Current position exceeds {MAX_POSITION:,} characters."
-            raise ValueError(msg)
-        self.current_position += chunk
-
     def scan(self) -> tuple[BaseToken, ...]:
         """Repeatedly calls scan_helper until the end of the source is reached.
 
@@ -116,12 +120,7 @@ class BaseLexer:
             self.tokens.append(self.scan_helper())
         return tuple(self.tokens)
 
-    def at_end(self) -> bool:
-        """Checks if the current position is at (or beyond) the end of the source.
-
-        Returns:
-            bool: True if the current position is at or beyond the end of the source, False
-                otherwise.
-
-        """
-        return self.current_position >= len(self.source)
+    def scan_helper(self) -> BaseToken:
+        """Contains the orchestration logic for converting tokens into expressions."""
+        msg = "Subclasses should implement match_tokens method."
+        raise NotImplementedError(msg)

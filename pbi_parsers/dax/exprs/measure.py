@@ -22,8 +22,12 @@ class MeasureExpression(Expression):
     def __init__(self, name: Token) -> None:
         self.name = name
 
-    def pprint(self) -> str:
-        return f"Measure ({self.name.text})"
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []
+
+    def full_text(self) -> str:
+        return self.name.text_slice.full_text
 
     @classmethod
     @lexer_reset
@@ -33,12 +37,8 @@ class MeasureExpression(Expression):
             return MeasureExpression(name=name)
         return None
 
-    def children(self) -> list[Expression]:  # noqa: PLR6301
-        """Returns a list of child expressions."""
-        return []
-
     def position(self) -> tuple[int, int]:
         return self.name.text_slice.start, self.name.text_slice.end
 
-    def full_text(self) -> str:
-        return self.name.text_slice.full_text
+    def pprint(self) -> str:
+        return f"Measure ({self.name.text})"

@@ -30,6 +30,13 @@ class DivMulExpression(Expression):
         self.left = left
         self.right = right
 
+    def children(self) -> list[Expression]:
+        """Returns a list of child expressions."""
+        return [self.left, self.right]
+
+    def full_text(self) -> str:
+        return self.operator.text_slice.full_text
+
     @classmethod
     @lexer_reset
     def match(cls, parser: "Parser") -> "DivMulExpression | None":
@@ -51,6 +58,9 @@ class DivMulExpression(Expression):
             raise ValueError(msg)
         return DivMulExpression(operator=operator, left=left_term, right=right_term)
 
+    def position(self) -> tuple[int, int]:
+        return self.left.position()[0], self.right.position()[1]
+
     def pprint(self) -> str:
         op_str = {
             TokenType.MULTIPLY_SIGN: "Mul",
@@ -63,13 +73,3 @@ class DivMulExpression(Expression):
     left: {left_str},
     right: {right_str}
 )""".strip()
-
-    def children(self) -> list[Expression]:
-        """Returns a list of child expressions."""
-        return [self.left, self.right]
-
-    def position(self) -> tuple[int, int]:
-        return self.left.position()[0], self.right.position()[1]
-
-    def full_text(self) -> str:
-        return self.operator.text_slice.full_text

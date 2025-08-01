@@ -24,9 +24,12 @@ class KeywordExpression(Expression):
     def __init__(self, name: Token) -> None:
         self.name = name
 
-    def pprint(self) -> str:
-        return f"""
-Keyword ({self.name.text})""".strip()
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        """Returns a list of child expressions."""
+        return []
+
+    def full_text(self) -> str:
+        return self.name.text_slice.full_text
 
     @classmethod
     @lexer_reset
@@ -49,12 +52,9 @@ Keyword ({self.name.text})""".strip()
                 )
         return KeywordExpression(name=name)
 
-    def children(self) -> list[Expression]:  # noqa: PLR6301
-        """Returns a list of child expressions."""
-        return []
-
     def position(self) -> tuple[int, int]:
         return self.name.text_slice.start, self.name.text_slice.end
 
-    def full_text(self) -> str:
-        return self.name.text_slice.full_text
+    def pprint(self) -> str:
+        return f"""
+Keyword ({self.name.text})""".strip()
