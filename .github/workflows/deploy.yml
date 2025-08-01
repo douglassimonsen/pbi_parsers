@@ -102,7 +102,7 @@ jobs:
     needs: 
       - release
       - tag
-    if: needs.tag.outputs.tagged == 'false'
+    if: needs.tag.outputs.tagged == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Download dist artifacts
