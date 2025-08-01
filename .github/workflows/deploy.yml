@@ -1,3 +1,4 @@
+# Setup: go to https://github.com/<org/username>/<repo>/settings/actions and set Workflow permissions to "Read and write permissions"
 name: Tag and Release on Version Change
 
 on:
