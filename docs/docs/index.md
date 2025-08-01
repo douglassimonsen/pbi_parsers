@@ -1,6 +1,8 @@
 # Overview
 
-Based on [Crafting Interpreters](https://timothya.com/pdfs/crafting-interpreters.pdf). Library provides lexers, parsers, and formatters for DAX and Power Query (M) languages. Designed to support code introspection and analysis, not execution. This enables development of [ruff](https://github.com/astral-sh/ruff)-equivalent tools for DAX and Power Query. It also enables extracting metadata from DAX and Power Query code, such PQ source types (Excel, SQL, etc.) and DAX lineage dependencies.
+Based on [Crafting Interpreters](https://timothya.com/pdfs/crafting-interpreters.pdf). Library provides lexers, parsers, and formatters for DAX and Power Query (M) languages. Designed to support code introspection and analysis, not execution. This enables development of [ruff](https://github.com/astral-sh/ruff)-equivalent tools for DAX and Power Query. It also enables extracting metadata from DAX and Power Query code, such PQ source types (Excel, SQL, etc.) and DAX lineage dependencies. 
+
+This library is used in [pbi_ruff](https://github.com/douglassimonsen/pbi_ruff) to provide DAX and Power Query (M) linting.
 
 # Installation
 
