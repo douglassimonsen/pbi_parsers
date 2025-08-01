@@ -11,7 +11,7 @@ python -m pip install pbi_parsers
 ## Functionality
 
 !!! info "Rust Implementation"
-    Although the library is primarily implemented in Python, there are plans to implement a Rust version for performance and efficiency.
+    Although the library is primarily implemented in Python, there are plans to implement a Rust version for performance and additional type-safety.
 
 - DAX
     * [x] Lexer
