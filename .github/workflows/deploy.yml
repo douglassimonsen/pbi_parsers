@@ -8,8 +8,12 @@ env:
   PACKAGE_NAME: pbi_parsers  # <- replace with your actual package name
 
 jobs:
-  create-tag:
+  tag:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.VERSION }}
+      tagged: ${{ steps.check_tag.outputs.TAG_EXISTS == 'false' }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,3 +52,43 @@ jobs:
           gh release create "v$VERSION" \
             --title "v$VERSION" \
             --notes "Automated release for version $VERSION"
+  release:
+    needs: tag
+    if: needs.tag.outputs.tagged == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code at tag
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required to access tags
+          ref: "refs/tags/v${{ needs.tag.outputs.version }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Build package (sdist and wheel)
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+
+      - name: Get commit message for release notes
+        id: commit_message
+        run: |
+          MSG=$(git log -1 --pretty=%B)
+          echo "MSG<<EOF" >> $GITHUB_OUTPUT
+          echo "$MSG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Upload GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "v${{ needs.tag.outputs.version }}"
+          name: "v${{ needs.tag.outputs.version }}"
+          body: "${{ steps.commit_message.outputs.MSG }}"
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
