@@ -1,6 +1,6 @@
 import pytest
 
-from ....pbi_parsers.dax.main import format_expression
+from pbi_parsers.dax.main import format_expression
 
 
 @pytest.mark.parametrize(
