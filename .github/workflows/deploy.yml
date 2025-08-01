@@ -1,0 +1,50 @@
+name: Tag and Release on Version Change
+
+on:
+  push:
+    branches:
+      - main
+env:
+  PACKAGE_NAME: pbi_parsers  # <- replace with your actual package name
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Get current version from file
+        id: get_version
+        run: |
+          VERSION=$(grep -oP '__version__ = \"\K[^\"]*' $PACKAGE_NAME/__init__.py)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          if git rev-parse "refs/tags/v${{ steps.get_version.outputs.VERSION }}" >/dev/null 2>&1; then
+            echo "TAG_EXISTS=true" >> $GITHUB_OUTPUT
+          else
+            echo "TAG_EXISTS=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create tag and GitHub release
+        if: steps.check_tag.outputs.TAG_EXISTS == 'false'
+        env:
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin "v$VERSION"
+          
+          gh release create "v$VERSION" \
+            --title "v$VERSION" \
+            --notes "Automated release for version $VERSION"
