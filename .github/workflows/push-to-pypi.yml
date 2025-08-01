@@ -1,8 +1,7 @@
 name: Publish Python Package to PyPI
 
 on:
-  release:
-    types: [published, created, edited, released, unpublished, prereleased]
+  push
 
 jobs:
   build:
