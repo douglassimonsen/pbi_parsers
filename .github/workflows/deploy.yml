@@ -104,6 +104,13 @@ jobs:
       - tag
     if: needs.tag.outputs.tagged == 'true'
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/${{ env.PACKAGE_NAME }} # Replace <package-name> with your PyPI project name
+    permissions:
+      id-token: write # IMPORTANT: mandatory for trusted publishing
+
+
     steps:
       - name: Download dist artifacts
         uses: actions/download-artifact@v4
