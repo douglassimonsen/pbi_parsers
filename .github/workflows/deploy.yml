@@ -92,3 +92,24 @@ jobs:
             dist/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files
+          path: dist/*
+  publish:
+    needs: 
+      - release
+      - tag
+    if: needs.tag.outputs.tagged == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-files
+          path: dist
+
+      - name: Publish Package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
