@@ -2,7 +2,7 @@ name: Publish Python Package to PyPI
 
 on:
   release:
-    types: [created] # Triggers only when a release is created
+    types: [published, created, edited, released, unpublished, prereleased]
 
 jobs:
   build:
