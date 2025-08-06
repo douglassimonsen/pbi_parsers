@@ -13,6 +13,8 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = [
+  "coverage[toml]>=7.10.2",
+  "coveralls>=4.0.1",
   "pre-commit>=3.8.0",
   "build>=1.2.2",
   "ruff>=0.12.7",
@@ -25,6 +27,9 @@ docs = [
 
 [tool.hatch.version]
 path = "pbi_parsers/__init__.py"
+
+[tool.coverage.run]
+relative_files = true
 
 [tool.doc8]
 max-line-length = 120

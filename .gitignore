@@ -3,3 +3,4 @@ venv
 dist
 docs/site
 .env
+.coverage
