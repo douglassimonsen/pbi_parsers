@@ -1,6 +1,7 @@
 # Overview
 
-[![PyPI Downloads](https://static.pepy.tech/badge/pbi-parsers)](https://pepy.tech/projects/pbi-parsers)
+[![PyPI Downloads](https://static.pepy.tech/badge/pbi-parsers)](https://pepy.tech/projects/pbi-parsers)[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdouglassimonsen%2Fpbi_parsers.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdouglassimonsen%2Fpbi_parsers?ref=badge_shield)
+
 ![Python](https://img.shields.io/badge/python-3.11-blue.svg)
 [![Coverage Status](https://coveralls.io/repos/github/Sulstice/global-chem/badge.svg?branch=master)](https://coveralls.io/github/Sulstice/global-chem?branch=master)
 
@@ -52,3 +53,6 @@ pip install -e .
 ```shell
 python -m build .
 ```
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdouglassimonsen%2Fpbi_parsers.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdouglassimonsen%2Fpbi_parsers?ref=badge_large)
