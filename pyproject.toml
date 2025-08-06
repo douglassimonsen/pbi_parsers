@@ -13,8 +13,8 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = [
-  "coverage>=7.10.2",
-  "coveralls>=4.0.0",
+  "coverage",
+  "coveralls",
   "pre-commit>=3.8.0",
   "build>=1.2.2",
   "ruff>=0.12.7",
