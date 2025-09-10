@@ -118,6 +118,9 @@ class BaseLexer:
         """
         while not self.at_end():
             self.tokens.append(self.scan_helper())
+        for a_tok, b_tok in zip(self.tokens, self.tokens[1:], strict=False):
+            a_tok.next_token = b_tok
+            b_tok.prior_token = a_tok
         return tuple(self.tokens)
 
     def scan_helper(self) -> BaseToken:
