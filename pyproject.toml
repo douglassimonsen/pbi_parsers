@@ -26,6 +26,9 @@ docs = [
   "mkdocs-material>=9.6.16",
   "mkdocstrings-python>=0.30.0",
 ]
+[project.urls]
+Homepage = "https://github.com/douglassimonsen/pbi_parsers"
+Documentation = "https://douglassimonsen.github.io/pbi_parsers/"
 
 [tool.hatch.version]
 path = "pbi_parsers/__init__.py"
