@@ -4,7 +4,7 @@ import jinja2
 from colorama import Fore, Style
 
 from .exprs import Expression
-from .tokens import Token
+from .tokens import Token, TokenType
 
 T = TypeVar("T", bound=Expression)
 
@@ -118,3 +118,30 @@ def highlight_section(node: Expression | Token | list[Token] | list[Expression])
     position = node.position()
     full_text = node.text_slice.full_text if isinstance(node, Token) else node.full_text()
     return Context(position, full_text)
+
+
+def get_inner_text(tok: Token) -> str:
+    """Returns the inner text of a token, stripping any surrounding quotes or brackets.
+
+    Args:
+        tok (Token): The token to extract inner text from.
+
+    Returns:
+        str: The inner text of the token.
+
+    Raises:
+        ValueError: If the token type does not support inner text extraction.
+
+    """
+    if tok.tok_type in {
+        TokenType.BRACKETED_IDENTIFIER,
+        TokenType.SINGLE_QUOTED_IDENTIFIER,
+    }:
+        return tok.text[1:-1]
+    if tok.tok_type in {
+        TokenType.STRING_LITERAL,
+        TokenType.UNQUOTED_IDENTIFIER,
+    }:
+        return tok.text
+    msg = f"Token type {tok.tok_type} does not have inner text"
+    raise ValueError(msg)

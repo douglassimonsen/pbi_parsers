@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from pbi_parsers.base import BaseToken
-
-from ..base.tokens import TextSlice
+from pbi_parsers.base.tokens import TextSlice
 
 
 class TokenType(Enum):

@@ -40,6 +40,7 @@ class TokenType(Enum):
     UNQUOTED_IDENTIFIER = auto()
     VARIABLE = auto()
     WHITESPACE = auto()
+
     UNKNOWN = auto()
     """unknown is used when someone replaces a token with a str"""
 
