@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 
 from pbi_parsers.base import BaseToken
+from pbi_parsers.base.tokens import TextSlice
 
 
 class TokenType(Enum):
@@ -39,6 +40,8 @@ class TokenType(Enum):
     UNQUOTED_IDENTIFIER = auto()
     VARIABLE = auto()
     WHITESPACE = auto()
+    UNKNOWN = auto()
+    """unknown is used when someone replaces a token with a str"""
 
 
 KEYWORD_MAPPING = {
@@ -52,3 +55,17 @@ KEYWORD_MAPPING = {
 @dataclass
 class Token(BaseToken):
     tok_type: TokenType = TokenType.EOF
+
+    @staticmethod
+    def from_str(value: str, tok_type: TokenType = TokenType.UNKNOWN) -> "Token":
+        tok_type = KEYWORD_MAPPING.get(value, tok_type)
+        return Token(
+            tok_type=tok_type,
+            text_slice=TextSlice(value, 0, len(value)),
+        )
+
+    def add_token_before(self, text: str, tok_type: TokenType) -> None:
+        super().add_token_before(text, tok_type)
+
+    def add_token_after(self, text: str, tok_type: TokenType) -> None:
+        super().add_token_after(text, tok_type)

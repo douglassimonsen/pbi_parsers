@@ -3,6 +3,8 @@ from enum import Enum
 
 from pbi_parsers.base import BaseToken
 
+from ..base.tokens import TextSlice
+
 
 class TokenType(Enum):
     LET = 1
@@ -52,11 +54,26 @@ class TokenType(Enum):
     IS = 46
     AS = 47
     EXCLAMATION_POINT = 48
+    UNKNOWN = 99
+    """unknown is used when someone replaces a token with a str"""
 
 
 @dataclass
 class Token(BaseToken):
     tok_type: TokenType = TokenType.EOF
+
+    @staticmethod
+    def from_str(value: str, tok_type: TokenType = TokenType.UNKNOWN) -> "Token":
+        return Token(
+            tok_type=tok_type,
+            text_slice=TextSlice(value, 0, len(value)),
+        )
+
+    def add_token_before(self, text: str, tok_type: TokenType) -> None:
+        super().add_token_before(text, tok_type)
+
+    def add_token_after(self, text: str, tok_type: TokenType) -> None:
+        super().add_token_after(text, tok_type)
 
 
 # These are tokens that could also be used as identifiers in expressions.
