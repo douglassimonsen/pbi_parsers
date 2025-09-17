@@ -35,7 +35,7 @@ def get_record_value(node: RecordExpression, key: str) -> str | int | float | No
     return None
 
 
-@dataclass
+@dataclass(frozen=True)
 class CsvDocumentSource(BaseExternalSource):
     file_path: str | None = None
     delimiter: str | None = None

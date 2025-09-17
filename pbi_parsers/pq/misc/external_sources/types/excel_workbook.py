@@ -7,7 +7,7 @@ from .base import BaseExternalSource
 from .utils import PATHLIKE_FUNCTIONS
 
 
-@dataclass
+@dataclass(frozen=True)
 class ExcelWorkbookSource(BaseExternalSource):
     file: str | None = None
     table: str | None = None

@@ -20,18 +20,20 @@ def get_value(node: LiteralStringExpression | LiteralNumberExpression) -> str | 
     raise ValueError(msg)
 
 
-@dataclass
+@dataclass(frozen=True)
 class JsonDocumentSource(BaseExternalSource):
-    values: list[list[str | int | float]] | None = None
-    columns: list[str] | None = None
+    values: tuple[tuple[str | int | float, ...], ...] | None = None
+    columns: tuple[str, ...] | None = None
 
     @staticmethod
     def from_node(node: FunctionExpression) -> "JsonDocumentSource":
         if not isinstance(node, ArrayExpression):
             return JsonDocumentSource()
-        data = [
-            [get_value(e) for e in row.elements if isinstance(e, (LiteralStringExpression, LiteralNumberExpression))]
+        data = tuple(
+            tuple(
+                get_value(e) for e in row.elements if isinstance(e, (LiteralStringExpression, LiteralNumberExpression))
+            )
             for row in node.elements
             if isinstance(row, ArrayExpression)
-        ]
+        )
         return JsonDocumentSource(values=data)

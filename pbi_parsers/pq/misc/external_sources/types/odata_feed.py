@@ -6,7 +6,7 @@ from pbi_parsers.pq.exprs.literal_string import LiteralStringExpression
 from .base import BaseExternalSource
 
 
-@dataclass
+@dataclass(frozen=True)
 class ODataFeedSource(BaseExternalSource):
     url: str | None = None
 
