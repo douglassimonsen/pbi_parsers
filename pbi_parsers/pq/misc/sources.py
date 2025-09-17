@@ -14,7 +14,7 @@ SOURCE_FUNCTIONS = {
 }
 
 
-def get_sources(text: str) -> list[str]:
+def get_external_sources(text: str) -> list[str]:
     tree = to_ast(text)
     if tree is None:
         return []

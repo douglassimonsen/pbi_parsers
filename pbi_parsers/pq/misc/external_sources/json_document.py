@@ -5,7 +5,7 @@ from pbi_parsers.pq.exprs.array import ArrayExpression
 from pbi_parsers.pq.exprs.function import FunctionExpression
 from pbi_parsers.pq.exprs.literal_string import LiteralStringExpression
 
-from .base import BaseSource
+from .base import BaseExternalSource
 
 
 def get_value(node: LiteralStringExpression | LiteralNumberExpression) -> str | int | float:
@@ -21,7 +21,7 @@ def get_value(node: LiteralStringExpression | LiteralNumberExpression) -> str | 
 
 
 @dataclass
-class JsonDocumentSource(BaseSource):
+class JsonDocumentSource(BaseExternalSource):
     values: list[list[str | int | float]] | None = None
     columns: list[str] | None = None
 

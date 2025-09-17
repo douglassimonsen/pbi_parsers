@@ -2,5 +2,5 @@ from dataclasses import dataclass
 
 
 @dataclass
-class BaseSource:
+class BaseExternalSource:
     pass
