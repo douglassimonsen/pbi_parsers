@@ -9,16 +9,6 @@ from .tokens import Token, TokenType
 T = TypeVar("T", bound=Expression)
 
 
-def find_all(ast: Expression, class_type: type[T] | tuple[type[T], ...]) -> list[T]:
-    """Find all instances of a specific class type in the AST."""
-    ret = []
-    for child in ast.children():
-        if isinstance(child, class_type):
-            ret.append(child)
-        ret.extend(find_all(child, class_type))
-    return ret
-
-
 CONSOLE = jinja2.Template("""
 {%- for i, section_line in enumerate(lines) -%}
 {%- if i in highlights %}
@@ -28,7 +18,7 @@ CONSOLE = jinja2.Template("""
 {{ i }} | {{ section_line }}
 {%- endif %}
 {%- endfor %}
-""")
+""")  # noqa: E501
 HTML = jinja2.Template("""
 <div>
 {% for i, section_line in enumerate(section_lines) %}

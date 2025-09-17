@@ -22,9 +22,12 @@ class IdentifierExpression(Expression):
     def __init__(self, name_parts: list[Token]) -> None:
         self.name_parts = name_parts
 
+    def name(self) -> str:
+        """Returns the full identifier name as a string."""
+        return ".".join(part.text for part in self.name_parts)
+
     def pprint(self) -> str:
-        name = ".".join(part.text for part in self.name_parts)
-        return f"Identifier ({name})"
+        return f"Identifier ({self.name()})"
 
     @classmethod
     @lexer_reset
@@ -43,6 +46,9 @@ class IdentifierExpression(Expression):
             name_parts.append(name)
 
         return IdentifierExpression(name_parts=name_parts)
+
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        return []
 
 
 class BracketedIdentifierExpression(Expression):
@@ -73,5 +79,5 @@ Bracketed Identifier ({" ".join(part.text for part in self.name_parts)})""".stri
             return None
         return BracketedIdentifierExpression(name_parts=name_parts)
 
-    def children(self) -> list[Expression]:
-        return super().children()
+    def children(self) -> list[Expression]:  # noqa: PLR6301
+        return []

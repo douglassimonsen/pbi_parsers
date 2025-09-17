@@ -1,9 +1,11 @@
-from typing import TYPE_CHECKING
+from collections.abc import Callable
+from typing import TYPE_CHECKING, TypeVar
 
 from pbi_parsers.pq.tokens import TokenType
 
 if TYPE_CHECKING:
     from pbi_parsers.pq.parser import Parser
+T = TypeVar("T", bound="Expression")
 
 
 class Expression:
@@ -29,5 +31,36 @@ class Expression:
 
     def children(self) -> list["Expression"]:
         """Returns a list of child expressions."""
-        msg = "This method should be implemented by subclasses."
+        msg = f"This method should be implemented by subclasses. This subclass is: {type(self)}."
         raise NotImplementedError(msg)
+
+    def find(self, cls_type: type[T] | tuple[type[T], ...], attributes: Callable[[T], bool] | None = None) -> T:
+        attributes = attributes or (lambda _x: True)
+
+        if isinstance(self, cls_type) and attributes(self):
+            return self
+
+        for child in self.children():
+            try:
+                return child.find(cls_type, attributes)
+            except ValueError:
+                continue
+
+        msg = f"Matching {cls_type} not found in expression tree."
+        raise ValueError(msg)
+
+    def find_all(
+        self,
+        cls_type: type[T] | tuple[type[T], ...],
+        attributes: Callable[[T], bool] | None = None,
+    ) -> list[T]:
+        attributes = attributes or (lambda _x: True)
+        results: list[T] = []
+
+        if isinstance(self, cls_type) and attributes(self):
+            results.append(self)
+
+        for child in self.children():
+            results.extend(child.find_all(cls_type, attributes))
+
+        return results
