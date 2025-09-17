@@ -1,19 +1,16 @@
 from pbi_parsers.pq.exprs.function import FunctionExpression
 from pbi_parsers.pq.main import to_ast
 
-from .external_sources import ExcelWorkbookSource, JsonDocumentSource, ODataFeedSource
+from .external_sources import ExcelWorkbookSource, JsonDocumentSource, ODataFeedSource, SqlDatabaseSource
 from .external_sources.csv_document import CsvDocumentSource
 from .resolve import resolve_references
 
 SOURCE_FUNCTIONS = {
-    "Json.Document",
     "Csv.Document",
-    "Sql.Database",
-    "OData.Feed",
-    "AzureStorage.Blobs",
-    "AzureStorage.BlobContents",
-    "Web.Contents",
     "Excel.Workbook",
+    "Json.Document",
+    "OData.Feed",
+    "Sql.Database",
 }
 
 
@@ -35,6 +32,8 @@ def get_sources(text: str) -> list[str]:
             ret.append(ODataFeedSource.from_node(resolved_node))
         elif func_name == "Csv.Document":
             ret.append(CsvDocumentSource.from_node(resolved_node))
+        elif func_name == "Sql.Database":
+            ret.append(SqlDatabaseSource.from_node(resolved_node))
         else:
             breakpoint()
     return ret
@@ -42,3 +41,5 @@ def get_sources(text: str) -> list[str]:
 
 # TODO: get the table of Excel.Workbook
 # TODO: get columns of Json.Document
+# TODO: include ssas.expressions as possible resolution for identifiers
+# TODO: Good identifier (vs literal string) resolution in general

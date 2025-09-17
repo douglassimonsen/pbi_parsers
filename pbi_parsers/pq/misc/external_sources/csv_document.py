@@ -7,6 +7,8 @@ from pbi_parsers.pq.exprs.literal_number import LiteralNumberExpression
 from pbi_parsers.pq.exprs.literal_string import LiteralStringExpression
 from pbi_parsers.pq.exprs.record import RecordExpression
 
+from .utils import PATHLIKE_FUNCTIONS
+
 
 class CsvEncoding(Enum):
     UTF8 = 65001
@@ -93,7 +95,7 @@ def _get_file_path(node: FunctionExpression) -> str | None:
     first_arg = node.args[0]
     if not isinstance(first_arg, FunctionExpression):
         return None
-    if first_arg.name.name() != "File.Contents":
+    if first_arg.name.name() not in PATHLIKE_FUNCTIONS:
         return None
     firster_arg = first_arg.args[0]
     if not isinstance(firster_arg, LiteralStringExpression):

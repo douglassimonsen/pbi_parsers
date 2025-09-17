@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from pbi_parsers.pq.exprs.function import FunctionExpression
 from pbi_parsers.pq.exprs.literal_string import LiteralStringExpression
 
+from .utils import PATHLIKE_FUNCTIONS
+
 
 @dataclass
 class ExcelWorkbookSource:
@@ -22,7 +24,7 @@ def _get_file_path(node: FunctionExpression) -> str | None:
     first_arg = node.args[0]
     if not isinstance(first_arg, FunctionExpression):
         return None
-    if first_arg.name.name() != "File.Contents":
+    if first_arg.name.name() not in PATHLIKE_FUNCTIONS:
         return None
     firster_arg = first_arg.args[0]
     if not isinstance(firster_arg, LiteralStringExpression):

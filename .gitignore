@@ -4,3 +4,5 @@ dist
 docs/site
 .env
 .coverage
+*.json
+test*
