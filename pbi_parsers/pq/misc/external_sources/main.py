@@ -3,6 +3,7 @@ from pbi_parsers.pq.main import to_ast
 from pbi_parsers.pq.misc.resolve import resolve_references
 
 from .types import ExcelWorkbookSource, JsonDocumentSource, ODataFeedSource, SqlDatabaseSource
+from .types.base import BaseExternalSource
 from .types.csv_document import CsvDocumentSource
 
 SOURCE_FUNCTIONS = {
@@ -14,11 +15,11 @@ SOURCE_FUNCTIONS = {
 }
 
 
-def get_external_sources(text: str) -> list[str]:
+def get_external_sources(text: str) -> list[BaseExternalSource]:
     tree = to_ast(text)
     if tree is None:
         return []
-    ret = []
+    ret: list[BaseExternalSource] = []
     for node in tree.find_all(FunctionExpression):
         func_name = node.name.name()
         if func_name not in SOURCE_FUNCTIONS:
