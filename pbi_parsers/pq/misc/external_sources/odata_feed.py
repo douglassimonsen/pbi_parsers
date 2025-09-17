@@ -3,9 +3,11 @@ from dataclasses import dataclass
 from pbi_parsers.pq.exprs.function import FunctionExpression
 from pbi_parsers.pq.exprs.literal_string import LiteralStringExpression
 
+from .base import BaseSource
+
 
 @dataclass
-class ODataFeedSource:
+class ODataFeedSource(BaseSource):
     url: str | None = None
 
     @staticmethod

@@ -5,6 +5,8 @@ from pbi_parsers.pq.exprs.array import ArrayExpression
 from pbi_parsers.pq.exprs.function import FunctionExpression
 from pbi_parsers.pq.exprs.literal_string import LiteralStringExpression
 
+from .base import BaseSource
+
 
 def get_value(node: LiteralStringExpression | LiteralNumberExpression) -> str | int | float:
     if isinstance(node, LiteralStringExpression):
@@ -19,7 +21,7 @@ def get_value(node: LiteralStringExpression | LiteralNumberExpression) -> str | 
 
 
 @dataclass
-class JsonDocumentSource:
+class JsonDocumentSource(BaseSource):
     values: list[list[str | int | float]] | None = None
     columns: list[str] | None = None
 

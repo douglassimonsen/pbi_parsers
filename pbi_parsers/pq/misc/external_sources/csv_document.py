@@ -7,6 +7,7 @@ from pbi_parsers.pq.exprs.literal_number import LiteralNumberExpression
 from pbi_parsers.pq.exprs.literal_string import LiteralStringExpression
 from pbi_parsers.pq.exprs.record import RecordExpression
 
+from .base import BaseSource
 from .utils import PATHLIKE_FUNCTIONS
 
 
@@ -35,7 +36,7 @@ def get_record_value(node: RecordExpression, key: str) -> str | int | float | No
 
 
 @dataclass
-class CsvDocumentSource:
+class CsvDocumentSource(BaseSource):
     file_path: str | None = None
     delimiter: str | None = None
     column_count: int | None = None

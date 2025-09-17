@@ -3,9 +3,11 @@ from dataclasses import dataclass
 from pbi_parsers.pq.exprs.function import FunctionExpression
 from pbi_parsers.pq.exprs.literal_string import LiteralStringExpression
 
+from .base import BaseSource
+
 
 @dataclass
-class SqlDatabaseSource:
+class SqlDatabaseSource(BaseSource):
     server: str | None = None
     database: str | None = None
 

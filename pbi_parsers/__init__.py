@@ -1,6 +1,6 @@
 from . import dax, pq
 
-__version__ = "0.9.0"
+__version__ = "0.9.1"
 
 
 __all__ = [

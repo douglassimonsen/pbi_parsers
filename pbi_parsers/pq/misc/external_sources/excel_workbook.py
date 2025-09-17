@@ -3,11 +3,12 @@ from dataclasses import dataclass
 from pbi_parsers.pq.exprs.function import FunctionExpression
 from pbi_parsers.pq.exprs.literal_string import LiteralStringExpression
 
+from .base import BaseSource
 from .utils import PATHLIKE_FUNCTIONS
 
 
 @dataclass
-class ExcelWorkbookSource:
+class ExcelWorkbookSource(BaseSource):
     file: str | None = None
     table: str | None = None
 
