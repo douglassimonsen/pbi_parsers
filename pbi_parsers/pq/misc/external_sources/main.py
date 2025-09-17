@@ -1,9 +1,9 @@
 from pbi_parsers.pq.exprs.function import FunctionExpression
 from pbi_parsers.pq.main import to_ast
+from pbi_parsers.pq.misc.resolve import resolve_references
 
-from .external_sources import ExcelWorkbookSource, JsonDocumentSource, ODataFeedSource, SqlDatabaseSource
-from .external_sources.csv_document import CsvDocumentSource
-from .resolve import resolve_references
+from .types import ExcelWorkbookSource, JsonDocumentSource, ODataFeedSource, SqlDatabaseSource
+from .types.csv_document import CsvDocumentSource
 
 SOURCE_FUNCTIONS = {
     "Csv.Document",
